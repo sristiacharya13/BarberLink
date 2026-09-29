@@ -1,0 +1,19 @@
+<form method="post">
+{% csrf_token %}
+
+<!-- <p>
+    {{form.name.label_tag}}<br/>
+    {{form.name}}
+    {{form.name.errors}}
+</p>
+
+<p>
+    {{form.contact_number.label_tag}}<br/>
+    {{form.contact_number}}
+    {{form.contact_number.errors}}
+</p> -->
+
+{{form.as_p}}
+
+<button type="submit">Register</button>
+</form>
