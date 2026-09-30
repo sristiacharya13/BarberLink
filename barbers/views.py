@@ -1,19 +1,16 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from .models import Barber
-from django.http import HttpResponse
-from .forms import BarberForm
-# Create your views here.
+from django.shortcuts import render
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-def welcome_barber(request):
-    return HttpResponse('<h1>Hello, Registration successfull</h1>')
+from accounts.permissions import IsBarber
 
-def barber_info(request):
-    if request.method=="POST":
-        form=BarberForm(request.POST)
-        print("This is form: ",form)
-        if form.is_valid():
-            form.save()
-            return redirect('/barbers/barber_info')
-    else:
-        form=BarberForm()
-    return render(request,'barberlink/barber_reg.html',{'form':form})
+
+def barber_dashboard_page(request):
+    return render(request, "barberlink/barber_dashboard.html")
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsBarber])
+def barber_dashboard_data(request):
+    return Response({"name": request.user.barber.name})
