@@ -1,19 +1,22 @@
-<form method="post">
-{% csrf_token %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form</title>
+</head>
 
-<!-- <p>
-    {{form.name.label_tag}}<br/>
-    {{form.name}}
-    {{form.name.errors}}
-</p>
+<body>
 
-<p>
-    {{form.contact_number.label_tag}}<br/>
-    {{form.contact_number}}
-    {{form.contact_number.errors}}
-</p> -->
+        <h1>Registration Form</h1>
 
-{{form.as_p}}
+        <form method="post">
+            {% csrf_token %}
 
-<button type="submit">Register</button>
-</form>
+            {{ form.as_p }}
+
+            <button type="submit">Register</button>
+        </form>
+
+
+
+</body>
+</html>

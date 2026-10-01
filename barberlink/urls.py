@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView  # type: ignore
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -11,4 +11,6 @@ urlpatterns = [
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("barbers/", include("barbers.urls")),
     path("customers/", include("customers.urls")),
+    path('i18n/', include('django.conf.urls.i18n')),
+    
 ]

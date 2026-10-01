@@ -1,2 +1,19 @@
-<h1>Hello, {{name}}</h1><br/>
-<h2>You successfully Registered as Barber</h2>
+{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+
+    <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>
+            English
+        </option>
+
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>
+            ಕನ್ನಡ
+        </option>
+    </select>
+</form>
+<h1>{% blocktranslate %}Hello, {{ name }}{% endblocktranslate %}</h1>
+<h2>{% translate "You successfully Registered as Barber" %}</h2>
