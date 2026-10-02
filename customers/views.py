@@ -4,10 +4,23 @@ from rest_framework.permissions import IsAuthenticated # type: ignore
 from rest_framework.response import Response # type: ignore
 
 from accounts.permissions import IsCustomer
-
+import razorpay # type: ignore
+from django.conf import settings
 
 def customer_dashboard_page(request):
-    return render(request, "barberlink/customer_dashboard.html")
+   
+    client=razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+    amount = 120 * 100  # ₹100 in paise
+
+    order = client.order.create({
+        "amount": amount,
+        "currency": "INR",
+        "payment_capture": 1
+    })
+    return render(request, "barberlink/customer_dashboard.html", {
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "order_id": order["id"],
+        "amount": amount,})
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])

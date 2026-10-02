@@ -16,3 +16,29 @@
 </form>
 <h1>{% blocktranslate %}Hello, {{ name }}{% endblocktranslate %}</h1>
 <h2>{% translate "You successfully Registered as Customer" %}</h2>
+<h2>{% translate "Make Payment" %}</h2>
+
+<p>{% translate "Amount: ₹120" %}</p>
+
+<button id="pay-button">{% translate "Pay ₹120" %}</button>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+     document.getElementById("pay-button").onclick = function () {
+
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "BarberLink",
+            "description": "Barber Service Payment",
+            "order_id": "{{ order_id }}",
+
+            "handler": function (response) {
+                alert("Payment successful!");
+            }
+        };
+
+        var razorpay = new Razorpay(options);
+        razorpay.open();
+    };
+</script>
