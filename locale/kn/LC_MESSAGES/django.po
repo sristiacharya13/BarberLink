@@ -1,42 +1,57 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Kannada translations for the BarberLink project.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: barberlink 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-02 12:55+0530\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2026-10-02 12:55+0530\n"
+"Last-Translator: BarberLink\n"
+"Language-Team: Kannada\n"
+"Language: kn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\templates\barberlink\barber_dashboard.html:18
-#: .\templates\barberlink\customer_dashboard.html:17
-#, python-format
-msgid "Hello, %(name)s"
-msgstr "ನಮಸ್ಕಾರ, %(name)s"
+#: .\templates\barberlink\barber_dashboard.html:8
+#: .\templates\barberlink\barber_dashboard.html:34
+msgid "Barber Dashboard"
+msgstr "ಬಾರ್ಬರ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
 
-#: .\templates\barberlink\barber_dashboard.html:19
-msgid "You successfully Registered as Barber"
-msgstr "ನೀವು ಯಶಸ್ವಿಯಾಗಿ ಬಾರ್ಬರ್ ಆಗಿ ನೋಂದಾಯಿಸಿಕೊಂಡಿದ್ದೀರಿ"
+#: .\templates\barberlink\customer_dashboard.html:8
+#: .\templates\barberlink\customer_dashboard.html:34
+msgid "Customer Dashboard"
+msgstr "ಗ್ರಾಹಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್"
 
-#: .\templates\barberlink\customer_dashboard.html:18
-msgid "You successfully Registered as Customer"
-msgstr "ನೀವು ಯಶಸ್ವಿಯಾಗಿ ಗ್ರಾಹಕರಾಗಿ ನೋಂದಾಯಿಸಿಕೊಂಡಿದ್ದೀರಿ"
+#: .\templates\barberlink\barber_dashboard.html:29
+#: .\templates\barberlink\barber_dashboard.html:39
+#: .\templates\barberlink\customer_dashboard.html:29
+#: .\templates\barberlink\customer_dashboard.html:39
+msgid "My Profile"
+msgstr "ನನ್ನ ಪ್ರೊಫೈಲ್"
 
+#: .\templates\barberlink\barber_dashboard.html:30
+#: .\templates\barberlink\customer_dashboard.html:30
+msgid "Logout"
+msgstr "ಲಾಗ್ ಔಟ್"
+
+#: .\templates\barberlink\barber_dashboard.html:33
+msgid "Hi barber,"
+msgstr "ಹಲೋ ಬಾರ್ಬರ್,"
+
+#: .\templates\barberlink\customer_dashboard.html:33
+msgid "Hi customer,"
+msgstr "ಹಲೋ ಗ್ರಾಹಕ,"
+
+#: .\templates\barberlink\customer_dashboard.html:45
 msgid "Make Payment"
 msgstr "ಪಾವತಿ ಮಾಡಿ"
 
+#: .\templates\barberlink\customer_dashboard.html:46
 msgid "Amount: ₹120"
 msgstr "ಮೊತ್ತ: ₹120"
 
+#: .\templates\barberlink\customer_dashboard.html:47
 msgid "Pay ₹120"
 msgstr "₹120 ಪಾವತಿಸಿ"

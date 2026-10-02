@@ -1,44 +1,199 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Customer Dashboard" %}</title>
+</head>
+<body>
+  <nav>
+    <form action="{% url 'set_language' %}" method="post" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+      </select>
+    </form>
+    <button type="button" id="profile-toggle">{% translate "My Profile" %}</button>
+    <button type="button" id="logout">{% translate "Logout" %}</button>
+  </nav>
 
-<form action="{% url 'set_language' %}" method="post">
-    {% csrf_token %}
+  {% translate "Hi customer," as greeting_prefix %}
+  <h1 id="greeting">{{ greeting_prefix }}</h1>
+  <h2>{% translate "Customer Dashboard" %}</h2>
 
-    <select name="language" onchange="this.form.submit()">
-        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>
-            English
-        </option>
+  <p id="message" hidden></p>
 
-        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>
-            ಕನ್ನಡ
-        </option>
-    </select>
-</form>
-<h1>{% blocktranslate %}Hello, {{ name }}{% endblocktranslate %}</h1>
-<h2>{% translate "You successfully Registered as Customer" %}</h2>
-<h2>{% translate "Make Payment" %}</h2>
+  <section id="profile-section" hidden>
+    <h3>{% translate "My Profile" %}</h3>
+    <dl id="profile-details"></dl>
+  </section>
 
-<p>{% translate "Amount: ₹120" %}</p>
-
-<button id="pay-button">{% translate "Pay ₹120" %}</button>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-     document.getElementById("pay-button").onclick = function () {
-
+  {% if razorpay_key %}
+  <section>
+    <h3>{% translate "Make Payment" %}</h3>
+    <p>{% blocktranslate %}Amount: ₹120{% endblocktranslate %}</p>
+    <button type="button" id="pay-button">{% translate "Pay ₹120" %}</button>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      document.getElementById("pay-button").addEventListener("click", function () {
         var options = {
-            "key": "{{ razorpay_key }}",
-            "amount": "{{ amount }}",
-            "currency": "INR",
-            "name": "BarberLink",
-            "description": "Barber Service Payment",
-            "order_id": "{{ order_id }}",
-
-            "handler": function (response) {
-                alert("Payment successful!");
-            }
+          "key": "{{ razorpay_key }}",
+          "amount": "{{ amount }}",
+          "currency": "INR",
+          "name": "BarberLink",
+          "description": "Barber Service Payment",
+          "order_id": "{{ order_id }}",
+          "handler": function (response) {
+            window.alert("Payment successful!");
+          }
         };
+        new Razorpay(options).open();
+      });
+    </script>
+  </section>
+  {% endif %}
 
-        var razorpay = new Razorpay(options);
-        razorpay.open();
-    };
-</script>
+  <script>
+  (function () {
+    var PROFILE_URL = "/customers/api/dashboard/";
+    var GREETING_PREFIX = "{{ greeting_prefix|escapejs }}";
+    var TOKEN_KEY = "access";
+    var REFRESH_KEY = "refresh";
+
+    function getToken() { return localStorage.getItem(TOKEN_KEY); }
+    function clearTokens() {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(REFRESH_KEY);
+    }
+
+    function authHeaders() {
+      return { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() };
+    }
+
+    function refreshAccessToken() {
+      var refresh = localStorage.getItem(REFRESH_KEY);
+      if (!refresh) return Promise.resolve(false);
+      return fetch("/api/v1/token/refresh/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refresh }),
+      })
+        .then(function (res) {
+          if (!res.ok) return false;
+          return res.json().then(function (data) {
+            if (!data.access) return false;
+            localStorage.setItem(TOKEN_KEY, data.access);
+            return true;
+          });
+        })
+        .catch(function () { return false; });
+    }
+
+    function getJSON(url) {
+      return fetch(url, { headers: authHeaders() }).then(function (res) {
+        if (res.status !== 401) return res;
+        return refreshAccessToken().then(function (ok) {
+          if (!ok) { clearTokens(); window.location.href = "/login/"; return null; }
+          return fetch(url, { headers: authHeaders() });
+        });
+      }).then(function (res) {
+        if (!res) return null;
+        if (!res.ok) throw new Error("request_failed");
+        return res.json();
+      });
+    }
+
+    function showMessage(text) {
+      var el = document.getElementById("message");
+      if (!el) return;
+      el.textContent = text;
+      el.hidden = false;
+    }
+
+    function orNotSet(value) {
+      return value === undefined || value === null || value === "" ? "Not set" : value;
+    }
+
+    var currentUser = null;
+
+    function renderProfile(profile, contactNumber) {
+      var list = document.getElementById("profile-details");
+      if (!list) return;
+      list.innerHTML = "";
+
+      var rows = [
+        ["Name", orNotSet(profile.name)],
+        ["Contact number", orNotSet(contactNumber)],
+        ["Location", orNotSet(profile.location ? JSON.stringify(profile.location) : null)]
+      ];
+
+      rows.forEach(function (row) {
+        var dt = document.createElement("dt");
+        dt.textContent = row[0];
+        var dd = document.createElement("dd");
+        dd.textContent = row[1];
+        list.appendChild(dt);
+        list.appendChild(dd);
+      });
+
+      var section = document.getElementById("profile-section");
+      if (section) section.hidden = false;
+    }
+
+    function loadProfile() {
+      var toggle = document.getElementById("profile-toggle");
+      if (toggle) toggle.disabled = true;
+      getJSON(PROFILE_URL)
+        .then(function (profile) {
+          if (profile) renderProfile(profile, currentUser && currentUser.contact_number);
+        })
+        .catch(function () {
+          showMessage("We could not load your profile. Please try again.");
+        })
+        .then(function () {
+          if (toggle) toggle.disabled = false;
+        });
+    }
+
+    function logout() {
+      var refresh = localStorage.getItem(REFRESH_KEY);
+      var done = function () {
+        clearTokens();
+        window.location.href = "/login/";
+      };
+      if (!refresh) { done(); return; }
+      fetch("/api/v1/auth/logout/", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ refresh: refresh }),
+      }).then(done, done);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!getToken()) {
+        window.location.href = "/login/";
+        return;
+      }
+
+      getJSON("/api/v1/auth/me/")
+        .then(function (user) {
+          if (!user) return;
+          currentUser = user;
+          document.getElementById("greeting").textContent =
+            GREETING_PREFIX + " " + (user.name || user.contact_number);
+          document.getElementById("profile-toggle").addEventListener("click", loadProfile);
+        })
+        .catch(function () {
+          showMessage("We could not load your account. Please log in again.");
+        });
+
+      document.getElementById("logout").addEventListener("click", logout);
+    });
+  })();
+  </script>
+</body>
+</html>
