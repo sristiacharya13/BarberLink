@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Login</title></head>
+<body>
+  <h1>Login</h1>
+  <p id="error" style="color:#b00020"></p>
+  <form id="login-form">
+    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required><br>
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" required><br>
+    <button type="submit">Log in</button>
+  </form>
+  <p>No account? <a href="/register/">Register</a></p>
+  <script>
+    const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = document.getElementById("error");
+      err.textContent = "";
+      const res = await fetch("/api/v1/auth/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contact_number: document.getElementById("contact_number").value,
+          password: document.getElementById("password").value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { err.textContent = data.detail || "Login failed."; return; }
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+      window.location.href = DASHBOARDS[data.user.role];
+    });
+  </script>
+</body>
+</html>

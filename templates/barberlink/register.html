@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Register</title></head>
+<body>
+  <h1>Register</h1>
+  <p id="error" style="color:#b00020"></p>
+  <form id="register-form">
+    <input type="text" id="name" placeholder="Name" required><br>
+    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required><br>
+    <select id="role">
+      <option value="customer">I'm a customer</option>
+      <option value="barber">I'm a barber</option>
+    </select><br>
+    <input type="password" id="password" placeholder="Password" autocomplete="new-password" required><br>
+    <input type="password" id="password2" placeholder="Confirm password" autocomplete="new-password" required><br>
+    <button type="submit">Create account</button>
+  </form>
+  <p>Have an account? <a href="/login/">Log in</a></p>
+  <script>
+    const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = document.getElementById("error");
+      err.textContent = "";
+      const password = document.getElementById("password").value;
+      if (password !== document.getElementById("password2").value) {
+        err.textContent = "Passwords do not match."; return;
+      }
+      const res = await fetch("/api/v1/auth/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          contact_number: document.getElementById("contact_number").value,
+          role: document.getElementById("role").value,
+          password,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        err.textContent = Object.values(data).flat().join(" ") || "Registration failed.";
+        return;
+      }
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+      window.location.href = DASHBOARDS[data.user.role];
+    });
+  </script>
+</body>
+</html>
