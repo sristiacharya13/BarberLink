@@ -53,12 +53,18 @@
           "description": "Barber Payment",
           "order_id": "{{ order_id }}",
 
-          "handler": function (response) {
-            window.alert("Payment successful!");
+          handler: function (response) {
+              window.location.href = "{% url 'payment_success_dashboard' %}";
           }
         };
 
-        new Razorpay(options).open();
+        var rzp = new Razorpay(options);
+
+          rzp.on('payment.failed', function (response) {
+              window.location.href = "{% url 'payment_failed_dashboard' %}";
+          });
+
+          rzp.open();
       });
     </script>
 </section>
