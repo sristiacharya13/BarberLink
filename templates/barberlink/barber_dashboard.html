@@ -64,6 +64,38 @@
 </section>
 {% endif %}
 
+  <style>
+    #slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+    .slot-card { padding: 16px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; display: flex; justify-content: space-between; align-items: center; }
+    .slot-available { background: #e8f5e9; border-color: #4caf50; }
+    .slot-na { background: #f5f5f5; border-color: #9e9e9e; color: #9e9e9e; }
+    .slot-booked { background: #ffebee; border-color: #f44336; }
+    .slot-approved { background: #e3f2fd; border-color: #2196f3; }
+    .slot-time { font-weight: bold; font-size: 1.1em; }
+    .slot-status { font-size: 0.9em; text-transform: uppercase; }
+    #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
+    #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
+    #booking-detail dt { font-weight: bold; }
+    #booking-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+    #booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; }
+    .btn-approve { background: #4caf50; }
+    .btn-reject { background: #f44336; }
+    .btn-complete { background: #2196f3; }
+    .btn-navigate { background: #ff9800; }
+    .btn-close { background: #757575; }
+  </style>
+
+  <section id="slots-section">
+    <h3>{% translate "Today's Slots" %}</h3>
+    <div id="slots-grid">{% translate "Loading slots..." %}</div>
+  </section>
+
+  <section id="booking-detail" hidden>
+    <h3>{% translate "Booking Details" %}</h3>
+    <dl id="booking-detail-content"></dl>
+    <div id="booking-actions"></div>
+  </section>
+
   <script>
   (function () {
     var PROFILE_URL = "/barbers/api/dashboard/";
@@ -169,6 +201,37 @@
         });
     }
 
+    function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
+      getJSON(profileEndpointUrl)
+        .then(function (profile) {
+          if (!profile) return;
+          if (!profile.location) {
+            captureAndSaveLocation(locationEndpointUrl);
+          }
+        })
+        .catch(function () {});
+    }
+
+    function captureAndSaveLocation(endpointUrl) {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          fetch(endpointUrl, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            }),
+          }).catch(function () {});
+        },
+        function (err) {
+          console.warn("Location not captured:", err.message);
+        },
+        { timeout: 8000 }
+      );
+    }
+
     function logout() {
       var refresh = localStorage.getItem(REFRESH_KEY);
       var done = function () {
@@ -181,6 +244,204 @@
         headers: authHeaders(),
         body: JSON.stringify({ refresh: refresh }),
       }).then(done, done);
+    }
+
+    function statusLabel(status) {
+      var map = { available: "Available", na: "Marked NA", booked: "Booked (Waiting)", approved: "Approved" };
+      return map[status] || status;
+    }
+
+    function statusClass(status) {
+      var map = { available: "slot-available", na: "slot-na", booked: "slot-booked", approved: "slot-approved" };
+      return map[status] || "";
+    }
+
+    function loadSlots() {
+      var grid = document.getElementById("slots-grid");
+      if (grid) grid.innerHTML = "{% translate 'Loading slots...' %}";
+      getJSON("/api/v1/barbers/slots/")
+        .then(function (data) {
+          if (!data) return;
+          renderSlots(data);
+        })
+        .catch(function () {
+          showMessage("{% translate 'We could not load slots. Please try again.' %}");
+        });
+    }
+
+    function renderSlots(slots) {
+      var grid = document.getElementById("slots-grid");
+      if (!grid) return;
+      grid.innerHTML = "";
+      if (!slots || !slots.length) {
+        grid.textContent = "{% translate 'No slots found.' %}";
+        return;
+      }
+      slots.forEach(function (slot) {
+        var card = document.createElement("div");
+        card.className = "slot-card " + statusClass(slot.status);
+
+        var timeSpan = document.createElement("span");
+        timeSpan.className = "slot-time";
+        timeSpan.textContent = slot.start_time + " – " + slot.end_time;
+
+        var statusSpan = document.createElement("span");
+        statusSpan.className = "slot-status";
+        statusSpan.textContent = statusLabel(slot.status);
+
+        card.appendChild(timeSpan);
+        card.appendChild(statusSpan);
+
+        card.addEventListener("click", function () {
+          if (slot.status === "available") {
+            markSlotNA(slot.slot_id, card);
+          } else if (slot.status === "booked" || slot.status === "approved") {
+            if (slot.active_booking) {
+              showBookingDetail(slot.active_booking);
+            }
+          }
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    function markSlotNA(slotId, cardEl) {
+      fetch("/api/v1/barbers/slots/" + slotId + "/", {
+        method: "PATCH",
+        headers: authHeaders(),
+        body: JSON.stringify({ status: "na" }),
+      })
+        .then(function (res) {
+          if (res.status === 409) {
+            showMessage("{% translate 'Slot already booked.' %}");
+            return null;
+          }
+          if (!res.ok) throw new Error("failed");
+          return res.json();
+        })
+        .then(function (data) {
+          if (!data) return;
+          cardEl.className = "slot-card " + statusClass(data.status);
+          var statusSpan = cardEl.querySelector(".slot-status");
+          if (statusSpan) statusSpan.textContent = statusLabel(data.status);
+        })
+        .catch(function () {
+          showMessage("{% translate 'Could not update slot. Try again.' %}");
+        });
+    }
+
+    function showBookingDetail(booking) {
+      var section = document.getElementById("booking-detail");
+      var dl = document.getElementById("booking-detail-content");
+      var actions = document.getElementById("booking-actions");
+      if (!section || !dl || !actions) return;
+
+      dl.innerHTML = "";
+      actions.innerHTML = "";
+
+      var fields = [
+        ["Customer", booking.customer_name],
+        ["Phone", booking.customer_phone],
+        ["Status", booking.booking_status],
+      ];
+
+      fields.forEach(function (row) {
+        var dt = document.createElement("dt");
+        dt.textContent = row[0];
+        var dd = document.createElement("dd");
+        dd.textContent = row[1] || "—";
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      });
+
+      if (booking.customer_location) {
+        var navBtn = document.createElement("button");
+        navBtn.type = "button";
+        navBtn.textContent = "{% translate 'Navigate' %}";
+        navBtn.className = "btn-navigate";
+        navBtn.addEventListener("click", function () {
+          navigateTo(booking.customer_location);
+        });
+        actions.appendChild(navBtn);
+      }
+
+      if (booking.booking_status === "waiting") {
+        var approveBtn = document.createElement("button");
+        approveBtn.type = "button";
+        approveBtn.textContent = "{% translate 'Approve' %}";
+        approveBtn.className = "btn-approve";
+        approveBtn.addEventListener("click", function () {
+          transitionBooking(booking.booking_id, "approved", section);
+        });
+
+        var rejectBtn = document.createElement("button");
+        rejectBtn.type = "button";
+        rejectBtn.textContent = "{% translate 'Reject' %}";
+        rejectBtn.className = "btn-reject";
+        rejectBtn.addEventListener("click", function () {
+          transitionBooking(booking.booking_id, "rejected", section);
+        });
+
+        actions.appendChild(approveBtn);
+        actions.appendChild(rejectBtn);
+      } else if (booking.booking_status === "approved") {
+        var completeBtn = document.createElement("button");
+        completeBtn.type = "button";
+        completeBtn.textContent = "{% translate 'Mark as Completed' %}";
+        completeBtn.className = "btn-complete";
+        completeBtn.addEventListener("click", function () {
+          transitionBooking(booking.booking_id, "completed", section);
+        });
+        actions.appendChild(completeBtn);
+      }
+
+      var closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.textContent = "{% translate 'Close' %}";
+      closeBtn.className = "btn-close";
+      closeBtn.addEventListener("click", function () {
+        section.hidden = true;
+      });
+      actions.appendChild(closeBtn);
+
+      section.hidden = false;
+    }
+
+    function navigateTo(location) {
+      var url = "https://www.google.com/maps/search/?api=1&query=";
+      if (location && typeof location === "object") {
+        if (location.lat && location.lng) {
+          url += location.lat + "," + location.lng;
+        } else if (location.latitude && location.longitude) {
+          url += location.latitude + "," + location.longitude;
+        } else {
+          url += encodeURIComponent(JSON.stringify(location));
+        }
+      } else if (location) {
+        url += encodeURIComponent(location);
+      }
+      window.open(url, "_blank");
+    }
+
+    function transitionBooking(bookingId, targetStatus, detailSection) {
+      fetch("/api/v1/barbers/bookings/" + bookingId + "/transition/", {
+        method: "PATCH",
+        headers: authHeaders(),
+        body: JSON.stringify({ booking_status: targetStatus }),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("failed");
+          return res.json();
+        })
+        .then(function (data) {
+          if (detailSection) detailSection.hidden = true;
+          showMessage("{% translate 'Booking updated.' %}");
+          loadSlots();
+        })
+        .catch(function () {
+          showMessage("{% translate 'Could not update booking. Try again.' %}");
+        });
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -202,6 +463,8 @@
         });
 
       document.getElementById("logout").addEventListener("click", logout);
+      loadSlots();
+      checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
     });
   })();
   </script>

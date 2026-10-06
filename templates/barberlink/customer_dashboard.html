@@ -173,6 +173,37 @@
       }).then(done, done);
     }
 
+    function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
+      getJSON(profileEndpointUrl)
+        .then(function (profile) {
+          if (!profile) return;
+          if (!profile.location) {
+            captureAndSaveLocation(locationEndpointUrl);
+          }
+        })
+        .catch(function () {});
+    }
+
+    function captureAndSaveLocation(endpointUrl) {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          fetch(endpointUrl, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            }),
+          }).catch(function () {});
+        },
+        function (err) {
+          console.warn("Location not captured:", err.message);
+        },
+        { timeout: 8000 }
+      );
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       if (!getToken()) {
         window.location.href = "/login/";
@@ -192,6 +223,7 @@
         });
 
       document.getElementById("logout").addEventListener("click", logout);
+      checkAndCaptureLocationOnce("/customers/api/location/", PROFILE_URL);
     });
   })();
   </script>
