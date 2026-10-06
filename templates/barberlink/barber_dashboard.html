@@ -31,6 +31,38 @@
     <h3>{% translate "My Profile" %}</h3>
     <dl id="profile-details"></dl>
   </section>
+  {% if razorpay_key %}
+<section>
+  <h3>{% translate "Make Payment" %}</h3>
+
+  <p>{% blocktranslate %}Amount: ₹120{% endblocktranslate %}</p>
+
+  <button type="button" id="pay-button">
+    {% translate "Pay ₹120" %}
+  </button>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+      document.getElementById("pay-button").addEventListener("click", function () {
+        var options = {
+          "key": "{{ razorpay_key }}",
+          "amount": "{{ amount }}",
+          "currency": "INR",
+          "name": "BarberLink",
+          "description": "Barber Payment",
+          "order_id": "{{ order_id }}",
+
+          "handler": function (response) {
+            window.alert("Payment successful!");
+          }
+        };
+
+        new Razorpay(options).open();
+      });
+    </script>
+</section>
+{% endif %}
 
   <style>
     #slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
