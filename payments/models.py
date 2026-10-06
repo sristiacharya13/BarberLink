@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Payment(models.Model):
     payment_id = models.AutoField(primary_key=True)
 
@@ -14,7 +13,7 @@ class Payment(models.Model):
 
     payment_date = models.DateField(auto_now_add=True)
 
-    payment_status = models.CharField(max_length=20)
+    payment_status = models.CharField(max_length=25, choices=[('created','Created'),('authorized','Authorized'),('success', 'Success'),('failed','Failed'),('refunded','Refunded')])
 
     razorpay_transaction_id = models.CharField(
         max_length=100,
