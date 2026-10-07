@@ -38,11 +38,11 @@ msgstr "ಲಾಗ್ ಔಟ್"
 
 #: .\templates\barberlink\barber_dashboard.html:33
 msgid "Hi barber,"
-msgstr "ಹಲೋ ಬಾರ್ಬರ್,"
+msgstr "ನಮಸ್ಕಾರ ಬಾರ್ಬರ್,"
 
 #: .\templates\barberlink\customer_dashboard.html:33
 msgid "Hi customer,"
-msgstr "ಹಲೋ ಗ್ರಾಹಕ,"
+msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,"
 
 #: .\templates\barberlink\customer_dashboard.html:45
 msgid "Make Payment"

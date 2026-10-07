@@ -33,6 +33,7 @@ class Barber(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    @property
     def computed_status(self):
         if self.subscription_expiry_date>=timezone.localdate():
             return(

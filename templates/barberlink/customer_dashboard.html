@@ -398,8 +398,12 @@
       })
         .then(function (res) {
           if (res.status === 409) {
-            showMessage("{% translate 'Slot already booked.' %}");
-            return null;
+            return res.json().then(function (data) {
+              var msg = data.error && data.error.message ? data.error.message : "{% translate 'Slot already booked.' %}";
+              showMessage(msg);
+              loadCustomerSlots(barberId);
+              return null;
+            });
           }
           if (!res.ok) throw new Error("failed");
           return res.json();

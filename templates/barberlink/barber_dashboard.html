@@ -31,6 +31,38 @@
     <h3>{% translate "My Profile" %}</h3>
     <dl id="profile-details"></dl>
   </section>
+  {% if razorpay_key %}
+<section>
+  <h3>{% translate "Make Payment" %}</h3>
+
+  <p>{% blocktranslate %}Amount: ₹120{% endblocktranslate %}</p>
+
+  <button type="button" id="pay-button">
+    {% translate "Pay ₹120" %}
+  </button>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+      document.getElementById("pay-button").addEventListener("click", function () {
+        var options = {
+          "key": "{{ razorpay_key }}",
+          "amount": "{{ amount }}",
+          "currency": "INR",
+          "name": "BarberLink",
+          "description": "Barber Payment",
+          "order_id": "{{ order_id }}",
+
+          "handler": function (response) {
+            window.alert("Payment successful!");
+          }
+        };
+
+        new Razorpay(options).open();
+      });
+    </script>
+</section>
+{% endif %}
 
   <style>
     #slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
@@ -55,6 +87,7 @@
 
   <section id="slots-section">
     <h3>{% translate "Today's Slots" %}</h3>
+    <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
     <div id="slots-grid">{% translate "Loading slots..." %}</div>
   </section>
 
@@ -167,8 +200,15 @@
         .then(function () {
           if (toggle) toggle.disabled = false;
         });
+}
+ 
+    function updateSlotsDate() {
+      var el = document.getElementById("slots-date-display");
+      if (!el) return;
+      var now = new Date();
+      el.textContent = now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     }
-
+ 
     function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
       getJSON(profileEndpointUrl)
         .then(function (profile) {
@@ -433,6 +473,7 @@
       document.getElementById("logout").addEventListener("click", logout);
       loadSlots();
       checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
+      updateSlotsDate();
     });
   })();
   </script>
