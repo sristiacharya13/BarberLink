@@ -133,9 +133,10 @@ class CustomerBarberSlotsAPIView(APIView):
     def get(self, request, barber_id):
         barber = get_object_or_404(Barber, barber_id=barber_id)
         slots = ensure_today_slots(barber)
+        serializer = SlotSerializer(slots, many=True, context={"request": request})
         return Response({
             "slot_date": timezone.localdate().isoformat(),
-            "data": SlotSerializer(slots, many=True).data,
+            "data": serializer.data,
         })
 
 

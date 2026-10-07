@@ -10,6 +10,8 @@ from .models import Barber
 import math
 from django.conf import settings
 from django.utils import timezone
+from bookings.models import Booking
+from bookings.serializers import BookingDetailSerializer
 
 def barber_dashboard_page(request):
     client=razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
@@ -33,7 +35,26 @@ def barber_dashboard_data(request):
     profile = getattr(request.user, "barber", None)
     if profile is None:
         return Response({"detail": "This account has no barber profile."}, status=404)
-    return Response(BarberSerializer(profile).data)
+
+    today = timezone.localdate()
+    bookings = Booking.objects.filter(barber=profile, slot__slot_date=today).select_related("slot", "customer")
+    bookings_data = BookingDetailSerializer(bookings, many=True).data
+
+    return Response({
+        "barber": BarberSerializer(profile).data,
+        "todays_bookings": bookings_data,
+        "booking_status_options": [
+            {"value": "waiting", "label": "Waiting for Approval"},
+            {"value": "approved", "label": "Approved"},
+            {"value": "rejected", "label": "Rejected"},
+            {"value": "cancelled", "label": "Cancelled"},
+            {"value": "completed", "label": "Completed"},
+        ],
+        "booking_transition_options": {
+            "waiting": ["approved", "rejected"],
+            "approved": ["rejected", "completed"],
+        },
+    })
 
 
 @api_view(["PATCH"])

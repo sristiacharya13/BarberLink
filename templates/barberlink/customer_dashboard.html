@@ -74,6 +74,19 @@
     <p id="nearby-error" style="color:#b00020" hidden></p>
   </section>
 
+  <section id="customer-bookings-section">
+    <h3>{% translate "Today's Bookings" %}</h3>
+    <div style="margin-bottom: 12px;">
+      <label for="customer-booking-status-filter">{% translate "Filter by status:" %}</label>
+      <select id="customer-booking-status-filter" style="margin-left: 8px; padding: 4px 8px;">
+        <option value="all">{% translate "All" %}</option>
+      </select>
+    </div>
+    <div id="customer-bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
+      {% translate "Loading bookings..." %}
+    </div>
+  </section>
+
   <section id="barbers-list-section" hidden>
     <h3>{% translate "Nearby Barbers" %}</h3>
     <div id="barbers-list">{% translate "No barbers found." %}</div>
@@ -109,6 +122,24 @@
     #booking-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     #booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; }
     .btn-login { background: #1976d2; }
+
+    /* Customer Today's Bookings section styles */
+    #customer-bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
+    .customer-booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .customer-booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .customer-booking-time { font-weight: bold; font-size: 1.1em; }
+    .customer-booking-status-badge { font-size: 0.85em; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+    .customer-booking-status-waiting { background: #fff3e0; color: #e65100; }
+    .customer-booking-status-approved { background: #e3f2fd; color: #1565c0; }
+    .customer-booking-status-rejected { background: #fafafa; color: #616161; }
+    .customer-booking-status-cancelled { background: #fafafa; color: #616161; }
+    .customer-booking-status-completed { background: #e8f5e9; color: #2e7d32; }
+    .customer-booking-detail-row { margin: 6px 0; font-size: 0.9em; }
+    .customer-booking-detail-label { font-weight: bold; color: #333; }
+    .customer-booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .customer-booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.9em; }
+    .btn-cancel { background: #f44336; }
+    .btn-navigate { background: #ff9800; }
   </style>
 
   <script>
@@ -389,6 +420,164 @@
       });
     }
 
+    function loadCustomerBookings() {
+      if (!isLoggedIn) return;
+      var list = document.getElementById("customer-bookings-list");
+      if (list) list.innerHTML = "{% translate 'Loading bookings...' %}";
+      getJSON(PROFILE_URL)
+        .then(function (data) {
+          if (!data) return;
+          var bookings = data.todays_bookings || [];
+          var options = data.booking_status_options || [];
+          renderCustomerBookings(bookings);
+          populateCustomerStatusFilter(options);
+        })
+        .catch(function () {
+          showMessage("{% translate 'We could not load bookings. Please try again.' %}");
+        });
+    }
+
+    function populateCustomerStatusFilter(options) {
+      var select = document.getElementById("customer-booking-status-filter");
+      if (!select) return;
+      options.forEach(function (opt) {
+        var option = document.createElement("option");
+        option.value = opt.value;
+        option.textContent = opt.label;
+        select.appendChild(option);
+      });
+      select.addEventListener("change", function () {
+        filterCustomerBookings(this.value);
+      });
+    }
+
+    function renderCustomerBookings(bookings) {
+      var list = document.getElementById("customer-bookings-list");
+      if (!list) return;
+      list.innerHTML = "";
+      if (!bookings || !bookings.length) {
+        list.textContent = "{% translate 'No bookings found.' %}";
+        return;
+      }
+      bookings.forEach(function (booking) {
+        var card = document.createElement("div");
+        card.className = "customer-booking-card";
+        card.dataset.status = booking.booking_status;
+
+        var header = document.createElement("div");
+        header.className = "customer-booking-header";
+
+        var timeSpan = document.createElement("span");
+        timeSpan.className = "customer-booking-time";
+        var slot = booking.slot || {};
+        timeSpan.textContent = slot.start_time + " – " + slot.end_time;
+
+        var statusBadge = document.createElement("span");
+        statusBadge.className = "customer-booking-status-badge customer-booking-status-" + booking.booking_status;
+        statusBadge.textContent = booking.booking_status;
+
+        header.appendChild(timeSpan);
+        header.appendChild(statusBadge);
+        card.appendChild(header);
+
+        var barber = booking.barber || {};
+        var details = [
+          { label: "{% translate 'Barber' %}: ", value: barber.name },
+          { label: "{% translate 'Phone' %}: ", value: barber.contact_number },
+          { label: "{% translate 'Status' %}: ", value: booking.booking_status },
+        ];
+
+        details.forEach(function (d) {
+          var row = document.createElement("div");
+          row.className = "customer-booking-detail-row";
+          var label = document.createElement("span");
+          label.className = "customer-booking-detail-label";
+          label.textContent = d.label;
+          var value = document.createElement("span");
+          value.textContent = d.value || "—";
+          row.appendChild(label);
+          row.appendChild(value);
+          card.appendChild(row);
+        });
+
+        var actions = document.createElement("div");
+        actions.className = "customer-booking-actions";
+
+        if (booking.booking_status === "waiting" || booking.booking_status === "approved") {
+          var cancelBtn = document.createElement("button");
+          cancelBtn.type = "button";
+          cancelBtn.textContent = "{% translate 'Cancel' %}";
+          cancelBtn.className = "btn-cancel";
+          cancelBtn.addEventListener("click", function () {
+            cancelBooking(booking.booking_id);
+          });
+          actions.appendChild(cancelBtn);
+        }
+
+        if (booking.barber && booking.barber.location) {
+          var navBtn = document.createElement("button");
+          navBtn.type = "button";
+          navBtn.textContent = "{% translate 'Navigate' %}";
+          navBtn.className = "btn-navigate";
+          navBtn.addEventListener("click", function () {
+            navigateTo(booking.barber.location);
+          });
+          actions.appendChild(navBtn);
+        }
+
+        if (actions.children.length > 0) {
+          card.appendChild(actions);
+        }
+
+        list.appendChild(card);
+      });
+    }
+
+    function filterCustomerBookings(status) {
+      var cards = document.querySelectorAll("#customer-bookings-list .customer-booking-card");
+      cards.forEach(function (card) {
+        if (status === "all" || card.dataset.status === status) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    function cancelBooking(bookingId) {
+      fetch("/api/v1/customers/bookings/" + bookingId + "/cancel/", {
+        method: "PATCH",
+        headers: authHeaders(),
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("failed");
+          return res.json();
+        })
+        .then(function () {
+          showMessage("{% translate 'Booking cancelled.' %}");
+          loadCustomerBookings();
+        })
+        .catch(function () {
+          showMessage("{% translate 'Could not cancel booking. Try again.' %}");
+        });
+    }
+
+    function navigateTo(location) {
+      var url = "https://www.google.com/maps/search/?api=1&query=";
+      if (location && typeof location === "object") {
+        if (location.lat && location.lng) {
+          url += location.lat + "," + location.lng;
+        } else if (location.latitude && location.longitude) {
+          url += location.latitude + "," + location.longitude;
+        } else {
+          url += encodeURIComponent(JSON.stringify(location));
+        }
+      } else if (location) {
+        url += encodeURIComponent(location);
+      }
+      window.open(url, "_blank");
+    }
+
     function bookSlot(slotId, cardEl) {
       var barberId = document.getElementById("barber-detail-name").getAttribute("data-barber-id");
       fetch("/api/v1/customers/barbers/" + barberId + "/book/", {
@@ -441,6 +630,9 @@
       }
 
       document.getElementById("logout").addEventListener("click", logout);
+      if (isLoggedIn) {
+        loadCustomerBookings();
+      }
       document.getElementById("use-my-location").addEventListener("click", function () {
         getBrowserLocation()
           .then(function (loc) {
