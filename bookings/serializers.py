@@ -79,6 +79,9 @@ class BookingDetailSerializer(serializers.ModelSerializer):
     customer_name = serializers.SerializerMethodField()
     customer_phone = serializers.SerializerMethodField()
     customer_location = serializers.SerializerMethodField()
+    barber_name = serializers.SerializerMethodField()
+    barber_phone = serializers.SerializerMethodField()
+    barber_location = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -89,6 +92,10 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "customer_name",
             "customer_phone",
             "customer_location",
+            "barber",
+            "barber_name",
+            "barber_phone",
+            "barber_location",
             "booking_status",
             "created_at",
         ]
@@ -103,6 +110,15 @@ class BookingDetailSerializer(serializers.ModelSerializer):
     def get_customer_location(self, obj):
         profile = getattr(obj.customer, "customer", None)
         return profile.location if profile else None
+
+    def get_barber_name(self, obj):
+        return obj.barber.name
+
+    def get_barber_phone(self, obj):
+        return obj.barber.user.contact_number
+
+    def get_barber_location(self, obj):
+        return obj.barber.location
 
 
 class BookSlotSerializer(serializers.Serializer):

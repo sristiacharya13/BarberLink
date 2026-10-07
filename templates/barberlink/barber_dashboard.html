@@ -221,12 +221,12 @@
       if (section) section.hidden = false;
     }
 
-    function loadProfile() {
+function loadProfile() {
       var toggle = document.getElementById("profile-toggle");
       if (toggle) toggle.disabled = true;
       getJSON(PROFILE_URL)
-        .then(function (profile) {
-          if (profile) renderProfile(profile, currentUser && currentUser.contact_number);
+        .then(function (data) {
+          if (data && data.barber) renderProfile(data.barber, currentUser && currentUser.contact_number);
         })
         .catch(function () {
           showMessage("We could not load your profile. Please try again.");
@@ -234,7 +234,7 @@
         .then(function () {
           if (toggle) toggle.disabled = false;
         });
-}
+    }
  
     function updateSlotsDate() {
       var el = document.getElementById("slots-date-display");

@@ -4,14 +4,28 @@
 <body>
   <h1>Login</h1>
   <p id="error" style="color:#b00020"></p>
-  <form id="login-form">
-    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required><br>
-    <input type="password" id="password" placeholder="Password" autocomplete="current-password" required><br>
+  <form id="login-form" style="max-width:220px;">
+    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br>
+    <div style="position:relative;display:inline-block;width:100%;">
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
+      <button type="button" id="toggle-password" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
+    </div><br>
     <button type="submit">Log in</button>
   </form>
   <p>No account? <a href="/register/">Register</a></p>
   <script>
     const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
+    const pwd = document.getElementById("password");
+    const toggle = document.getElementById("toggle-password");
+    toggle.addEventListener("click", function() {
+      if (pwd.type === "password") {
+        pwd.type = "text";
+        toggle.textContent = "Hide";
+      } else {
+        pwd.type = "password";
+        toggle.textContent = "Show";
+      }
+    });
     document.getElementById("login-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const err = document.getElementById("error");

@@ -4,20 +4,48 @@
 <body>
   <h1>Register</h1>
   <p id="error" style="color:#b00020"></p>
-  <form id="register-form">
-    <input type="text" id="name" placeholder="Name" required><br>
-    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required><br>
-    <select id="role">
+  <form id="register-form" style="max-width:220px;">
+    <input type="text" id="name" placeholder="Name" required style="width:100%;box-sizing:border-box;"><br>
+    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br>
+    <select id="role" style="width:100%;box-sizing:border-box;">
       <option value="customer">I'm a customer</option>
       <option value="barber">I'm a barber</option>
     </select><br>
-    <input type="password" id="password" placeholder="Password" autocomplete="new-password" required><br>
-    <input type="password" id="password2" placeholder="Confirm password" autocomplete="new-password" required><br>
+    <div style="position:relative;display:inline-block;width:100%;">
+      <input type="password" id="password" placeholder="Password" autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
+      <button type="button" id="toggle-password" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
+    </div><br>
+    <div style="position:relative;display:inline-block;width:100%;">
+      <input type="password" id="password2" placeholder="Confirm password" autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
+      <button type="button" id="toggle-password2" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
+    </div><br>
     <button type="submit">Create account</button>
   </form>
   <p>Have an account? <a href="/login/">Log in</a></p>
   <script>
     const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
+    const pwd1 = document.getElementById("password");
+    const toggle1 = document.getElementById("toggle-password");
+    toggle1.addEventListener("click", function() {
+      if (pwd1.type === "password") {
+        pwd1.type = "text";
+        toggle1.textContent = "Hide";
+      } else {
+        pwd1.type = "password";
+        toggle1.textContent = "Show";
+      }
+    });
+    const pwd2 = document.getElementById("password2");
+    const toggle2 = document.getElementById("toggle-password2");
+    toggle2.addEventListener("click", function() {
+      if (pwd2.type === "password") {
+        pwd2.type = "text";
+        toggle2.textContent = "Hide";
+      } else {
+        pwd2.type = "password";
+        toggle2.textContent = "Show";
+      }
+    });
     document.getElementById("register-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const err = document.getElementById("error");

@@ -236,8 +236,8 @@
       var toggle = document.getElementById("profile-toggle");
       if (toggle) toggle.disabled = true;
       getJSON(PROFILE_URL)
-        .then(function (profile) {
-          if (profile) renderProfile(profile, currentUser && currentUser.contact_number);
+        .then(function (data) {
+          if (data && data.customer) renderProfile(data.customer, data.customer.contact_number);
         })
         .catch(function () {
           showMessage("We could not load your profile. Please try again.");
@@ -480,10 +480,9 @@
         header.appendChild(statusBadge);
         card.appendChild(header);
 
-        var barber = booking.barber || {};
         var details = [
-          { label: "{% translate 'Barber' %}: ", value: barber.name },
-          { label: "{% translate 'Phone' %}: ", value: barber.contact_number },
+          { label: "{% translate 'Barber' %}: ", value: booking.barber_name },
+          { label: "{% translate 'Phone' %}: ", value: booking.barber_phone },
           { label: "{% translate 'Status' %}: ", value: booking.booking_status },
         ];
 
@@ -514,13 +513,13 @@
           actions.appendChild(cancelBtn);
         }
 
-        if (booking.barber && booking.barber.location) {
+        if (booking.barber_location) {
           var navBtn = document.createElement("button");
           navBtn.type = "button";
           navBtn.textContent = "{% translate 'Navigate' %}";
           navBtn.className = "btn-navigate";
           navBtn.addEventListener("click", function () {
-            navigateTo(booking.barber.location);
+            navigateTo(booking.barber_location);
           });
           actions.appendChild(navBtn);
         }
