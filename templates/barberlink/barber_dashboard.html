@@ -45,27 +45,50 @@
 
     <script>
       document.getElementById("pay-button").addEventListener("click", function () {
-        var options = {
-          "key": "{{ razorpay_key }}",
-          "amount": "{{ amount }}",
-          "currency": "INR",
-          "name": "BarberLink",
-          "description": "Barber Payment",
-          "order_id": "{{ order_id }}",
+     fetch("/barbers/api/dashboard/", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("access")
+        }
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(profile) {
 
-          handler: function (response) {
-              window.location.href = "{% url 'payment_success_dashboard' %}";
-          }
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "BarberLink",
+            "description": "Barber Payment",
+            "order_id": "{{ order_id }}",
+
+            handler: function(response) {
+
+                window.location.href =
+                    "/payments/save-payment/?payment_id=" +
+                    response.razorpay_payment_id +
+                    "&status=success" +
+                    "&barber_id=" +
+                    profile.barber_id;
+            }
         };
 
         var rzp = new Razorpay(options);
 
-          rzp.on('payment.failed', function (response) {
-              window.location.href = "{% url 'payment_failed_dashboard' %}";
-          });
+        rzp.on('payment.failed', function(response) {
 
-          rzp.open();
-      });
+            window.location.href =
+                "/payments/save-payment/?payment_id=" +
+                response.error.metadata.payment_id +
+                "&status=failed" +
+                "&barber_id=" +
+                profile.barber_id;
+        });
+
+        rzp.open();
+    });
+});
     </script>
 </section>
 {% endif %}
