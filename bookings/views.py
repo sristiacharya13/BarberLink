@@ -133,10 +133,31 @@ class CustomerBarberSlotsAPIView(APIView):
     def get(self, request, barber_id):
         barber = get_object_or_404(Barber, barber_id=barber_id)
         slots = ensure_today_slots(barber)
-        serializer = SlotSerializer(slots, many=True, context={"request": request})
+        
+        viewer_id = request.user.id if request.user and request.user.is_authenticated else None
+
+        data=[]
+        for slot in slots:
+            display_status=slot.status
+
+            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                active_booking=slot.bookings.filter(
+                    booking_status__in=[Booking.STATUS_WAITING,Booking.STATUS_APPROVED]
+                ).first()
+                is_owner=bool(active_booking) and active_booking.customer_id==viewer_id
+
+                if not is_owner:
+                    display_status=Slot.STATUS_BOOKED
+            data.append({
+                "slot_id":slot.slot_id,
+                "start_time":slot.start_time.strftime("%H:%M"),
+                "end_time":slot.end_time.strftime("%H:%M"),
+                "status":display_status,
+            })
+        #serializer = SlotSerializer(slots, many=True, context={"request": request})
         return Response({
             "slot_date": timezone.localdate().isoformat(),
-            "data": serializer.data,
+            "data": data,
         })
 
 
