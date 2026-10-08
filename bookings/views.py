@@ -73,9 +73,9 @@ class BarberBookingTransitionAPIView(APIView):
     permission_classes = [IsBarber]
 
     VALID_TRANSITIONS = {
-        Booking.STATUS_APPROVED: {"from": Booking.STATUS_WAITING, "slot_to": Slot.STATUS_APPROVED},
+        Booking.STATUS_APPROVED: {"from": [Booking.STATUS_WAITING], "slot_to": Slot.STATUS_APPROVED},
         Booking.STATUS_REJECTED: {"from": [Booking.STATUS_WAITING,Booking.STATUS_APPROVED], "slot_to": Slot.STATUS_AVAILABLE},
-        Booking.STATUS_COMPLETED: {"from": Booking.STATUS_APPROVED, "slot_to": None},  
+        Booking.STATUS_COMPLETED: {"from": [Booking.STATUS_APPROVED], "slot_to": None},  
     }
 
     def patch(self,request,booking_id):
@@ -102,31 +102,6 @@ class BarberBookingTransitionAPIView(APIView):
                 Slot.objects.filter(slot_id=booking.slot_id).update(status=rule["slot_to"])
         return Response(BookingSerializer(booking).data)
     
-    def patch(self, request, booking_id):
-        barber = request.user.barber
-        booking = get_object_or_404(Booking, booking_id=booking_id, barber=barber)
-
-        serializer = BookingTransitionSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        target = serializer.validated_data["booking_status"]
-
-        rule = self.VALID_TRANSITIONS[target]
-        if booking.booking_status != rule["from"]:
-            return Response(
-                {"error": {"code": "INVALID_STATE_TRANSITION",
-                           "message": f"Booking must be '{rule['from']}' to become '{target}'."}},
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            )
-
-        with transaction.atomic():
-            booking.booking_status = target
-            booking.save(update_fields=["booking_status"])
-            if rule["slot_to"]:
-                Slot.objects.filter(slot_id=booking.slot_id).update(status=rule["slot_to"])
-
-        return Response(BookingSerializer(booking).data)
-
-
 class CustomerBarberSlotsAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -159,7 +134,6 @@ class CustomerBarberSlotsAPIView(APIView):
             "slot_date": timezone.localdate().isoformat(),
             "data": data,
         })
-
 
 class CustomerBookSlotAPIView(APIView):
     permission_classes = [IsCustomer]

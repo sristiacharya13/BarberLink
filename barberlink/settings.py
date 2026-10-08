@@ -123,7 +123,7 @@ LANGUAGES = [
     ('kn', 'Kannada'),
 ]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
