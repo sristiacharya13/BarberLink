@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'barbers',
     'customers',
     'accounts',
+    'bookings',
+    'payments',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

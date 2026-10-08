@@ -112,11 +112,46 @@
     .btn-complete { background: #2196f3; }
     .btn-navigate { background: #ff9800; }
     .btn-close { background: #757575; }
+
+    /* Today's Bookings section styles */
+    #bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
+    .booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .booking-time { font-weight: bold; font-size: 1.1em; }
+    .booking-status-badge { font-size: 0.85em; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
+    .booking-status-waiting { background: #fff3e0; color: #e65100; }
+    .booking-status-approved { background: #e3f2fd; color: #1565c0; }
+    .booking-status-rejected { background: #fafafa; color: #616161; }
+    .booking-status-cancelled { background: #fafafa; color: #616161; }
+    .booking-status-completed { background: #e8f5e9; color: #2e7d32; }
+    .booking-detail-row { margin: 6px 0; font-size: 0.9em; }
+    .booking-detail-label { font-weight: bold; color: #333; }
+    .booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.9em; }
+    .btn-approve { background: #4caf50; }
+    .btn-reject { background: #f44336; }
+    .btn-complete { background: #2196f3; }
+    .btn-navigate { background: #ff9800; }
+    .btn-cancel { background: #757575; }
   </style>
 
   <section id="slots-section">
     <h3>{% translate "Today's Slots" %}</h3>
+    <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
     <div id="slots-grid">{% translate "Loading slots..." %}</div>
+  </section>
+
+  <section id="bookings-section">
+    <h3>{% translate "Today's Bookings" %}</h3>
+    <div style="margin-bottom: 12px;">
+      <label for="booking-status-filter">{% translate "Filter by status:" %}</label>
+      <select id="booking-status-filter" style="margin-left: 8px; padding: 4px 8px;">
+        <option value="all">{% translate "All" %}</option>
+      </select>
+    </div>
+    <div id="bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
+      {% translate "Loading bookings..." %}
+    </div>
   </section>
 
   <section id="booking-detail" hidden>
@@ -215,12 +250,12 @@
       if (section) section.hidden = false;
     }
 
-    function loadProfile() {
+function loadProfile() {
       var toggle = document.getElementById("profile-toggle");
       if (toggle) toggle.disabled = true;
       getJSON(PROFILE_URL)
-        .then(function (profile) {
-          if (profile) renderProfile(profile, currentUser && currentUser.contact_number);
+        .then(function (data) {
+          if (data && data.barber) renderProfile(data.barber, currentUser && currentUser.contact_number);
         })
         .catch(function () {
           showMessage("We could not load your profile. Please try again.");
@@ -229,7 +264,14 @@
           if (toggle) toggle.disabled = false;
         });
     }
-
+ 
+    function updateSlotsDate() {
+      var el = document.getElementById("slots-date-display");
+      if (!el) return;
+      var now = new Date();
+      el.textContent = now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    }
+ 
     function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
       getJSON(profileEndpointUrl)
         .then(function (profile) {
@@ -332,6 +374,146 @@
         });
 
         grid.appendChild(card);
+      });
+    }
+
+    function loadBookings() {
+      var list = document.getElementById("bookings-list");
+      if (list) list.innerHTML = "{% translate 'Loading bookings...' %}";
+      getJSON(PROFILE_URL)
+        .then(function (data) {
+          if (!data) return;
+          var bookings = data.todays_bookings || [];
+          var options = data.booking_status_options || [];
+          renderBookings(bookings);
+          populateStatusFilter(options);
+        })
+        .catch(function () {
+          showMessage("{% translate 'We could not load bookings. Please try again.' %}");
+        });
+    }
+
+    function populateStatusFilter(options) {
+      var select = document.getElementById("booking-status-filter");
+      if (!select) return;
+      options.forEach(function (opt) {
+        var option = document.createElement("option");
+        option.value = opt.value;
+        option.textContent = opt.label;
+        select.appendChild(option);
+      });
+      select.addEventListener("change", function () {
+        filterBookings(this.value);
+      });
+    }
+
+    function renderBookings(bookings) {
+      var list = document.getElementById("bookings-list");
+      if (!list) return;
+      list.innerHTML = "";
+      if (!bookings || !bookings.length) {
+        list.textContent = "{% translate 'No bookings found.' %}";
+        return;
+      }
+      bookings.forEach(function (booking) {
+        var card = document.createElement("div");
+        card.className = "booking-card";
+        card.dataset.status = booking.booking_status;
+
+        var header = document.createElement("div");
+        header.className = "booking-header";
+
+        var timeSpan = document.createElement("span");
+        timeSpan.className = "booking-time";
+        var slot = booking.slot || {};
+        timeSpan.textContent = slot.start_time + " – " + slot.end_time;
+
+        var statusBadge = document.createElement("span");
+        statusBadge.className = "booking-status-badge booking-status-" + booking.booking_status;
+        statusBadge.textContent = booking.booking_status;
+
+        header.appendChild(timeSpan);
+        header.appendChild(statusBadge);
+        card.appendChild(header);
+
+        var details = [
+          { label: "{% translate 'Customer' %}: ", value: booking.customer_name },
+          { label: "{% translate 'Phone' %}: ", value: booking.customer_phone },
+          { label: "{% translate 'Status' %}: ", value: booking.booking_status },
+        ];
+
+        details.forEach(function (d) {
+          var row = document.createElement("div");
+          row.className = "booking-detail-row";
+          var label = document.createElement("span");
+          label.className = "booking-detail-label";
+          label.textContent = d.label;
+          var value = document.createElement("span");
+          value.textContent = d.value || "—";
+          row.appendChild(label);
+          row.appendChild(value);
+          card.appendChild(row);
+        });
+
+        var actions = document.createElement("div");
+        actions.className = "booking-actions";
+
+        if (booking.booking_status === "waiting") {
+          var approveBtn = document.createElement("button");
+          approveBtn.type = "button";
+          approveBtn.textContent = "{% translate 'Approve' %}";
+          approveBtn.className = "btn-approve";
+          approveBtn.addEventListener("click", function () {
+            transitionBooking(booking.booking_id, "approved");
+          });
+          actions.appendChild(approveBtn);
+
+          var rejectBtn = document.createElement("button");
+          rejectBtn.type = "button";
+          rejectBtn.textContent = "{% translate 'Reject' %}";
+          rejectBtn.className = "btn-reject";
+          rejectBtn.addEventListener("click", function () {
+            transitionBooking(booking.booking_id, "rejected");
+          });
+          actions.appendChild(rejectBtn);
+        } else if (booking.booking_status === "approved") {
+          var completeBtn = document.createElement("button");
+          completeBtn.type = "button";
+          completeBtn.textContent = "{% translate 'Mark as Completed' %}";
+          completeBtn.className = "btn-complete";
+          completeBtn.addEventListener("click", function () {
+            transitionBooking(booking.booking_id, "completed");
+          });
+          actions.appendChild(completeBtn);
+        }
+
+        if (booking.customer_location) {
+          var navBtn = document.createElement("button");
+          navBtn.type = "button";
+          navBtn.textContent = "{% translate 'Navigate' %}";
+          navBtn.className = "btn-navigate";
+          navBtn.addEventListener("click", function () {
+            navigateTo(booking.customer_location);
+          });
+          actions.appendChild(navBtn);
+        }
+
+        if (actions.children.length > 0) {
+          card.appendChild(actions);
+        }
+
+        list.appendChild(card);
+      });
+    }
+
+    function filterBookings(status) {
+      var cards = document.querySelectorAll("#bookings-list .booking-card");
+      cards.forEach(function (card) {
+        if (status === "all" || card.dataset.status === status) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
       });
     }
 
@@ -493,7 +675,9 @@
 
       document.getElementById("logout").addEventListener("click", logout);
       loadSlots();
+      loadBookings();
       checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
+      updateSlotsDate();
     });
   })();
   </script>

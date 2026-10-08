@@ -74,10 +74,34 @@ class BarberBookingTransitionAPIView(APIView):
 
     VALID_TRANSITIONS = {
         Booking.STATUS_APPROVED: {"from": Booking.STATUS_WAITING, "slot_to": Slot.STATUS_APPROVED},
-        Booking.STATUS_REJECTED: {"from": Booking.STATUS_WAITING, "slot_to": Slot.STATUS_AVAILABLE},
-        Booking.STATUS_COMPLETED: {"from": Booking.STATUS_APPROVED, "slot_to": None},  # slot status irrelevant once completed
+        Booking.STATUS_REJECTED: {"from": [Booking.STATUS_WAITING,Booking.STATUS_APPROVED], "slot_to": Slot.STATUS_AVAILABLE},
+        Booking.STATUS_COMPLETED: {"from": Booking.STATUS_APPROVED, "slot_to": None},  
     }
 
+    def patch(self,request,booking_id):
+        barber=request.user.barber
+        booking=get_object_or_404(Booking,booking_id=booking_id,barber=barber)
+
+        serializer=BookingTransitionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        target=serializer.validated_data["booking_status"]
+
+        rule=self.VALID_TRANSITIONS[target]
+        if booking.booking_status not in rule["from"]:
+            return Response(
+                {
+                    "error":{
+                        "code":"INVALID_STATE_TRANSITION",
+                        "message":f"Booking must be one of {rule['from']} to become '{target}'."}},
+                        status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                        )
+        with transaction.atomic():
+            booking.booking_status=target
+            booking.save(update_fields=["booking_status"])
+            if rule["slot_to"]:
+                Slot.objects.filter(slot_id=booking.slot_id).update(status=rule["slot_to"])
+        return Response(BookingSerializer(booking).data)
+    
     def patch(self, request, booking_id):
         barber = request.user.barber
         booking = get_object_or_404(Booking, booking_id=booking_id, barber=barber)
@@ -109,9 +133,31 @@ class CustomerBarberSlotsAPIView(APIView):
     def get(self, request, barber_id):
         barber = get_object_or_404(Barber, barber_id=barber_id)
         slots = ensure_today_slots(barber)
+        
+        viewer_id = request.user.id if request.user and request.user.is_authenticated else None
+
+        data=[]
+        for slot in slots:
+            display_status=slot.status
+
+            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                active_booking=slot.bookings.filter(
+                    booking_status__in=[Booking.STATUS_WAITING,Booking.STATUS_APPROVED]
+                ).first()
+                is_owner=bool(active_booking) and active_booking.customer_id==viewer_id
+
+                if not is_owner:
+                    display_status=Slot.STATUS_BOOKED
+            data.append({
+                "slot_id":slot.slot_id,
+                "start_time":slot.start_time.strftime("%H:%M"),
+                "end_time":slot.end_time.strftime("%H:%M"),
+                "status":display_status,
+            })
+        #serializer = SlotSerializer(slots, many=True, context={"request": request})
         return Response({
             "slot_date": timezone.localdate().isoformat(),
-            "data": SlotSerializer(slots, many=True).data,
+            "data": data,
         })
 
 
@@ -123,7 +169,7 @@ class CustomerBookSlotAPIView(APIView):
 
         if barber.computed_status != "active" and barber.computed_status != "trial":
             return Response(
-                {"error": {"code": "BARBAR_INACTIVE", "message": "This Barbar's subscription is not active."}},
+                {"error": {"code": "BARBAR_INACTIVE", "message": "This Barber's subscription is not active."}},
                 status=status.HTTP_409_CONFLICT,
             )
 
@@ -138,8 +184,24 @@ class CustomerBookSlotAPIView(APIView):
                 ).update(status=Slot.STATUS_BOOKED)
 
                 if not updated:
+                    slot = Slot.objects.filter(slot_id=slot_id, barber=barber).first()
+                    if not slot:
+                        return Response(
+                            {"error": {"code": "SLOT_NOT_FOUND", "message": "Slot not found."}},
+                            status=status.HTTP_404_NOT_FOUND,
+                        )
+                    if slot.status == Slot.STATUS_NA:
+                        return Response(
+                            {"error": {"code": "SLOT_UNAVAILABLE", "message": "This slot is marked unavailable by the barber."}},
+                            status=status.HTTP_409_CONFLICT,
+                        )
+                    if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                        return Response(
+                            {"error": {"code": "SLOT_ALREADY_BOOKED", "message": "This slot is already booked."}},
+                            status=status.HTTP_409_CONFLICT,
+                        )
                     return Response(
-                        {"error": {"code": "SLOT_ALREADY_BOOKED", "message": "This slot is no longer available."}},
+                        {"error": {"code": "SLOT_UNAVAILABLE", "message": "This slot is no longer available."}},
                         status=status.HTTP_409_CONFLICT,
                     )
 

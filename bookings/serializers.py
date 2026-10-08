@@ -27,6 +27,17 @@ class SlotSerializer(serializers.ModelSerializer):
             "booking_status": booking.booking_status,
         }
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+        if request and hasattr(request, "user") and request.user.is_authenticated:
+            active_booking = instance.bookings.filter(booking_status__in=["waiting", "approved"]).first()
+            if active_booking and active_booking.customer_id != request.user.id:
+                # Slot is booked/approved by another customer - show as unavailable
+                if data["status"] in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                    data["status"] = Slot.STATUS_NA
+        return data
+
 
 class BookingCustomerDetailSerializer(serializers.ModelSerializer):
     display_name = serializers.CharField(source="user.get_full_name")
@@ -68,6 +79,9 @@ class BookingDetailSerializer(serializers.ModelSerializer):
     customer_name = serializers.SerializerMethodField()
     customer_phone = serializers.SerializerMethodField()
     customer_location = serializers.SerializerMethodField()
+    barber_name = serializers.SerializerMethodField()
+    barber_phone = serializers.SerializerMethodField()
+    barber_location = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -78,6 +92,10 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "customer_name",
             "customer_phone",
             "customer_location",
+            "barber",
+            "barber_name",
+            "barber_phone",
+            "barber_location",
             "booking_status",
             "created_at",
         ]
@@ -92,6 +110,15 @@ class BookingDetailSerializer(serializers.ModelSerializer):
     def get_customer_location(self, obj):
         profile = getattr(obj.customer, "customer", None)
         return profile.location if profile else None
+
+    def get_barber_name(self, obj):
+        return obj.barber.name
+
+    def get_barber_phone(self, obj):
+        return obj.barber.user.contact_number
+
+    def get_barber_location(self, obj):
+        return obj.barber.location
 
 
 class BookSlotSerializer(serializers.Serializer):

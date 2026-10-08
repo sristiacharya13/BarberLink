@@ -6,7 +6,8 @@ class Payment(models.Model):
     barber_id = models.ForeignKey(
         'barbers.Barber',
         on_delete=models.CASCADE,
-        db_column='barber_id'
+        db_column='barber_id',
+        related_name='payments'
     )
 
     amount = models.DecimalField(max_digits=10, decimal_places=2)

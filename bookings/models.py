@@ -44,21 +44,21 @@ class Booking(models.Model):
     STATUS_WAITING="waiting"
     STATUS_APPROVED="approved"
     STATUS_REJECTED="rejected"
-    STATUS_CANCELED="cancelled"
+    STATUS_CANCELLED="cancelled"
     STATUS_COMPLETED="completed"
     STATUS_CHOICES=[
         (STATUS_WAITING,"Waiting for approval"),
         (STATUS_APPROVED,"Approved"),
         (STATUS_REJECTED,"Rejected"),
-        (STATUS_CANCELED,"Canceled"),
-        (STATUS_COMPLETED,"completed")
+        (STATUS_CANCELLED,"Cancelled"),
+        (STATUS_COMPLETED,"Completed")
     ]
 
     booking_id = models.AutoField(primary_key=True)
     slot = models.ForeignKey(Slot, on_delete=models.CASCADE, related_name="bookings")
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="bookings")
     barber = models.ForeignKey("barbers.Barber", on_delete=models.CASCADE, related_name="bookings")
-    booking_status = models.CharField(max_length=20, default=STATUS_WAITING)
+    booking_status = models.CharField(max_length=20, choices=STATUS_CHOICES,default=STATUS_WAITING)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
