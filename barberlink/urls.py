@@ -14,5 +14,5 @@ urlpatterns = [
     #path("api/v1/", include("customers.urls")),
     path("customers/", include("customers.urls")),
     path('i18n/', include('django.conf.urls.i18n')),
-    
+    path('payments/',include('payments.urls')),
 ]
