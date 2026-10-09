@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 16:35+0530\n"
+"POT-Creation-Date: 2026-10-09 20:36+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: .\templates\barberlink\barber_dashboard.html:221
+#: .\templates\barberlink\customer_dashboard.html:206
 msgid "Not set"
 msgstr "ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
 
 #: .\templates\barberlink\barber_dashboard.html:261
+#: .\templates\barberlink\customer_dashboard.html:243
 msgid "We could not load your profile. Please try again."
-msgstr ""
+msgstr "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ "
 
 #: .\templates\barberlink\barber_dashboard.html:321
 msgid "Available"
-msgstr "ಲಭ್ಯವಿದೆ "
+msgstr "ಲಭ್ಯವಿದೆ"
 
 #: .\templates\barberlink\barber_dashboard.html:321
 msgid "Marked NA"
@@ -45,14 +48,23 @@ msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
 msgid "We could not load your account. Please log in again."
 msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಆಗಿ."
 
-msgid "Waiting for Approval"
-msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
+#: .\templates\barberlink\customer_dashboard.html:603
+msgid "booked"
+msgstr "ಬುಕ್ ಆಗಿದೆ"
 
-msgid "Rejected"
-msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
 
-msgid "Cancelled"
-msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+#: .\templates\barberlink\customer_dashboard.html:603
+msgid "NA"
+msgstr "ಲಭ್ಯವಿಲ್ಲ "
 
-msgid "Completed"
-msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ"
+#~ msgid "Waiting for Approval"
+#~ msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
+
+#~ msgid "Rejected"
+#~ msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+
+#~ msgid "Cancelled"
+#~ msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+#~ msgid "Completed"
+#~ msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ"
