@@ -159,7 +159,7 @@
     <dl id="booking-detail-content"></dl>
     <div id="booking-actions"></div>
   </section>
-
+  <script src="{% url 'javascript-catalog' %}"></script>
   <script>
   (function () {
     var PROFILE_URL = "/barbers/api/dashboard/";
@@ -218,7 +218,7 @@
     }
 
     function orNotSet(value) {
-      return value === undefined || value === null || value === "" ? "Not set" : value;
+      return value === undefined || value === null || value === "" ? gettext("Not set") : value;
     }
 
     var currentUser = null;
@@ -258,7 +258,7 @@ function loadProfile() {
           if (data && data.barber) renderProfile(data.barber, currentUser && currentUser.contact_number);
         })
         .catch(function () {
-          showMessage("We could not load your profile. Please try again.");
+          showMessage(gettext("We could not load your profile. Please try again."));
         })
         .then(function () {
           if (toggle) toggle.disabled = false;
@@ -318,7 +318,7 @@ function loadProfile() {
     }
 
     function statusLabel(status) {
-      var map = { available: "Available", na: "Marked NA", booked: "Booked (Waiting)", approved: "Approved" };
+      var map = { available: gettext("Available"), na: gettext("Marked NA"), booked: gettext("Booked (Waiting)"), approved: gettext("Approved") };
       return map[status] || status;
     }
 
@@ -399,7 +399,7 @@ function loadProfile() {
       options.forEach(function (opt) {
         var option = document.createElement("option");
         option.value = opt.value;
-        option.textContent = opt.label;
+        option.textContent = gettext(opt.label);
         select.appendChild(option);
       });
       select.addEventListener("change", function () {
@@ -430,7 +430,7 @@ function loadProfile() {
 
         var statusBadge = document.createElement("span");
         statusBadge.className = "booking-status-badge booking-status-" + booking.booking_status;
-        statusBadge.textContent = booking.booking_status;
+        statusBadge.textContent = gettext(booking.booking_status);
 
         header.appendChild(timeSpan);
         header.appendChild(statusBadge);
@@ -439,7 +439,7 @@ function loadProfile() {
         var details = [
           { label: "{% translate 'Customer' %}: ", value: booking.customer_name },
           { label: "{% translate 'Phone' %}: ", value: booking.customer_phone },
-          { label: "{% translate 'Status' %}: ", value: booking.booking_status },
+          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status) },
         ];
 
         details.forEach(function (d) {
@@ -554,7 +554,7 @@ function loadProfile() {
       var fields = [
         ["Customer", booking.customer_name],
         ["Phone", booking.customer_phone],
-        ["Status", booking.booking_status],
+        ["Status", gettext(booking.booking_status)],
       ];
 
       fields.forEach(function (row) {
@@ -670,7 +670,7 @@ function loadProfile() {
           document.getElementById("profile-toggle").addEventListener("click", loadProfile);
         })
         .catch(function () {
-          showMessage("We could not load your account. Please log in again.");
+          showMessage(gettext("We could not load your account. Please log in again."));
         });
 
       document.getElementById("logout").addEventListener("click", logout);
