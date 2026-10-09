@@ -141,7 +141,7 @@
     .btn-cancel { background: #f44336; }
     .btn-navigate { background: #ff9800; }
   </style>
-
+  <script src="{% url 'javascript-catalog' %}"></script>
   <script>
   (function () {
     var PROFILE_URL = "/customers/api/dashboard/";
@@ -203,7 +203,7 @@
     }
 
     function orNotSet(value) {
-      return value === undefined || value === null || value === "" ? "Not set" : value;
+      return value === undefined || value === null || value === "" ? gettext("Not set") : value;
     }
 
     var currentUser = null;
@@ -240,7 +240,7 @@
           if (data && data.customer) renderProfile(data.customer, data.customer.contact_number);
         })
         .catch(function () {
-          showMessage("We could not load your profile. Please try again.");
+          showMessage(gettext("We could not load your profile. Please try again."));
         })
         .then(function () {
           if (toggle) toggle.disabled = false;
@@ -401,7 +401,7 @@
         timeSpan.textContent = slot.start_time + " \u2013 " + slot.end_time;
 
         var statusSpan = document.createElement("span");
-        statusSpan.textContent = slot.status;
+        statusSpan.textContent = gettext(slot.status.toLowerCase());
 
         card.appendChild(timeSpan);
         card.appendChild(statusSpan);
@@ -443,7 +443,7 @@
       options.forEach(function (opt) {
         var option = document.createElement("option");
         option.value = opt.value;
-        option.textContent = opt.label;
+        option.textContent = gettext(opt.label);
         select.appendChild(option);
       });
       select.addEventListener("change", function () {
@@ -474,7 +474,7 @@
 
         var statusBadge = document.createElement("span");
         statusBadge.className = "customer-booking-status-badge customer-booking-status-" + booking.booking_status;
-        statusBadge.textContent = booking.booking_status;
+        statusBadge.textContent = gettext(booking.booking_status);
 
         header.appendChild(timeSpan);
         header.appendChild(statusBadge);
@@ -483,7 +483,7 @@
         var details = [
           { label: "{% translate 'Barber' %}: ", value: booking.barber_name },
           { label: "{% translate 'Phone' %}: ", value: booking.barber_phone },
-          { label: "{% translate 'Status' %}: ", value: booking.booking_status },
+          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status) },
         ];
 
         details.forEach(function (d) {
@@ -600,8 +600,7 @@
           if (!data) return;
           cardEl.className = "slot-card slot-booked";
           var statusSpan = cardEl.querySelector("span:last-child");
-          if (statusSpan) statusSpan.textContent = "booked";
-          showMessage("{% translate 'Booking requested.' %}");
+          if (statusSpan) statusSpan.textContent = gettext("booked");          showMessage("{% translate 'Booking requested.' %}");
         })
         .catch(function () {
           showMessage("{% translate 'Could not book slot. Try again.' %}");
@@ -620,7 +619,7 @@
             document.getElementById("profile-toggle").addEventListener("click", loadProfile);
           })
           .catch(function () {
-            showMessage("We could not load your account. Please log in again.");
+            showMessage("{% translate 'We could not load your account. Please log in again.' %");
           });
       } else {
         isLoggedIn = false;
