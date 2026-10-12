@@ -1,18 +1,28 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Login</title></head>
 <body>
-  <h1>Login</h1>
+  <form action="{% url 'set_language' %}" method="post" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+      </select>
+  </form>
+  <h1>{% translate "Login" %}</h1>
   <p id="error" style="color:#b00020"></p>
   <form id="login-form" style="max-width:220px;">
-    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br>
+    <input type="tel" id="contact_number" placeholder={% translate "Contact number" %} autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br>
     <div style="position:relative;display:inline-block;width:100%;">
-      <input type="password" id="password" placeholder="Password" autocomplete="current-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
+      <input type="password" id="password" placeholder={% translate "Password" %} autocomplete="current-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
       <button type="button" id="toggle-password" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
     </div><br>
-    <button type="submit">Log in</button>
+    <button type="submit">{% translate "Login" %}</button>
   </form>
-  <p>No account? <a href="/register/">Register</a></p>
+  <p>{% translate "No account?" %}<a href="/register/">{% translate "Register" %}</a></p>
   <script>
     const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
     const pwd = document.getElementById("password");

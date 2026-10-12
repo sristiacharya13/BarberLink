@@ -1,27 +1,40 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Register</title></head>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Register" %}</title>
+</head>
 <body>
-  <h1>Register</h1>
+  <form action="{% url 'set_language' %}" method="post" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+      </select>
+    </form>
+  <h1>{% translate "Registration Form" %}</h1>
   <p id="error" style="color:#b00020"></p>
   <form id="register-form" style="max-width:220px;">
-    <input type="text" id="name" placeholder="Name" required style="width:100%;box-sizing:border-box;"><br>
-    <input type="tel" id="contact_number" placeholder="Contact number" autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br>
+    <input type="text" id="name" placeholder={% translate "Name" %} required style="width:100%;box-sizing:border-box;"><br><br>
+    <input type="tel" id="contact_number" placeholder={% translate "Contact number" %} autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br><br>
     <select id="role" style="width:100%;box-sizing:border-box;">
-      <option value="customer">I'm a customer</option>
-      <option value="barber">I'm a barber</option>
-    </select><br>
+      <option value="customer">{% translate "I am a customer" %}</option>
+      <option value="barber">{% translate "I am a barber" %}</option>
+    </select><br><br>
     <div style="position:relative;display:inline-block;width:100%;">
-      <input type="password" id="password" placeholder="Password" autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
+      <input type="password" id="password" placeholder={% translate "Password" %} autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
       <button type="button" id="toggle-password" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
-    </div><br>
+    </div><br><br>
     <div style="position:relative;display:inline-block;width:100%;">
-      <input type="password" id="password2" placeholder="Confirm password" autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
+      <input type="password" id="password2" placeholder={% translate "Confirm Password" %} autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
       <button type="button" id="toggle-password2" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
-    </div><br>
-    <button type="submit">Create account</button>
+    </div><br><br>
+    <button type="submit">{% translate "Create account" %}</button>
   </form>
-  <p>Have an account? <a href="/login/">Log in</a></p>
+  <p>{% translate "Have an account?" %}<a href="/login/">{% translate "Log in" %}</a></p>
   <script>
     const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
     const pwd1 = document.getElementById("password");
