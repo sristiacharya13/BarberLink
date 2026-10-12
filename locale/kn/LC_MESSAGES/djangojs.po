@@ -54,17 +54,32 @@ msgstr "ಬುಕ್ ಆಗಿದೆ"
 
 
 #: .\templates\barberlink\customer_dashboard.html:603
-msgid "NA"
+msgid "na"
 msgstr "ಲಭ್ಯವಿಲ್ಲ "
 
-#~ msgid "Waiting for Approval"
-#~ msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
+msgid "available"
+msgstr "ಲಭ್ಯವಿದೆ"
 
-#~ msgid "Rejected"
-#~ msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+msgid "Waiting for Approval"
+msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
 
-#~ msgid "Cancelled"
-#~ msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+msgid "Rejected"
+msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
 
-#~ msgid "Completed"
-#~ msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ"
+msgid "Cancelled"
+msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "Completed"
+msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ"
+
+msgid "waiting"
+msgstr "ಕಾಯುತ್ತಿದೆ"
+
+msgid "WAITING"
+msgstr "ಕಾಯುತ್ತಿದೆ"
+
+msgid "cancelled"
+msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "CANCELLED"
+msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
