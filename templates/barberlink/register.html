@@ -5,6 +5,46 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Register" %}</title>
+  
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    color: green;
+  }
+
+  form {
+    margin: 15px auto;
+  }
+
+  input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  button[type="submit"] {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+
+  a {
+    color: green;
+  }
+</style>
+
 </head>
 <body>
   <form action="{% url 'set_language' %}" method="post" style="display:inline">
@@ -15,77 +55,6 @@
         <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
       </select>
     </form>
-  <h1>{% translate "Registration Form" %}</h1>
-  <p id="error" style="color:#b00020"></p>
-  <form id="register-form" style="max-width:220px;">
-    <input type="text" id="name" placeholder={% translate "Name" %} required style="width:100%;box-sizing:border-box;"><br><br>
-    <input type="tel" id="contact_number" placeholder={% translate "Contact number" %} autocomplete="tel" required style="width:100%;box-sizing:border-box;"><br><br>
-    <select id="role" style="width:100%;box-sizing:border-box;">
-      <option value="customer">{% translate "I am a customer" %}</option>
-      <option value="barber">{% translate "I am a barber" %}</option>
-    </select><br><br>
-    <div style="position:relative;display:inline-block;width:100%;">
-      <input type="password" id="password" placeholder={% translate "Password" %} autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
-      <button type="button" id="toggle-password" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
-    </div><br><br>
-    <div style="position:relative;display:inline-block;width:100%;">
-      <input type="password" id="password2" placeholder={% translate "Confirm Password" %} autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding-right:40px;">
-      <button type="button" id="toggle-password2" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9em;color:#666;">Show</button>
-    </div><br><br>
-    <button type="submit">{% translate "Create account" %}</button>
-  </form>
-  <p>{% translate "Have an account?" %}<a href="/login/">{% translate "Log in" %}</a></p>
-  <script>
-    const DASHBOARDS = { barber: "/barbers/dashboard/", customer: "/customers/dashboard/" };
-    const pwd1 = document.getElementById("password");
-    const toggle1 = document.getElementById("toggle-password");
-    toggle1.addEventListener("click", function() {
-      if (pwd1.type === "password") {
-        pwd1.type = "text";
-        toggle1.textContent = "Hide";
-      } else {
-        pwd1.type = "password";
-        toggle1.textContent = "Show";
-      }
-    });
-    const pwd2 = document.getElementById("password2");
-    const toggle2 = document.getElementById("toggle-password2");
-    toggle2.addEventListener("click", function() {
-      if (pwd2.type === "password") {
-        pwd2.type = "text";
-        toggle2.textContent = "Hide";
-      } else {
-        pwd2.type = "password";
-        toggle2.textContent = "Show";
-      }
-    });
-    document.getElementById("register-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const err = document.getElementById("error");
-      err.textContent = "";
-      const password = document.getElementById("password").value;
-      if (password !== document.getElementById("password2").value) {
-        err.textContent = "Passwords do not match."; return;
-      }
-      const res = await fetch("/api/v1/auth/register/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: document.getElementById("name").value,
-          contact_number: document.getElementById("contact_number").value,
-          role: document.getElementById("role").value,
-          password,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        err.textContent = Object.values(data).flat().join(" ") || "Registration failed.";
-        return;
-      }
-      localStorage.setItem("access", data.access);
-      localStorage.setItem("refresh", data.refresh);
-      window.location.href = DASHBOARDS[data.user.role];
-    });
-  </script>
-</body>
+    
+  </body>
 </html>

@@ -73,6 +73,7 @@
         });
       }
       document.getElementById("pay-button").addEventListener("click", function () {
+<<<<<<< Updated upstream
       fetch("/barbers/api/dashboard/", {
          headers: {
              "Authorization": "Bearer " + localStorage.getItem("access")
@@ -90,6 +91,25 @@
              "name": "BarberLink",
              "description": "Barber Payment",
              "order_id": "{{ order_id }}",
+=======
+     fetch("/barbers/api/dashboard/", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("access")
+        }
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(profile) {
+        console.log(profile);
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "BarberLink",
+            "description": "Barber Payment",
+            "order_id": "{{ order_id }}",
+>>>>>>> Stashed changes
 
              handler: function(response) {
 
@@ -110,6 +130,7 @@
         var rzp = new Razorpay(options);
 
         rzp.on('payment.failed', function(response) {
+<<<<<<< Updated upstream
 
             // window.location.href =
             //     "/payments/save-payment/?payment_id=" +
@@ -118,6 +139,14 @@
             //     "&barber_id=" +
             //     profile.barber_id;
             alert(response.error.description);
+=======
+          window.location.href =
+                "/payments/save-payment/?payment_id=" +
+                response.error.metadata.payment_id +
+                "&status=failed" +
+                "&barber_id=" +
+                profile.barber_id;
+>>>>>>> Stashed changes
         });
 
         rzp.open();

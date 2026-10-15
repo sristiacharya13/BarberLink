@@ -279,7 +279,7 @@ msgstr "ಲಾಗಿನ್ "
 #: .\templates\barberlink\home.html:69 .\templates\barberlink\login.html:116
 #: .\templates\barberlink\register.html:7
 msgid "Register"
-msgstr "ನೋಂದಣಿ ಮಾಡಿ "
+msgstr "ನೋಂದಣಿ ಮಾಡಿ"
 
 #: .\templates\barberlink\home.html:75
 msgid "Welcome to BarberLink"
