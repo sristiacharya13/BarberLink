@@ -1,0 +1,96 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        h1{
+            color: #c5df2d;
+        }
+        a{
+            color: #15ac46;
+        }
+        header {
+            background-color: white;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header form {
+            margin-left: auto;
+        }
+        header a {
+            margin-left: 15px;
+        }
+        section {
+            padding: 15px;
+        }
+        footer {
+            border-top: 1px solid #ddd;
+            background-color: black;
+            color: #ddd;
+        }
+    </style>
+    <title>{% translate "BarberLink-An app for barbers"}</title>
+</head>
+<body>
+     <header>
+        <strong>{% translate "BarberLink" %}</strong>
+         <form action="{% url 'set_language' %}" method="post"
+              style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+
+            <select name="language" onchange="this.form.submit()">
+                <option value="en"
+                    {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>
+                    English
+                </option>
+                <option value="kn"
+                    {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>
+                    ಕನ್ನಡ
+                </option>
+            </select>
+        </form>
+        <a href="{% url 'login_page' %}">
+            {% translate "Login" %}
+        </a>
+
+        <a href="{% url 'register_page' %}">
+            {% translate "Register" %}
+        </a>
+
+       
+    </header>
+    <div style="padding: 30px 20px;">
+        <h1>{% translate "Welcome to BarberLink" %}</h1>
+        <h2>{% translate "Find Your Barber, Book Your Appointment" %}</h2>
+        <p>{% translate "Find nearby barbers, book appointments, and manage your bookings easily." %}</p>
+        <section>
+        <h2>{% translate "Our Features" %}</h2>
+
+        <h3>{% translate "Find Nearby Barbers" %}</h3>
+        <p>{% translate "Discover barbers near your location." %}</p>
+
+        <h3>{% translate "Manage Bookings" %}</h3>
+        <p>{% translate "View your bookings and their status." %}</p>
+
+        <h3>{% translate "Easy Payments" %}</h3>
+        <p>{% translate "Make payments using the available payment facility." %}</p>
+    </section>
+
+    </div>
+    <footer style="text-align:center; padding:20px;">
+        {% translate "BarberLink - Connecting customers and barbers." %}
+    </footer>
+</body>
+</html>
