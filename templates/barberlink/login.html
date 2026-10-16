@@ -16,10 +16,6 @@
       padding: 20px;
     }
 
-    body > form:first-child {
-      text-align: right;
-      max-width: none;
-    }
 
     h1 {
       text-align: center;
@@ -74,26 +70,19 @@
 </head>
 
 <body>
-  <form action="{% url 'set_language' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.path }}">
-    <select name="language" onchange="this.form.submit()">
-      <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-      <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
-    </select>
-  </form>
+ 
 
   <h1>{% translate "Login" %}</h1>
 
   <p id="error"></p>
 
   <form id="login-form">
-    <label>{% translate "Contact number" %}</label>
+    <label for="contact_number">{% translate "Contact Number" %}</label>
     <input type="tel" id="contact_number"
            placeholder="{% translate 'Contact number' %}"
            autocomplete="tel" required>
 
-    <label>{% translate "Password" %}</label>
+    <label for="password">{% translate "Password" %}</label>
     <div style="position:relative;">
       <input type="password" id="password"
              placeholder="{% translate 'Password' %}"
@@ -105,7 +94,7 @@
     </div>
 
     <p style="text-align:right;">
-      <a href="/forgot-password/">{% translate "Forgot password?" %}</a>
+      <a href="{% url 'forgot_password_page' %}">{% translate "Forgot Password?" %}</a>
     </p>
 
     <button type="submit">{% translate "Login" %}</button>

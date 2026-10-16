@@ -6,55 +6,167 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Register" %}</title>
   
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 20px;
-  }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 20px;
+    }
 
-  h1 {
-    text-align: center;
-    color: green;
-  }
+    h1 {
+      text-align: center;
+      color: green;
+    }
 
-  form {
-    margin: 15px auto;
-  }
+    form {
+      margin: 15px auto;
+    }
 
-  input, select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
 
-  button {
-    padding: 10px;
-    cursor: pointer;
-  }
+    button {
+      padding: 10px;
+      cursor: pointer;
+    }
 
-  button[type="submit"] {
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 5px;
-  }
-
-  a {
-    color: green;
-  }
-</style>
-
+    button[type="submit"] {
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    a {
+      color: green;
+    }
+  </style>
 </head>
 <body>
-  <form action="{% url 'set_language' %}" method="post" style="display:inline">
+  
+  <div>
+    <h1>{% translate 'Registration Form' %}</h1>
+    <form>
       {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.path }}">
-      <select name="language" onchange="this.form.submit()">
-        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
-      </select>
+      <label>{% translate "I am registering as" %}</label>
+      <div class="role-options">
+            <label class="role-option">
+              <input type="radio" name="role-choice" value="customer" checked>
+              {% translate "Customer" %}
+            </label>
+
+            <label class="role-option">
+              <input type="radio" name="role-choice" value="barber">
+              {% translate "Barber" %}
+            </label>
+      </div>
+      
+      <label for="name">{% translate "Name" %}</label>
+      <input type="text" id="name" placeholder="{% translate 'Enter your name' %}" autocomplete="name" required><br><br>
+      <label for="contact_number">{% translate 'Contact Number' %}</label>
+      <input type="tel" id="contact_number" placeholder="{% translate 'Enter contact number' %}" autocomplete="tel" required><br><br>
+      <label for="email">{% translate 'Email' %}</label>
+      <input type="email" id="email" placeholder="{% translate 'Enter your email' %}" autocomplete="email" required><br><br>
+      <label for="password">{% translate 'Password' %}</label>
+      <div style="position: relative; display: inline-block;">
+        <input type="password" id="password" placeholder="{% translate 'Enter password' %}" style="padding-right: 40px;" required autocomplete="new-password">
+        <button type="button" id="toggle-password" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: none;">
+          👁
+        </button>
+      </div><br><br>
+      <label for="confirm-password">{% translate 'Confirm Password' %}</label>
+      <div style="position: relative; display: inline-block;">
+         <input type="password" id="confirm-password" placeholder="{% trans 'Confirm password' %}" style="padding-right: 40px;" required autocomplete="new-password">
+         <button type="button" id="toggle-confirm-password" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: none;">
+            👁
+         </button>
+      </div><br><br>
+      <button class="register" type="submit">Register</button>
+      <p>
+        {% translate "Have an account?" %}
+        <a href="{% url 'login' %}">{% translate "Login" %}</a>
+      </p>
     </form>
-    
+  </div>
+  
+<script>
+    const form = document.querySelector("form");
+
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirm-password");
+    const toggle = document.getElementById("toggle-password");
+    const toggle_confirm = document.getElementById("toggle-confirm-password");
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault(); 
+
+      if (password.value !== confirmPassword.value) {
+        alert("Passwords do not match!");
+        return; 
+      }
+
+      const role = document.querySelector(
+        'input[name="role-choice"]:checked'
+      ).value;
+
+      try {
+        const res = await fetch("/api/v1/auth/register/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: document.getElementById("name").value,
+            contact_number: document.getElementById("contact_number").value,
+            email: document.getElementById("email").value,
+            role: role,
+            password: password.value
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.detail || "Registration failed.");
+          return;
+        }
+
+        if (data.access) {
+          localStorage.setItem("access", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("refresh", data.refresh);
+        }
+
+        if (role === "customer") {
+          window.location.href = "/customers/dashboard/";
+        } else if (role === "barber") {
+          window.location.href = "/barbers/dashboard/";
+        }
+
+      } catch (error) {
+        alert("Something went wrong. Please try again.");
+      }
+    });
+
+    toggle.addEventListener("click", function() {
+      if (password.type === "password") {
+        password.type = "text";
+      } else {
+        password.type = "password";
+      }
+    });
+
+    toggle_confirm.addEventListener("click", function() {
+      if (confirmPassword.type === "password") {
+        confirmPassword.type = "text";
+      } else {
+        confirmPassword.type = "password";
+      }
+    });
+  </script>
+
   </body>
 </html>
