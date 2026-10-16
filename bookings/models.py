@@ -91,6 +91,8 @@ def ensure_today_slots(barber):
     today = timezone.localdate()
     existing = Slot.objects.filter(barber=barber, slot_date=today)
     if not existing.exists():
+
+        Slot.objects.filter(slot_date__lt=today).delete() 
         rows = [
             Slot(
                 barber=barber,

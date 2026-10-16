@@ -29,6 +29,22 @@ def barber_dashboard_page(request):
     )
 
 
+def barber_payment_page(request):
+    client=razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+    amount = 120 * 100  # ₹100 in paise
+    
+    order = client.order.create({
+            "amount": amount,
+            "currency": "INR",
+            "payment_capture": 1
+        })
+    return render(request, "barberlink/barber_payment.html",{
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "order_id": order["id"],
+        "amount": amount,}
+    )
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsBarber])
 def barber_dashboard_data(request):

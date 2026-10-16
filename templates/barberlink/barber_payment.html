@@ -1,0 +1,137 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Payment" %}</title>
+</head>
+<body>
+  <nav>
+    <form action="{% url 'set_language' %}" method="post" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+      </select>
+    </form>
+    <button type="button" id="back-to-dashboard">{% translate "Back to Dashboard" %}</button>
+  </nav>
+
+  <h1>{% translate "Payment" %}</h1>
+
+  <p id="message" hidden></p>
+
+  {% if razorpay_key %}
+  <section>
+    <h3>{% translate "Make Payment" %}</h3>
+
+    <p>{% blocktranslate %}Amount: ₹120{% endblocktranslate %}</p>
+
+    <button type="button" id="pay-button">
+      {% translate "Pay ₹120" %}
+    </button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+      function saveWithAuth(payload,retired){
+        return fetch("/payments/save-payment/",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Bearer "+localStorage.getItem("access")
+          },
+          body:JSON.stringify(payload)
+        }).then(function(res){
+          if(res.status===401 && !retired){
+            return fetch("/api/v1/token/refresh/",{
+              method:"POST",
+              headers:{"Content-Type":"application/json"},
+              body:JSON.stringify({refresh:localStorage.getItem("refresh")})
+            })
+            .then(function(r){
+              if(!r.ok) throw new Error("refresh_failed");return r.json();
+            })
+            .then(function(data){
+              localStorage.setItem("access",data.access);
+              return saveWithAuth(payload,true);
+            });
+          }
+          if(!res.ok) throw new Error("save_failed");
+          return res.json();
+        });
+      }
+      document.getElementById("pay-button").addEventListener("click", function () {
+      fetch("/barbers/api/dashboard/", {
+         headers: {
+             "Authorization": "Bearer " + localStorage.getItem("access")
+         }
+     })
+     .then(function(response) {
+         return response.json();
+     })
+     .then(function(profile) {
+
+         var options = {
+             "key": "{{ razorpay_key }}",
+             "amount": "{{ amount }}",
+             "currency": "INR",
+             "name": "BarberLink",
+             "description": "Barber Payment",
+             "order_id": "{{ order_id }}",
+
+             handler: function(response) {
+
+                 saveWithAuth({
+                   razorpay_payment_id:response.razorpay_payment_id,
+                   razorpay_order_id:response.razorpay_order_id,
+                   razorpay_signature:response.razorpay_signature
+                 })
+                 .then(function(){
+                   window.location.reload();
+                 })
+                 .catch(function(){
+                   alert("Payment received but could not be recorded.")
+                 })
+             }
+         };
+
+        var rzp = new Razorpay(options);
+
+        rzp.on('payment.failed', function(response) {
+
+            window.location.href =
+                  "/payments/save-payment/?payment_id=" +
+                  response.error.metadata.payment_id +
+                  "&status=failed" +
+                  "&barber_id=" +
+                  profile.barber_id;
+        });
+
+        rzp.open();
+    });
+});
+    </script>
+  </section>
+  {% endif %}
+
+  <style>
+    #message { margin-top: 12px; padding: 8px; border-radius: 4px; background: #fafafa; border: 1px solid #e0e0e0; }
+  </style>
+
+  <script src="{% url 'javascript-catalog' %}"></script>
+  <script>
+  (function () {
+    var backBtn = document.getElementById("back-to-dashboard");
+    if (backBtn) {
+      backBtn.addEventListener("click", function () {
+        window.location.href = "/barbers/dashboard/";
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
