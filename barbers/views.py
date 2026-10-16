@@ -13,25 +13,27 @@ from django.utils import timezone
 from bookings.models import Booking
 from bookings.serializers import BookingDetailSerializer
 
-def barber_dashboard_page(request):
-    client=razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
-    amount = 120 * 100  # ₹100 in paise
+# def barber_dashboard_page(request):
+#     client=razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+#     amount = 120 * 100  # ₹100 in paise
     
-    order = client.order.create({
-            "amount": amount,
-            "currency": "INR",
-            "payment_capture": 1
-        })
-    return render(request, "barberlink/barber_dashboard.html",{
-        "razorpay_key": settings.RAZORPAY_KEY_ID,
-        "order_id": order["id"],
-        "amount": amount,}
-    )
+#     order = client.order.create({
+#             "amount": amount,
+#             "currency": "INR",
+#             "payment_capture": 1
+#         })
+#     return render(request, "barberlink/barber_dashboard.html",{
+#         "razorpay_key": settings.RAZORPAY_KEY_ID,
+#         "order_id": order["id"],
+#         "amount": amount,}
+#     )
 
+def barber_dashboard_page(request):
+    return render(request, "barberlink/barber_dashboard.html")
 
 def barber_payment_page(request):
     client=razorpay.Client(auth=(settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
-    amount = 120 * 100  # ₹100 in paise
+    amount = settings.SUBSCRIPTION_AMOUNT_INR * 100  # ₹100 in paise
     
     order = client.order.create({
             "amount": amount,
@@ -41,7 +43,8 @@ def barber_payment_page(request):
     return render(request, "barberlink/barber_payment.html",{
         "razorpay_key": settings.RAZORPAY_KEY_ID,
         "order_id": order["id"],
-        "amount": amount,}
+        "amount": amount,
+        "amount_inr":settings.SUBSCRIPTION_AMOUNT_INR,}
     )
 
 
@@ -51,13 +54,20 @@ def barber_dashboard_data(request):
     profile = getattr(request.user, "barber", None)
     if profile is None:
         return Response({"detail": "This account has no barber profile."}, status=404)
-
+    barber_data=BarberSerializer(profile).data
+    if profile.computed_status=="expired":
+        return Response({
+            "barber":barber_data,
+            "todays_bookings":[],
+            "booking_transaction_options":{},
+        })
     today = timezone.localdate()
     bookings = Booking.objects.filter(barber=profile, slot__slot_date=today).select_related("slot", "customer")
     bookings_data = BookingDetailSerializer(bookings, many=True).data
 
     return Response({
-        "barber": BarberSerializer(profile).data,
+        #"barber": BarberSerializer(profile).data,
+        "barber":barber_data,
         "todays_bookings": bookings_data,
         "booking_status_options": [
             {"value": "waiting", "label": "Waiting for Approval"},

@@ -9,21 +9,39 @@ from datetime import timedelta
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from django.db import transaction
 
 def record_successful_payment(barber, amount, transaction_id):
-    Payment.objects.create(
-        barber_id=barber,
-        amount=amount,
-        payment_status="success",
-        razorpay_transaction_id=transaction_id,
-    )
-    barber.subscription_status = Barber.STATUS_ACTIVE
+    # Payment.objects.create(
+    #     barber_id=barber,
+    #     amount=amount,
+    #     payment_status="success",
+    #     razorpay_transaction_id=transaction_id,
+    # )
+    # barber.subscription_status = Barber.STATUS_ACTIVE
+    # today = timezone.localdate()
+    # try:
+    #     barber.subscription_expiry_date = today.replace(year=today.year + 1)
+    # except ValueError:
+    #     barber.subscription_expiry_date = today + timedelta(days=365)
+    # barber.save(update_fields=["subscription_status", "subscription_expiry_date"])
     today = timezone.localdate()
+    base = max(barber.subscription_expiry_date, today)
     try:
-        barber.subscription_expiry_date = today.replace(year=today.year + 1)
-    except ValueError:
-        barber.subscription_expiry_date = today + timedelta(days=365)
-    barber.save(update_fields=["subscription_status", "subscription_expiry_date"])
+        new_expiry = base.replace(year=base.year + 1)
+    except ValueError:  # 29 Feb
+        new_expiry = base + timedelta(days=365)
+
+    with transaction.atomic():
+        Payment.objects.create(
+            barber_id=barber,
+            amount=amount,
+            payment_status="success",
+            razorpay_transaction_id=transaction_id,
+        )
+        barber.subscription_status = Barber.STATUS_ACTIVE
+        barber.subscription_expiry_date = new_expiry
+        barber.save(update_fields=["subscription_status", "subscription_expiry_date"])
 
 def payment_success(request):
     return render(request, 'barberlink/payment_success.html')
@@ -69,7 +87,7 @@ def save_payment(request):
             "razorpay_payment_id":payment_id,
             "razorpay_signature":signature,
         })
-    except razorpay.errors.SignatureVerficationError:
+    except razorpay.errors.SignatureVerificationError:
         return Response({
             "error":{"code":"INVALID_SIGNATURE"}
         },status=400)
@@ -77,5 +95,9 @@ def save_payment(request):
     if Payment.objects.filter(razorpay_transaction_id=payment_id).exists():
         return Response({"status":"already_recorded"})
 
-    record_successful_payment(barber,499,payment_id)
+    paid=client.payment.fetch(payment_id)
+    if paid.get("amount")!=settings.SUBSCRIPTION_AMOUNT_INR * 100:
+        return Response({"error":{"code":"AMOUNT_MISMATCH"}},status=400)
+
+    record_successful_payment(barber,paid["amount"] / 100,payment_id)
     return Response({"status":"success","expiry":barber.subscription_expiry_date})

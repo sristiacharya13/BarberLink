@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Barber Dashboard" %}</title>
+  <style>html { visibility: hidden; }</style>
 </head>
 <body>
   <nav>
@@ -143,7 +144,18 @@
         });
       }).then(function (res) {
         if (!res) return null;
-        if (!res.ok) throw new Error("request_failed");
+        if (!res.ok){
+          if (res.status===403){
+            return res.json().then(function (b){
+              if (b && b.error.code==="SUBSCRIPTION_EXPIRED"){
+                window.location.replace("/barbers/payment/");
+                return null;
+              }
+              throw new Error("erquest_failed");
+            });
+          }
+          throw new Error("request_failed");
+        }
         return res.json();
       });
     }
@@ -210,16 +222,16 @@ function loadProfile() {
       el.textContent = now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     }
  
-    function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
-      getJSON(profileEndpointUrl)
-        .then(function (profile) {
-          if (!profile) return;
-          if (!profile.location) {
-            captureAndSaveLocation(locationEndpointUrl);
-          }
-        })
-        .catch(function () {});
-    }
+    // function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
+    //   getJSON(profileEndpointUrl)
+    //     .then(function (profile) {
+    //       if (!profile) return;
+    //       if (!profile.location) {
+    //         captureAndSaveLocation(locationEndpointUrl);
+    //       }
+    //     })
+    //     .catch(function () {});
+    // }
 
     function captureAndSaveLocation(endpointUrl) {
       if (!navigator.geolocation) return;
@@ -315,20 +327,42 @@ function loadProfile() {
       });
     }
 
-    function loadBookings() {
-      var list = document.getElementById("bookings-list");
-      if (list) list.innerHTML = "{% translate 'Loading bookings...' %}";
+    // function loadBookings() {
+    //   var list = document.getElementById("bookings-list");
+    //   if (list) list.innerHTML = "{% translate 'Loading bookings...' %}";
+    //   getJSON(PROFILE_URL)
+    //     .then(function (data) {
+    //       if (!data) return;
+    //       var bookings = data.todays_bookings || [];
+    //       var options = data.booking_status_options || [];
+    //       renderBookings(bookings);
+    //       populateStatusFilter(options);
+    //     })
+    //     .catch(function () {
+    //       showMessage("{% translate 'We could not load bookings. Please try again.' %}");
+    //     });
+    // }
+
+    function loadDashboard(){
       getJSON(PROFILE_URL)
-        .then(function (data) {
+        .then(function (data){
           if (!data) return;
-          var bookings = data.todays_bookings || [];
-          var options = data.booking_status_options || [];
-          renderBookings(bookings);
-          populateStatusFilter(options);
+          if (data.barber && data.barber.computed_status==="expired"){
+            window.location.replace("/barbers/payment");
+            return;
+          }
+          document.documentElement.style.visibility="visible";
+          renderBookings(data.todays_bookings || []);
+          populateStatufilter(data.booking_status_options || []);
+          loadSlots();
+          if(data.barber && !data.barber.location){
+            captureAndSaveLocation("/barbers/api/location");
+          }
         })
-        .catch(function () {
-          showMessage("{% translate 'We could not load bookings. Please try again.' %}");
-        });
+        .catch(function(){
+          document.documentElement.style.visibility="visible";
+          showMessage("{% translate 'We could not load your dashboard. Please try again later' %}")
+        })
     }
 
     function populateStatusFilter(options) {
@@ -613,8 +647,9 @@ function loadProfile() {
 
       document.getElementById("logout").addEventListener("click", logout);
       loadSlots();
-      loadBookings();
-      checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
+      //loadBookings();
+      //checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
+      loadDashboard();
       updateSlotsDate();
     });
   })();

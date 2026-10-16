@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from barbers.models import Barber
 from .models import Booking, Slot, ensure_today_slots
-from .permissions import IsBarber, IsCustomer
+from .permissions import IsBarber, IsCustomer,IsActiveBarber
 from .serializers import (
     SlotSerializer,
     BookingSerializer,
@@ -18,7 +18,7 @@ from .serializers import (
 )
 
 class BarberSlotListAPIView(APIView):
-    permission_classes = [IsBarber]
+    permission_classes = [IsBarber,IsActiveBarber]
 
     def get(self, request):
         barber = request.user.barber
@@ -26,7 +26,7 @@ class BarberSlotListAPIView(APIView):
         return Response(SlotSerializer(slots, many=True).data)
 
 class BarberSlotUpdateAPIView(APIView):
-    permission_classes = [IsBarber]
+    permission_classes = [IsBarber,IsActiveBarber]
 
     def patch(self, request, slot_id):
         barber = request.user.barber
@@ -51,7 +51,7 @@ class BarberSlotUpdateAPIView(APIView):
 
 
 class BarberBookingListAPIView(APIView):
-    permission_classes = [IsBarber]
+    permission_classes = [IsBarber,IsActiveBarber]
 
     def get(self, request):
         barber = request.user.barber
@@ -61,7 +61,7 @@ class BarberBookingListAPIView(APIView):
 
 
 class BarberBookingDetailAPIView(APIView):
-    permission_classes = [IsBarber]
+    permission_classes = [IsBarber,IsActiveBarber]
 
     def get(self, request, booking_id):
         barber = request.user.barber
@@ -70,7 +70,7 @@ class BarberBookingDetailAPIView(APIView):
 
 
 class BarberBookingTransitionAPIView(APIView):
-    permission_classes = [IsBarber]
+    permission_classes = [IsBarber,IsActiveBarber]
 
     VALID_TRANSITIONS = {
         Booking.STATUS_APPROVED: {"from": [Booking.STATUS_WAITING], "slot_to": Slot.STATUS_APPROVED},

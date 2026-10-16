@@ -6,6 +6,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Payment" %}</title>
+  <style>
+    #message { margin-top: 12px; padding: 8px; border-radius: 4px; background: #fafafa; border: 1px solid #e0e0e0; }
+  </style>
 </head>
 <body>
   <nav>
@@ -17,120 +20,111 @@
         <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
       </select>
     </form>
-    <button type="button" id="back-to-dashboard">{% translate "Back to Dashboard" %}</button>
+    <button type="button" id="logout">{% translate "Logout" %}</button>
   </nav>
 
-  <h1>{% translate "Payment" %}</h1>
+  <h1>{% translate "Renew your subscription" %}</h1>
+  <p>{% translate "Your subscription has expired. Please renew to access your dashboard, slots and bookings." %}</p>
 
   <p id="message" hidden></p>
 
   {% if razorpay_key %}
   <section>
-    <h3>{% translate "Make Payment" %}</h3>
-
-    <p>{% blocktranslate %}Amount: ₹120{% endblocktranslate %}</p>
-
-    <button type="button" id="pay-button">
-      {% translate "Pay ₹120" %}
-    </button>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <script>
-      function saveWithAuth(payload,retired){
-        return fetch("/payments/save-payment/",{
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization":"Bearer "+localStorage.getItem("access")
-          },
-          body:JSON.stringify(payload)
-        }).then(function(res){
-          if(res.status===401 && !retired){
-            return fetch("/api/v1/token/refresh/",{
-              method:"POST",
-              headers:{"Content-Type":"application/json"},
-              body:JSON.stringify({refresh:localStorage.getItem("refresh")})
-            })
-            .then(function(r){
-              if(!r.ok) throw new Error("refresh_failed");return r.json();
-            })
-            .then(function(data){
-              localStorage.setItem("access",data.access);
-              return saveWithAuth(payload,true);
-            });
-          }
-          if(!res.ok) throw new Error("save_failed");
-          return res.json();
-        });
-      }
-      document.getElementById("pay-button").addEventListener("click", function () {
-      fetch("/barbers/api/dashboard/", {
-         headers: {
-             "Authorization": "Bearer " + localStorage.getItem("access")
-         }
-     })
-     .then(function(response) {
-         return response.json();
-     })
-     .then(function(profile) {
-
-         var options = {
-             "key": "{{ razorpay_key }}",
-             "amount": "{{ amount }}",
-             "currency": "INR",
-             "name": "BarberLink",
-             "description": "Barber Payment",
-             "order_id": "{{ order_id }}",
-
-             handler: function(response) {
-
-                 saveWithAuth({
-                   razorpay_payment_id:response.razorpay_payment_id,
-                   razorpay_order_id:response.razorpay_order_id,
-                   razorpay_signature:response.razorpay_signature
-                 })
-                 .then(function(){
-                   window.location.reload();
-                 })
-                 .catch(function(){
-                   alert("Payment received but could not be recorded.")
-                 })
-             }
-         };
-
-        var rzp = new Razorpay(options);
-
-        rzp.on('payment.failed', function(response) {
-
-            window.location.href =
-                  "/payments/save-payment/?payment_id=" +
-                  response.error.metadata.payment_id +
-                  "&status=failed" +
-                  "&barber_id=" +
-                  profile.barber_id;
-        });
-
-        rzp.open();
-    });
-});
-    </script>
+    <p>{% translate "Amount" %}: ₹{{ amount_inr }} / {% translate "year" %}</p>
+    <button type="button" id="pay-button">{% translate "Pay" %} ₹{{ amount_inr }}</button>
   </section>
-  {% endif %}
 
-  <style>
-    #message { margin-top: 12px; padding: 8px; border-radius: 4px; background: #fafafa; border: 1px solid #e0e0e0; }
-  </style>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  {% endif %}
 
   <script src="{% url 'javascript-catalog' %}"></script>
   <script>
   (function () {
-    var backBtn = document.getElementById("back-to-dashboard");
-    if (backBtn) {
-      backBtn.addEventListener("click", function () {
-        window.location.href = "/barbers/dashboard/";
+    if (!localStorage.getItem("access")) {
+      window.location.replace("/login/");
+      return;
+    }
+
+    function showMessage(text) {
+      var el = document.getElementById("message");
+      el.textContent = text;
+      el.hidden = false;
+    }
+
+    function saveWithAuth(payload, retried) {
+      return fetch("/payments/save-payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("access")
+        },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (res.status === 401 && !retried) {
+          return fetch("/api/v1/token/refresh/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh: localStorage.getItem("refresh") })
+          })
+            .then(function (r) { if (!r.ok) throw new Error("refresh_failed"); return r.json(); })
+            .then(function (data) {
+              localStorage.setItem("access", data.access);
+              return saveWithAuth(payload, true);
+            });
+        }
+        if (!res.ok) throw new Error("save_failed");
+        return res.json();
       });
     }
+
+    var payBtn = document.getElementById("pay-button");
+    if (payBtn) {
+      payBtn.addEventListener("click", function () {
+        var options = {
+          key: "{{ razorpay_key }}",
+          amount: "{{ amount }}",
+          currency: "INR",
+          name: "BarberLink",
+          description: "Barber subscription",
+          order_id: "{{ order_id }}",
+          handler: function (response) {
+            payBtn.disabled = true;
+            showMessage("{% translate 'Payment received. Confirming...' %}");
+            saveWithAuth({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+              .then(function () { window.location.href = "/barbers/dashboard/"; })
+              .catch(function () {
+                payBtn.disabled = false;
+                showMessage("{% translate 'Payment received but could not be recorded. Please contact support.' %}");
+              });
+          }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.on("payment.failed", function (response) {
+          showMessage(response.error.description || "{% translate 'Payment failed. Please try again.' %}");
+        });
+        rzp.open();
+      });
+    }
+
+    document.getElementById("logout").addEventListener("click", function () {
+      var refresh = localStorage.getItem("refresh");
+      var done = function () {
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.href = "/login/";
+      };
+      if (!refresh) { done(); return; }
+      fetch("/api/v1/auth/logout/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem("access") },
+        body: JSON.stringify({ refresh: refresh })
+      }).then(done, done);
+    });
   })();
   </script>
 </body>
