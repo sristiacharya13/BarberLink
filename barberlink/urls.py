@@ -11,6 +11,7 @@ urlpatterns = [
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/v1/", include("bookings.urls")),
     path("barbers/", include("barbers.urls")),
+    path("forgot_password/",TemplateView.as_view(template_name="barberlink/forgot_password.html"), name="forgot_password_page"),
     path("",TemplateView.as_view(template_name="barberlink/home.html"),name="home",),
     path("customers/", include("customers.urls")),
     path('i18n/', include('django.conf.urls.i18n')),
