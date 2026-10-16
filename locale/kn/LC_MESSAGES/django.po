@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: barberlink 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 16:41+0530\n"
+"POT-Creation-Date: 2026-10-16 15:50+0530\n"
 "PO-Revision-Date: 2026-10-02 12:55+0530\n"
 "Last-Translator: BarberLink\n"
 "Language-Team: Kannada\n"
@@ -50,117 +50,118 @@ msgstr "ಮೊತ್ತ: ₹120"
 msgid "Pay ₹120"
 msgstr "₹120 ಪಾವತಿಸಿ"
 
-#: .\templates\barberlink\barber_dashboard.html:138
+#: .\templates\barberlink\barber_dashboard.html:202
 #: .\templates\barberlink\customer_dashboard.html:99
 msgid "Today's Slots"
 msgstr "ಇಂದಿನ ಸಮಯಾವಕಾಶಗಳು"
 
-#: .\templates\barberlink\barber_dashboard.html:140
-#: .\templates\barberlink\barber_dashboard.html:331
+#: .\templates\barberlink\barber_dashboard.html:204
+#: .\templates\barberlink\barber_dashboard.html:395
 #: .\templates\barberlink\customer_dashboard.html:100
 #: .\templates\barberlink\customer_dashboard.html:373
 msgid "Loading slots..."
 msgstr "ಸಮಯಾವಕಾಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."
 
-#: .\templates\barberlink\barber_dashboard.html:144
+#: .\templates\barberlink\barber_dashboard.html:208
 #: .\templates\barberlink\customer_dashboard.html:78
 msgid "Today's Bookings"
 msgstr "ಇಂದಿನ ಬುಕಿಂಗ್‌ಗಳು"
 
-#: .\templates\barberlink\barber_dashboard.html:146
+#: .\templates\barberlink\barber_dashboard.html:210
 #: .\templates\barberlink\customer_dashboard.html:80
 msgid "Filter by status:"
 msgstr "ಸ್ಥಿತಿಯ ಪ್ರಕಾರ ವಿಂಗಡಿಸಿ:"
 
-#: .\templates\barberlink\barber_dashboard.html:148
+#: .\templates\barberlink\barber_dashboard.html:212
 #: .\templates\barberlink\customer_dashboard.html:82
 msgid "All"
 msgstr "ಎಲ್ಲವೂ"
 
-#: .\templates\barberlink\barber_dashboard.html:152
-#: .\templates\barberlink\barber_dashboard.html:381
+#: .\templates\barberlink\barber_dashboard.html:216
+#: .\templates\barberlink\barber_dashboard.html:445
 #: .\templates\barberlink\customer_dashboard.html:86
 #: .\templates\barberlink\customer_dashboard.html:426
 msgid "Loading bookings..."
 msgstr "ಬೂಕಿಂಗಗಳು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ..."
 
-#: .\templates\barberlink\barber_dashboard.html:157
+#: .\templates\barberlink\barber_dashboard.html:221
 #: .\templates\barberlink\customer_dashboard.html:104
 msgid "Booking Details"
 msgstr "ಬುಕಿಂಗ್ ವಿವರಗಳು"
 
-#: .\templates\barberlink\barber_dashboard.html:338
+#: .\templates\barberlink\barber_dashboard.html:402
 msgid "We could not load slots. Please try again."
 msgstr "ಸಮಯಾವಕಾಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: .\templates\barberlink\barber_dashboard.html:347
+#: .\templates\barberlink\barber_dashboard.html:411
 #: .\templates\barberlink\customer_dashboard.html:392
 msgid "No slots found."
 msgstr "ಯಾವುದೇ ಸಮಯಾವಕಾಶ ಸಿಗಲಿಲ್ಲ."
 
-#: .\templates\barberlink\barber_dashboard.html:391
+#: .\templates\barberlink\barber_dashboard.html:455
 #: .\templates\barberlink\customer_dashboard.html:436
 msgid "We could not load bookings. Please try again."
 msgstr "ಬುಕಿಂಗ್ ಲೋಡ್ ಮಾಡಲಿಕೆ ಆಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: .\templates\barberlink\barber_dashboard.html:414
+#: .\templates\barberlink\barber_dashboard.html:478
 #: .\templates\barberlink\customer_dashboard.html:459
 msgid "No bookings found."
 msgstr "ಯಾವುದೇ ಬೂಕಿಂಗಗಳು ಸಿಗಲಿಲ್ಲ "
 
-#: .\templates\barberlink\barber_dashboard.html:439
-msgid "Customer"
+#: .\templates\barberlink\barber_dashboard.html:503
+#: .\templates\barberlink\register.html:57
+msgid "Hello Customer"
 msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,"
 
-#: .\templates\barberlink\barber_dashboard.html:440
+#: .\templates\barberlink\barber_dashboard.html:504
 #: .\templates\barberlink\customer_dashboard.html:485
 msgid "Phone"
 msgstr "ಫೋನ್ "
 
-#: .\templates\barberlink\barber_dashboard.html:441
+#: .\templates\barberlink\barber_dashboard.html:505
 #: .\templates\barberlink\customer_dashboard.html:486
 msgid "Status"
 msgstr "ಸ್ಥಿತಿ "
 
-#: .\templates\barberlink\barber_dashboard.html:463
-#: .\templates\barberlink\barber_dashboard.html:582
+#: .\templates\barberlink\barber_dashboard.html:527
+#: .\templates\barberlink\barber_dashboard.html:646
 msgid "Approve"
 msgstr "ಅನುಮೋದಿಸಿ "
 
-#: .\templates\barberlink\barber_dashboard.html:472
-#: .\templates\barberlink\barber_dashboard.html:590
+#: .\templates\barberlink\barber_dashboard.html:536
+#: .\templates\barberlink\barber_dashboard.html:654
 msgid "Reject"
 msgstr "ತಿರಸ್ಕರಿಸಿ"
 
-#: .\templates\barberlink\barber_dashboard.html:481
-#: .\templates\barberlink\barber_dashboard.html:601
+#: .\templates\barberlink\barber_dashboard.html:545
+#: .\templates\barberlink\barber_dashboard.html:665
 msgid "Mark as Completed"
 msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ ಎಂದು ಗುರುತಿಸಿ "
 
-#: .\templates\barberlink\barber_dashboard.html:492
-#: .\templates\barberlink\barber_dashboard.html:571
+#: .\templates\barberlink\barber_dashboard.html:556
+#: .\templates\barberlink\barber_dashboard.html:635
 #: .\templates\barberlink\customer_dashboard.html:519
 msgid "Navigate"
 msgstr "ಸಂಚರಿಸಿ "
 
-#: .\templates\barberlink\barber_dashboard.html:527
+#: .\templates\barberlink\barber_dashboard.html:591
 #: .\templates\barberlink\customer_dashboard.html:590
 msgid "Slot already booked."
 msgstr "ಸಮಯಾವಕಾಶ ಈಗಾಗಲೇ ಬುಕ್ ಮಾಡಲಾಗಿದೆ  "
 
-#: .\templates\barberlink\barber_dashboard.html:540
+#: .\templates\barberlink\barber_dashboard.html:604
 msgid "Could not update slot. Try again."
 msgstr "ಸಮಾಯಾವಕಶ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: .\templates\barberlink\barber_dashboard.html:611
+#: .\templates\barberlink\barber_dashboard.html:675
 msgid "Close"
 msgstr "ಮುಚ್ಚಿ "
 
-#: .\templates\barberlink\barber_dashboard.html:649
+#: .\templates\barberlink\barber_dashboard.html:713
 msgid "Booking updated."
 msgstr "ಬುಕಿಂಗ್ ನವೀಕರಿಸಲಾಗಿದೆ "
 
-#: .\templates\barberlink\barber_dashboard.html:653
+#: .\templates\barberlink\barber_dashboard.html:717
 msgid "Could not update booking. Try again."
 msgstr "ಬುಕಿಂಗ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ  "
 
@@ -239,9 +240,10 @@ msgstr "ದೂರ "
 msgid "Could not load slots."
 msgstr "ಸಮಯಾವಕಾಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
 
-#: .\templates\barberlink\customer_dashboard.html:484
+
+#: .\templates\barberlink\register.html:62
 msgid "Barber"
-msgstr "ನಮಸ್ಕಾರ ಕ್ಷೌರಿಕ ,"
+msgstr "ಕ್ಷೌರಿಕ ,"
 
 #: .\templates\barberlink\customer_dashboard.html:508
 msgid "Cancel"
@@ -267,17 +269,38 @@ msgstr "ಸಮಯಾವಕಾಶವನ್ನು ಬುಕ್ ಮಾಡಲು ಸ
 msgid "Could not get location. Please enable location services."
 msgstr "ಸ್ಥಳವನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಸ್ಥಳ ಸೇವೆಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ."
 
+#: .\templates\barberlink\forgot_password.html:7
+#: .\templates\barberlink\forgot_password.html:10
+msgid "Confirm Password"
+msgstr "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ"
+
+#: .\templates\barberlink\forgot_password.html:12
+msgid "Enter your registered email address to reset your password."
+msgstr "ನಿಮ್ಮ ರೆಜಿಸ್ಟರ್ಡ್ ಇಮೇಲ್ ಅಡ್ರೆಸ್ "
+
+#: .\templates\barberlink\forgot_password.html:17
+#: .\templates\barberlink\register.html:70
+msgid "Email"
+msgstr "ಇಮೇಲ್ "
+
+
+#: .\templates\barberlink\forgot_password.html:23
+msgid "Back to Login"
+msgstr "ಲಾಗಿನ್ ಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
+
 #: .\templates\barberlink\home.html:47
 msgid "BarberLink"
 msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ "
 
 #: .\templates\barberlink\home.html:65 .\templates\barberlink\login.html:9
-#: .\templates\barberlink\login.html:86 .\templates\barberlink\login.html:111
+#: .\templates\barberlink\login.html:75 .\templates\barberlink\login.html:100
+#: .\templates\barberlink\register.html:89
 msgid "Login"
 msgstr "ಲಾಗಿನ್ "
 
-#: .\templates\barberlink\home.html:69 .\templates\barberlink\login.html:116
+#: .\templates\barberlink\home.html:69 .\templates\barberlink\login.html:105
 #: .\templates\barberlink\register.html:7
+#: .\templates\barberlink\register.html:86 
 msgid "Register"
 msgstr "ನೋಂದಣಿ ಮಾಡಿ"
 
@@ -290,10 +313,8 @@ msgid "Find Your Barber, Book Your Appointment"
 msgstr "ನಿಮ್ಮ ಕ್ಷೌರಿಕರನ್ನು ಹುಡುಕಿ, ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ"
 
 #: .\templates\barberlink\home.html:77
-msgid ""
-"Find nearby barbers, book appointments, and manage your bookings easily."
-msgstr ""
-"ಹತ್ತಿರದ ಕ್ಷೌರಿಕರನ್ನು ಹುಡುಕಿ, ನೇಮಕಾತಿಗಳನ್ನು ಬುಕ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ಬುಕಿಂಗ್‌ಗಳನ್ನು ಸುಲಭವಾಗಿ ನಿರ್ವಹಿಸಿ."
+msgid "Find nearby barbers, book appointments, and manage your bookings easily."
+msgstr "ಹತ್ತಿರದ ಕ್ಷೌರಿಕರನ್ನು ಹುಡುಕಿ, ನೇಮಕಾತಿಗಳನ್ನು ಬುಕ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ಬುಕಿಂಗ್‌ಗಳನ್ನು ಸುಲಭವಾಗಿ ನಿರ್ವಹಿಸಿ."
 
 #: .\templates\barberlink\home.html:79
 msgid "Our Features"
@@ -325,43 +346,35 @@ msgstr "ಲಭ್ಯವಿರುವ ಪಾವತಿ ಸೌಲಭ್ಯದ ಮೂ
 
 #: .\templates\barberlink\home.html:93
 msgid "BarberLink - Connecting customers and barbers."
-msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್   - ಗ್ರಾಹಕರು ಮತ್ತು ಕ್ಷೌರಿಕರನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ."
+msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ - ಗ್ರಾಹಕರು ಮತ್ತು ಕ್ಷೌರಿಕರನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ."
 
-#: .\templates\barberlink\login.html:91 .\templates\barberlink\login.html:93
+#: .\templates\barberlink\login.html:80 .\templates\barberlink\login.html:82
 msgid "Contact number"
 msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
 
-#: .\templates\barberlink\login.html:96 .\templates\barberlink\login.html:99
-msgid "Password"
-msgstr "ಪಾಸ್‌ವರ್ಡ್"
-
-#: .\templates\barberlink\login.html:103 .\templates\barberlink\login.html:134
+#: .\templates\barberlink\login.html:92 .\templates\barberlink\login.html:123
 msgid "Show"
 msgstr "ತೋರಿಸು "
 
-#: .\templates\barberlink\login.html:108
-#, fuzzy
-#| msgid "Confirm Password"
-msgid "Forgot password?"
-msgstr "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ"
-
-#: .\templates\barberlink\login.html:115
+msgid "Forgot Password?"
+msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?"
+#: .\templates\barberlink\login.html:104
 msgid "No account?"
 msgstr "ಖಾತೆ ಇಲ್ಲವೇ?"
 
-#: .\templates\barberlink\login.html:131
+#: .\templates\barberlink\login.html:120
 msgid "Hide"
-msgstr "ಅಡಗಿಸು "
+msgstr "ಅಡಗಿಸು"
 
-#: .\templates\barberlink\login.html:157
+#: .\templates\barberlink\login.html:146
 msgid "Login failed."
 msgstr "ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ "
 
-#: .\templates\barberlink\login.html:165
-#, fuzzy
-#| msgid "We could not load bookings. Please try again."
 msgid "Something went wrong. Please try again."
-msgstr "ಬುಕಿಂಗ್ ಲೋಡ್ ಮಾಡಲಿಕೆ ಆಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+msgstr "ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+
+msgid "Customer"
+msgstr "ಗ್ರಾಹಕ "
 
 #: .\templates\barberlink\payment_fail.html:7
 #: .\templates\barberlink\payment_fail.html:18
@@ -373,23 +386,51 @@ msgstr "ಪಾವತಿ ವಿಫಲವಾಗಿದೆ"
 msgid "Payment success"
 msgstr "ಪಾವತಿ ಯಶಸ್ವಿಯಾಗಿದೆ"
 
- msgid "Registration Form"
- msgstr "ನೋಂದಣಿ ಅರ್ಜಿ"
 
- msgid "Name"
- msgstr "ಹೆಸರು"
+msgid "Registration Form"
+msgstr "ನೋಂದಣಿ ಅರ್ಜಿ"
 
- msgid "I am a customer"
- msgstr "ನಾನೊಬ್ಬ ಗ್ರಾಹಕ"
+#: .\templates\barberlink\register.html:53
+msgid "I am registering as"
+msgstr "ನಾನು ನೋಂದಾಯಿಸಿಕೊಳ್ಳುತ್ತಿರುವುದು"
 
- msgid "I am a barber"
- msgstr "ನಾನೊಬ್ಬ ಕ್ಷೌರಿಕ"
+#: .\templates\barberlink\register.html:66
+msgid "Name"
+msgstr "ಹೆಸರು"
 
- msgid "Create account"
- msgstr "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
+#: .\templates\barberlink\register.html:67
+msgid "Enter your name"
+msgstr "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"
 
- msgid "Have an account?"
- msgstr "ಖಾತೆ ಇದೇಯೇ?"
+#: .\templates\barberlink\register.html:68
 
- msgid "Log in"
- msgstr "ಲಾಗಿನ್ ಮಾಡಿ"
+
+msgid "Contact Number"
+msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
+
+#: .\templates\barberlink\register.html:69
+
+msgid "Enter contact number"
+msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ"
+
+#: .\templates\barberlink\register.html:71
+msgid "Enter your email"
+msgstr "ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ"
+
+#: .\templates\barberlink\register.html:74
+ 
+msgid "Enter password"
+msgstr "ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
+
+msgid "Password"
+msgstr "ಪಾಸ್‌ವರ್ಡ್"
+
+#: .\templates\barberlink\register.html:88
+msgid "Have an account?"
+msgstr "ಖಾತೆ ಇದೇಯೇ?"
+
+msgid "Forgot Password"
+msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ"
+
+msgid "Reset Password"
+msgstr "ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್ ಮಾಡಿ  "
