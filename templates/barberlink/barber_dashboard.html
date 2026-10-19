@@ -6,6 +6,246 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Barber Dashboard" %}</title>
+  
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+
+  nav {
+    text-align: right;
+    margin-bottom: 25px;
+  }
+
+  nav select,
+  nav button {
+    padding: 8px 12px;
+    margin: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  h1 {
+    color: green;
+    text-align: center;
+  }
+
+  h2 {
+    text-align: center;
+    color: #555;
+  }
+
+  h3 {
+    color: #333;
+  }
+
+  #slots-section,
+  #bookings-section,
+  #booking-detail,
+  #profile-section {
+    background-color: white;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+  }
+
+  #slots-grid,
+  #bookings-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+  }
+
+  .slot-card,
+  .booking-card {
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: white;
+  }
+
+  .slot-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .slot-time,
+  .booking-time {
+    font-weight: bold;
+  }
+
+  .slot-available {
+    background-color: #e8f5e9;
+    border-color: green;
+  }
+
+  .slot-na {
+    background-color: #f5f5f5;
+    color: #777;
+  }
+
+  .slot-booked {
+    background-color: #ffebee;
+    border-color: red;
+  }
+
+  .slot-approved {
+    background-color: #e3f2fd;
+    border-color: blue;
+  }
+
+  .slot-status {
+    font-size: 12px;
+  }
+
+  .booking-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .booking-status-badge {
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+  }
+
+  .booking-status-waiting {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+
+  .booking-status-approved {
+    background-color: #e3f2fd;
+    color: #1565c0;
+  }
+
+  .booking-status-rejected,
+  .booking-status-cancelled {
+    background-color: #eee;
+    color: #555;
+  }
+
+  .booking-status-completed {
+    background-color: #e8f5e9;
+    color: green;
+  }
+
+  .booking-detail-row {
+    margin: 8px 0;
+  }
+
+  .booking-detail-label,
+  #booking-detail dt,
+  #profile-details dt {
+    font-weight: bold;
+  }
+
+  #booking-detail dl,
+  #profile-details {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+  }
+
+  #booking-detail dd,
+  #profile-details dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  #booking-actions,
+  .booking-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+  }
+
+  button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #logout,
+  .btn-approve {
+    background-color: green;
+    color: white;
+  }
+
+  .btn-reject {
+    background-color: red;
+    color: white;
+  }
+
+  .btn-complete {
+    background-color: blue;
+    color: white;
+  }
+
+  .btn-navigate {
+    background-color: orange;
+    color: white;
+  }
+
+  .btn-close,
+  .btn-cancel {
+    background-color: gray;
+    color: white;
+  }
+
+  #message {
+    background-color: #e8f5e9;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+
+    #slots-grid,
+    #bookings-list {
+      grid-template-columns: 1fr;
+    }
+
+    #slots-section,
+    #bookings-section,
+    #booking-detail,
+    #profile-section {
+      padding: 15px;
+    }
+
+    nav {
+      text-align: center;
+    }
+
+    #booking-detail dl,
+    #profile-details {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 </head>
 <body>
   <nav>
