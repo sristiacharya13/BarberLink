@@ -146,11 +146,10 @@
           window.location.href = "/barbers/dashboard/";
         }
 
-      } catch (error) {
+      }catch (error) {
         alert("Something went wrong. Please try again.");
       }
     });
-
     toggle.addEventListener("click", function() {
       if (password.type === "password") {
         password.type = "text";
