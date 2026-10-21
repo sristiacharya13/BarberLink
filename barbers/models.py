@@ -23,8 +23,8 @@ class Barber(models.Model):
     ]
     barber_id=models.AutoField(primary_key=True)
     name=models.CharField(max_length=255)
+    name_kn = models.CharField(max_length=255,blank=True,default="")
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='barber')
-        
     account_created_at=models.DateTimeField(auto_now_add=True)
     location=models.JSONField(null=True, blank=True)
     subscription_status=models.CharField(max_length=20, choices=STATUS_CHOICES, default="trial")

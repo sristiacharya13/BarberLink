@@ -11,6 +11,7 @@ class BarberSerializer(serializers.ModelSerializer):
         fields = [
             "barber_id",
             "name",
+            "name_kn",
             "location",
             "account_created_at",
             "subscription_status",

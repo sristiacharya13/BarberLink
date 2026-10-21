@@ -4,7 +4,7 @@ from .models import Barber
 
 @admin.register(Barber)
 class BarberAdmin(admin.ModelAdmin):
-    list_display = ("barber_id", "name", "contact_number", "subscription_status", "subscription_expiry_date")
+    list_display = ("barber_id", "name", "name_kn","contact_number", "subscription_status", "subscription_expiry_date")
     list_select_related = ("user",)
     search_fields = ("name", "user__contact_number")
     raw_id_fields = ("user",)
