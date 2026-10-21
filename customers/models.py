@@ -5,8 +5,8 @@ from django.conf import settings
 class Customer(models.Model):
     customer_id=models.AutoField(primary_key=True)
     name=models.CharField(max_length=255)
+    name_kn = models.CharField(max_length=255,blank=True,default="")
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='customer')
-    
     location=models.JSONField(null=True, blank=True)
 
     def __str__(self):

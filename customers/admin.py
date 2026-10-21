@@ -4,7 +4,7 @@ from .models import Customer
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ("customer_id", "name", "contact_number")
+    list_display = ("customer_id", "name", "name_kn", "contact_number")
     list_select_related = ("user",)
     search_fields = ("name", "user__contact_number")
     raw_id_fields = ("user",)
