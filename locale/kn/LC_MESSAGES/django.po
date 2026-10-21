@@ -368,6 +368,9 @@ msgstr "ಪಾಸ್‌ವರ್ಡ್"
 msgid "Show"
 msgstr "ತೋರಿಸು "
 
+msgid "BarberLink-An app for barbers"
+msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್-ಕ್ಷೌರಿಕರ ಒಂದು ಅಪ್ಲಿಕೇಶನ್."
+
 #: .\templates\barberlink\login.html:97
 msgid "Forgot Password?"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?"
@@ -434,8 +437,8 @@ msgstr "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ"
 msgid "Have an account?"
 msgstr "ಖಾತೆ ಇದೇಯೇ?"
 
-msgid "Hello Customer"
-msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,"
+msgid "Hello Customer,%(name)s"
+msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,%(name)s"
 
 msgid "Payment"
 msgstr "ಪಾವತಿ"
