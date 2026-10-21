@@ -516,7 +516,7 @@
       list.innerHTML = "";
 
       var rows = [
-        ["Name", orNotSet(profile.name)],
+        ["Name", orNotSet( "{{ LANGUAGE_CODE }}" === "kn"? (profile.name_kn || profile.name): profile.name)],
         ["Contact number", orNotSet(contactNumber)],
         ["Location", orNotSet(profile.location ? JSON.stringify(profile.location) : null)]
       ];
