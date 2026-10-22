@@ -266,6 +266,8 @@ msgstr "ಬುಕಿಂಗ್ ರದ್ದುಗೊಳಿಸಲು  ಸಾಧ್
 msgid "Booking requested."
 msgstr "ಬುಕಿಂಗ್ ವಿನಂತಿಸಲಾಗಿದೆ."
 
+
+
 #: .\templates\barberlink\customer_dashboard.html:908
 msgid "Could not book slot. Try again."
 msgstr "ಸಮಯಾವಕಾಶವನ್ನು ಬುಕ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."

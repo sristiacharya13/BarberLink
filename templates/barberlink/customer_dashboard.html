@@ -650,7 +650,9 @@
       barbers.forEach(function (barber) {
         var card = document.createElement("div");
         card.className = "barber-card";
-        card.innerHTML = "<strong>" + (barber.name || "Barber") + "</strong><br><small>" +
+        var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name): barber.name;
+
+        card.innerHTML = "<strong>" + (displayName || "Barber") + "</strong><br><small>" +
           "{% translate 'Contact' %}: " + orNotSet(barber.contact_number) + "<br>" +
           "{% translate 'Distance' %}: " + barber.distance_km + " km</small>";
         card.addEventListener("click", function () {
@@ -664,7 +666,7 @@
       document.getElementById("barbers-list-section").hidden = true;
       var detailSection = document.getElementById("barber-detail-section");
       detailSection.hidden = false;
-      document.getElementById("barber-detail-name").textContent = barber.name || "Barber";
+      document.getElementById("barber-detail-name").textContent ="{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name || "Barber"): (barber.name || "Barber");
       document.getElementById("barber-detail-name").setAttribute("data-barber-id", barber.barber_id);
       document.getElementById("barber-detail-status").innerHTML = "{% translate 'Contact' %}: " + orNotSet(barber.contact_number) + " | {% translate 'Distance' %}: " + barber.distance_km + " km";
       loadCustomerSlots(barber.barber_id);
@@ -776,18 +778,18 @@
 
         var statusBadge = document.createElement("span");
         statusBadge.className = "customer-booking-status-badge customer-booking-status-" + booking.booking_status;
-        statusBadge.textContent = gettext(booking.booking_status);
+        statusBadge.textContent = gettext(booking.booking_status).toLowerCase();
 
         header.appendChild(timeSpan);
         header.appendChild(statusBadge);
         card.appendChild(header);
 
+       var barberName = "{{ LANGUAGE_CODE }}" === "kn"? (booking.barber_name_kn || booking.barber_name): booking.barber_name;
         var details = [
-          { label: "{% translate 'Barber' %}: ", value: booking.barber_name },
-          { label: "{% translate 'Phone' %}: ", value: booking.barber_phone },
-          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status) },
+            { label: "{% translate 'Barber' %}: ", value: barberName },
+            { label: "{% translate 'Phone' %}: ", value: booking.barber_phone },
+            { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status.toLowerCase()) },
         ];
-
         details.forEach(function (d) {
           var row = document.createElement("div");
           row.className = "customer-booking-detail-row";
@@ -916,8 +918,8 @@
           .then(function (user) {
             if (!user) return;
             currentUser = user;
-            document.getElementById("greeting").textContent =
-              GREETING_PREFIX + " " + (user.name || user.contact_number);
+            var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
+            document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
             document.getElementById("profile-toggle").addEventListener("click", loadProfile);
           })
           .catch(function () {

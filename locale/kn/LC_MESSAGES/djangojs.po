@@ -83,3 +83,15 @@ msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
 
 msgid "CANCELLED"
 msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "rejected"
+msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+
+msgid "REJECTED"
+msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+
+msgid "approved"
+msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
+msgid "APPROVED"
+msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"

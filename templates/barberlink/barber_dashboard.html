@@ -641,16 +641,16 @@ function loadProfile() {
 
         var statusBadge = document.createElement("span");
         statusBadge.className = "booking-status-badge booking-status-" + booking.booking_status;
-        statusBadge.textContent = gettext(booking.booking_status);
+        statusBadge.textContent = gettext(booking.booking_status).toLowerCase();
 
         header.appendChild(timeSpan);
         header.appendChild(statusBadge);
         card.appendChild(header);
-
+        var customerName = "{{ LANGUAGE_CODE }}" === "kn" ? (booking.customer_name_kn || booking.customer_name): booking.customer_name;
         var details = [
-          { label: "{% translate 'Customer' %}: ", value: booking.customer_name },
+          { label: "{% translate 'Customer' %}: ", value: customerName },
           { label: "{% translate 'Phone' %}: ", value: booking.customer_phone },
-          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status) },
+          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status.toLowerCase()) },
         ];
 
         details.forEach(function (d) {
@@ -876,8 +876,8 @@ function loadProfile() {
         .then(function (user) {
           if (!user) return;
           currentUser = user;
-          document.getElementById("greeting").textContent =
-            GREETING_PREFIX + " " + (user.name || user.contact_number);
+          var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
+          document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
           document.getElementById("profile-toggle").addEventListener("click", loadProfile);
         })
         .catch(function () {
