@@ -30,6 +30,7 @@ class NearbyBarberSerializer(serializers.ModelSerializer):
         fields = [
             "barber_id",
             "name",
+            "name_kn",
             "contact_number",
             "location",
             "account_created_at",

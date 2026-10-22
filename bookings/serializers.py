@@ -2,8 +2,6 @@ from rest_framework import serializers
 
 from bookings.models import Booking, Slot
 from customers.models import Customer
-
-
 class SlotSerializer(serializers.ModelSerializer):
     start_time = serializers.TimeField(format="%H:%M", input_formats=["%H:%M"])
     end_time = serializers.TimeField(format="%H:%M", input_formats=["%H:%M"])
@@ -22,6 +20,7 @@ class SlotSerializer(serializers.ModelSerializer):
         return {
             "booking_id": booking.booking_id,
             "customer_name": booking.customer.get_full_name(),
+            "customer_name_kn": profile.name_kn if profile else "",
             "customer_phone": booking.customer.contact_number,
             "customer_location": profile.location if profile else None,
             "booking_status": booking.booking_status,
@@ -50,6 +49,7 @@ class BookingCustomerDetailSerializer(serializers.ModelSerializer):
 
 class BookingSerializer(serializers.ModelSerializer):
     customer_name = serializers.SerializerMethodField()
+    customer_name_kn=serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -58,6 +58,7 @@ class BookingSerializer(serializers.ModelSerializer):
             "slot",
             "customer",
             "customer_name",
+            "customer_name_kn",
             "barber",
             "booking_status",
             "created_at",
@@ -72,14 +73,20 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def get_customer_name(self, obj):
         return obj.customer.get_full_name()
+    
+    def get_customer_name_kn(self, obj):
+        profile = getattr(obj.customer, "customer", None)
+        return profile.name_kn if profile else ""
 
 
 class BookingDetailSerializer(serializers.ModelSerializer):
     slot = SlotSerializer(read_only=True)
     customer_name = serializers.SerializerMethodField()
+    customer_name_kn = serializers.SerializerMethodField()
     customer_phone = serializers.SerializerMethodField()
     customer_location = serializers.SerializerMethodField()
     barber_name = serializers.SerializerMethodField()
+    barber_name_kn = serializers.SerializerMethodField()
     barber_phone = serializers.SerializerMethodField()
     barber_location = serializers.SerializerMethodField()
 
@@ -90,10 +97,12 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "slot",
             "customer",
             "customer_name",
+            "customer_name_kn",
             "customer_phone",
             "customer_location",
             "barber",
             "barber_name",
+            "barber_name_kn",
             "barber_phone",
             "barber_location",
             "booking_status",
@@ -103,6 +112,10 @@ class BookingDetailSerializer(serializers.ModelSerializer):
 
     def get_customer_name(self, obj):
         return obj.customer.get_full_name()
+    
+    def get_customer_name_kn(self, obj):
+        profile = getattr(obj.customer, "customer", None)
+        return profile.name_kn if profile else ""
 
     def get_customer_phone(self, obj):
         return obj.customer.contact_number
@@ -113,6 +126,9 @@ class BookingDetailSerializer(serializers.ModelSerializer):
 
     def get_barber_name(self, obj):
         return obj.barber.name
+    
+    def get_barber_name_kn(self, obj):
+        return obj.barber.name_kn
 
     def get_barber_phone(self, obj):
         return obj.barber.user.contact_number

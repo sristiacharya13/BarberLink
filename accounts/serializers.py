@@ -29,14 +29,18 @@ def normalize_number(raw):
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    name_kn = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["id", "contact_number", "role", "name"]
+        fields = ["id", "contact_number", "role", "name", "name_kn"]
 
     def get_name(self, user):
         return user.get_full_name()
 
+    def get_name_kn(self, user):
+        profile = getattr(user, user.role, None)
+        return getattr(profile, "name_kn", "") if profile else ""
 
 class RegisterSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
