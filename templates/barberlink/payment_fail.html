@@ -1,10 +1,77 @@
-
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% translate "Payment failed" %}</title>
+    <style>
+      * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7f5;
+            margin: 0;
+            padding: 25px;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 50px;
+        }
+
+        select {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        section {
+            max-width: 450px;
+            margin: 70px auto;
+            padding: 40px 25px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 20px 0 10px;
+            color: #c0392b;
+            font-size: 28px;
+        }
+
+        section p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        section h1::before {
+            content: "✕";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #fdecea;
+            color: #c0392b;
+            font-size: 30px;
+        }
+    </style>
 </head>
 <body>
     <form action="{% url 'set_language' %}" method="post" style="display:inline">
@@ -15,6 +82,9 @@
         <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
       </select>
     </form>
-    <h1>{% translate "Payment failed" %}</h1>
+    <section>
+        <h1>{% translate "Payment failed" %}</h1>
+        <p>{% translate "Your payment could not be completed. Please try again." %}</p>
+    </section>
 </body>
 </html>

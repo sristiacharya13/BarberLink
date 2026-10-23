@@ -280,8 +280,8 @@ section p:first-letter {
 
         var rzp = new Razorpay(options);
         rzp.on("payment.failed", function (response) {
-          showMessage(response.error.description || "{% translate 'Payment failed. Please try again.' %}");
-        });
+    window.location.href = "/payments/failed_dashboard/";
+});
         rzp.open();
       });
     }
