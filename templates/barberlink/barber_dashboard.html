@@ -600,7 +600,7 @@ function loadProfile() {
         })
         .catch(function(){
           document.documentElement.style.visibility="visible";
-          showMessage("{% translate 'We could not load your dashboard. Please try again later' %}")
+          showMessage(gettext('We could not load your dashboard. Please try again later'))
         })
     }
 
@@ -881,7 +881,7 @@ function loadProfile() {
           document.getElementById("profile-toggle").addEventListener("click", loadProfile);
         })
         .catch(function () {
-          showMessage(gettext("We could not load your account. Please log in again."));
+          showMessage("{% translate 'We could not load your account. Please log in again.'}");
         });
 
       document.getElementById("logout").addEventListener("click", logout);

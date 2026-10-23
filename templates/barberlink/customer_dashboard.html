@@ -923,7 +923,7 @@
             document.getElementById("profile-toggle").addEventListener("click", loadProfile);
           })
           .catch(function () {
-            showMessage("{% translate 'We could not load your account. Please log in again.' %");
+            showMessage(gettext('We could not load your account. Please log in again.'));
           });
       } else {
         isLoggedIn = false;
