@@ -90,10 +90,11 @@ msgid "We could not load bookings. Please try again."
 msgstr "ಬುಕಿಂಗ್ ಲೋಡ್ ಮಾಡಲಿಕೆ ಆಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
 #: .\templates\barberlink\barber_dashboard.html:603
-#, fuzzy
-#| msgid "We could not load slots. Please try again."
-msgid "We could not load your dashboard. Please try again later"
-msgstr "ಸಮಯಾವಕಾಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+msgid "We could not load your account. Please try again later"
+msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+
+msgid "Your payment could not be completed. Please try again."
+msgstr "ನಿಮ್ಮ ಪಾವತಿಯನ್ನು ಯಶಸ್ವಿಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗುತಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.  "
 
 #: .\templates\barberlink\barber_dashboard.html:626
 #: .\templates\barberlink\customer_dashboard.html:761

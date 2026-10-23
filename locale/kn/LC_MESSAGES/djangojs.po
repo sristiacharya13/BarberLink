@@ -95,3 +95,6 @@ msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
 
 msgid "APPROVED"
 msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
+msgid "We could not load your dashboard. Please try again later"
+msgstr "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ"
