@@ -48,7 +48,7 @@ def payment_success(request):
 
 
 def payment_failed(request):
-    return render(request, 'barberlink/payment_fail.html')
+        return render(request, 'barberlink/payment_fail.html')
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
