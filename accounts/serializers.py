@@ -45,9 +45,17 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     contact_number = serializers.CharField(max_length=20)
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True, trim_whitespace=False)
     role = serializers.ChoiceField(choices=[User.ROLE_BARBER, User.ROLE_CUSTOMER])
 
+    def validate_email(self, value):
+        value = value.strip().lower()
+
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("This email is already registered.")
+        return value
+    
     def validate_contact_number(self, value):
         number = normalize_number(value)
         if User.objects.filter(contact_number=number).exists():
@@ -63,6 +71,7 @@ class RegisterSerializer(serializers.Serializer):
         user = User.objects.create_user(
             contact_number=data["contact_number"],
             password=data["password"],
+            email=data["email"],
             role=data["role"],
         )
         profile = Barber if data["role"] == User.ROLE_BARBER else Customer
