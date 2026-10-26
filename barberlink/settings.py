@@ -163,5 +163,6 @@ SIMPLE_JWT = {
 # Razorpay. Optional: leave unset to disable the payment block entirely.
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
-
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "BarberLink <noreply@barberlink.com>"
 SUBSCRIPTION_AMOUNT_INR=499
