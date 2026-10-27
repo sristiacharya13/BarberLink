@@ -1,5 +1,5 @@
 import re
-
+from django.utils.translation import gettext
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password as run_password_validators
 from django.db import transaction
@@ -23,7 +23,7 @@ def normalize_number(raw):
     elif digits.startswith("0") and len(digits) == 11:
         digits = digits[1:]
     if not re.fullmatch(r"[6-9]\d{9}", digits):
-        raise serializers.ValidationError("Enter a valid 10-digit Indian mobile number.")
+        raise serializers.ValidationError(gettext("Enter a valid 10-digit Indian mobile number."))
     return digits
 
 
@@ -87,7 +87,7 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, trim_whitespace=False)
 
     def validate(self, attrs):
-        generic = AuthenticationFailed("Invalid contact number or password.")
+        generic = AuthenticationFailed(gettext("Invalid contact number or password."))
         try:
             number = normalize_number(attrs["contact_number"])
         except serializers.ValidationError:
