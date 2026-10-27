@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: barberlink 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-26 16:16+0530\n"
+"POT-Creation-Date: 2026-10-27 11:12+0530\n"
 "PO-Revision-Date: 2026-10-02 12:55+0530\n"
 "Last-Translator: BarberLink\n"
 "Language-Team: Kannada\n"
@@ -13,6 +13,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\accounts\serializers.py:26
+msgid "Enter a valid 10-digit Indian mobile number."
+msgstr "ಮಾನ್ಯವಾದ 10 ಅಂಕಿಗಳ ಭಾರತೀಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ."
+
+#: .\accounts\serializers.py:90
+msgid "Invalid contact number or password."
+msgstr "ಅಮಾನ್ಯವಾದ ಸಂಪರ್ಕ ಸಂಖ್ಯೆ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ "
 
 #: .\templates\barberlink\barber_dashboard.html:8
 #: .\templates\barberlink\barber_dashboard.html:266
@@ -160,12 +168,8 @@ msgid "Renew your subscription"
 msgstr "ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆಯನ್ನು ನವೀಕರಿಸಿ"
 
 #: .\templates\barberlink\barber_payment.html:202
-msgid ""
-"Your subscription has expired. Please renew to access your dashboard, slots "
-"and bookings."
-msgstr ""
-"ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆಯ ಅವಧಿ ಮುಗಿದಿದೆ. ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್, ಸಮಯಾವಕಾಶಗಳು ಮತ್ತು ಬುಕಿಂಗ್‌ಗಳನ್ನು "
-"ಪ್ರವೇಶಿಸಲು ದಯವಿಟ್ಟು ನವೀಕರಿಸಿ."
+msgid "Your subscription has expired. Please renew to access your dashboard, slots and bookings."
+msgstr "ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆಯ ಅವಧಿ ಮುಗಿದಿದೆ. ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್, ಸಮಯಾವಕಾಶಗಳು ಮತ್ತು ಬುಕಿಂಗ್‌ಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ದಯವಿಟ್ಟು ನವೀಕರಿಸಿ."
 
 #: .\templates\barberlink\barber_payment.html:208
 msgid "Amount"
@@ -185,9 +189,7 @@ msgstr "ಪಾವತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ದೃಢೀ
 
 #: .\templates\barberlink\barber_payment.html:276
 msgid "Payment received but could not be recorded. Please contact support."
-msgstr ""
-"ಪಾವತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ, ಆದರೆ ದಾಖಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಸಹಾಯವಿಭಾಗವನ್ನು "
-"ಸಂಪರ್ಕಿಸಿ."
+msgstr "ಪಾವತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ, ಆದರೆ ದಾಖಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಸಹಾಯವಿಭಾಗವನ್ನು ಸಂಪರ್ಕಿಸಿ."
 
 #: .\templates\barberlink\customer_dashboard.html:8
 #: .\templates\barberlink\customer_dashboard.html:328
@@ -339,12 +341,12 @@ msgid "BarberLink"
 msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ "
 
 #: .\templates\barberlink\home.html:65 .\templates\barberlink\login.html:9
-#: .\templates\barberlink\login.html:75 .\templates\barberlink\login.html:100
+#: .\templates\barberlink\login.html:74 .\templates\barberlink\login.html:99
 #: .\templates\barberlink\register.html:89
 msgid "Login"
 msgstr "ಲಾಗಿನ್ "
 
-#: .\templates\barberlink\home.html:69 .\templates\barberlink\login.html:105
+#: .\templates\barberlink\home.html:69 .\templates\barberlink\login.html:104
 #: .\templates\barberlink\register.html:7
 msgid "Register"
 msgstr "ನೋಂದಣಿ ಮಾಡಿ"
@@ -396,37 +398,42 @@ msgstr "ಲಭ್ಯವಿರುವ ಪಾವತಿ ಸೌಲಭ್ಯದ ಮೂ
 msgid "BarberLink - Connecting customers and barbers."
 msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ - ಗ್ರಾಹಕರು ಮತ್ತು ಕ್ಷೌರಿಕರನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ."
 
-#: .\templates\barberlink\login.html:80 .\templates\barberlink\register.html:68
+#: .\templates\barberlink\login.html:79 .\templates\barberlink\register.html:68
 msgid "Contact Number"
 msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
 
+#: .\templates\barberlink\login.html:81
+#, fuzzy
+#| msgid "Contact Number"
+msgid "Contact number"
+msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
 
-#: .\templates\barberlink\login.html:85 .\templates\barberlink\login.html:88
+#: .\templates\barberlink\login.html:84 .\templates\barberlink\login.html:87
 #: .\templates\barberlink\register.html:72
 msgid "Password"
 msgstr "ಪಾಸ್‌ವರ್ಡ್"
 
-#: .\templates\barberlink\login.html:92 .\templates\barberlink\login.html:123
+#: .\templates\barberlink\login.html:91 .\templates\barberlink\login.html:122
 msgid "Show"
 msgstr "ತೋರಿಸು "
 
-#: .\templates\barberlink\login.html:97
+#: .\templates\barberlink\login.html:96
 msgid "Forgot Password?"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?"
 
-#: .\templates\barberlink\login.html:104
+#: .\templates\barberlink\login.html:103
 msgid "No account?"
 msgstr "ಖಾತೆ ಇಲ್ಲವೇ?"
 
-#: .\templates\barberlink\login.html:120
+#: .\templates\barberlink\login.html:119
 msgid "Hide"
 msgstr "ಅಡಗಿಸು"
 
-#: .\templates\barberlink\login.html:146
+#: .\templates\barberlink\login.html:145
 msgid "Login failed."
 msgstr "ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ "
 
-#: .\templates\barberlink\login.html:154
+#: .\templates\barberlink\login.html:153
 msgid "Something went wrong. Please try again."
 msgstr "ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
@@ -443,15 +450,17 @@ msgstr "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಯಶಸ್ವಿಯಾ�
 msgid "Log In Now"
 msgstr "ಈಗಲೇ ಲಾಗಿನ್ ಮಾಡಿ "
 
+#: .\templates\barberlink\password_reset_confirm.html:20
 msgid "New Password"
 msgstr "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್"
 
+#: .\templates\barberlink\password_reset_confirm.html:28
 msgid "Confirm New Password"
 msgstr "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ"
 
+#: .\templates\barberlink\password_reset_confirm.html:35
 msgid "Change Password"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸಿ."
-
 
 #: .\templates\barberlink\password_reset_confirm.html:40
 msgid "This reset link is invalid or has expired. Please request a new one."
@@ -512,7 +521,7 @@ msgstr "ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂ
 msgid "Enter password"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
 
-#: .\templates\barberlink\register.html:81
+#: .\templates\barberlink\register.html:79
 msgid "Confirm Password"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ"
 
@@ -523,11 +532,11 @@ msgstr "ಖಾತೆ ಇದೇಯೇ?"
 msgid "Back to Login Page"
 msgstr "ಲಾಗಿನ್ ಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 
- msgid "We could not load your account. Please try again later"
- msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+msgid "We could not load your account. Please try again later"
+msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
- msgid "Hello Customer,%(name)s"
- msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,%(name)s"
+msgid "Hello Customer,%(name)s"
+msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,%(name)s"
 
- msgid "Payment failed. Please try again."
- msgstr "ಪಾವತಿ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+msgid "Payment failed. Please try again."
+msgstr "ಪಾವತಿ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
