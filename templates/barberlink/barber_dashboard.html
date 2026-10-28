@@ -410,6 +410,17 @@
       return value === undefined || value === null || value === "" ? gettext("Not set") : value;
     }
 
+    function formatDate(value) {
+      if (value === undefined || value === null || value === "") return null;
+      var s = String(value);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        s = s + "T00:00:00";
+      }
+      var d = new Date(s);
+      if (isNaN(d.getTime())) return null;
+      return d.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    }
+
     var currentUser = null;
 
     function renderProfile(profile, contactNumber) {
@@ -418,12 +429,12 @@
       list.innerHTML = "";
 
       var rows = [
-        ["Name", orNotSet("{{ LANGUAGE_CODE }}" === "kn"? (profile.name_kn || profile.name): profile.name)]
+        ["Name", orNotSet(profile.name)],
         ["Contact number", orNotSet(contactNumber)],
         ["Location", orNotSet(profile.location ? JSON.stringify(profile.location) : null)],
         ["Subscription status", orNotSet(profile.subscription_status)],
-        ["Subscription expires on", orNotSet(profile.subscription_expiry_date)],
-        ["Member since", orNotSet(profile.account_created_at)]
+        ["Subscription expires on", orNotSet(formatDate(profile.subscription_expiry_date))],
+        ["Member since", orNotSet(formatDate(profile.account_created_at))]
       ];
 
       rows.forEach(function (row) {
@@ -592,7 +603,7 @@ function loadProfile() {
           }
           document.documentElement.style.visibility="visible";
           renderBookings(data.todays_bookings || []);
-          populateStatufilter(data.booking_status_options || []);
+          populateStatusFilter(data.booking_status_options || []);
           loadSlots();
           if(data.barber && !data.barber.location){
             captureAndSaveLocation("/barbers/api/location");
