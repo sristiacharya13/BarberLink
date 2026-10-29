@@ -313,6 +313,22 @@
     .btn-cancel { background: #757575; }
   </style>
 
+  <section id="service-charge-section">
+    <h3>Set Service Charges</h3>
+
+    <form id="service-charge-form">
+      <label for="regular-charge">Regular day charge (₹):</label>
+      <input type="number" id="regular-charge" min="0"
+            step="10" required>
+
+      <label for="sunday-charge">Sunday charge (₹):</label>
+      <input type="number" id="sunday-charge" min="0"
+            step="10" required>
+
+      <button type="submit">Save Charges</button>
+    </form>
+  </section>
+
   <section id="slots-section">
     <h3>{% translate "Today's Slots" %}</h3>
     <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
@@ -641,7 +657,9 @@ function loadProfile() {
         var card = document.createElement("div");
         card.className = "booking-card";
         card.dataset.status = booking.booking_status;
-
+        if (booking.booking_status === "cancelled") {
+          alert("Customer has cancelled the booking");
+        }
         var header = document.createElement("div");
         header.className = "booking-header";
 
@@ -863,45 +881,75 @@ function loadProfile() {
         headers: authHeaders(),
         body: JSON.stringify({ booking_status: targetStatus }),
       })
-        .then(function (res) {
-          if (!res.ok) throw new Error("failed");
-          return res.json();
+      .then(function (res) {
+        if (!res.ok) throw new Error("failed");
+        return res.json();
+      })
+      .then(function (data) {
+        if (detailSection) detailSection.hidden = true;
+        showMessage("{% translate 'Booking updated.' %}");
+        loadSlots();
+      })
+      .catch(function () {
+        showMessage("{% translate 'Could not update booking. Try again.' %}");
+      });
+    }
+    var chargeForm = document.getElementById("service-charge-form");
+
+if (chargeForm) {
+    chargeForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        fetch("/barbers/api/service-charges/", {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({
+                regular_service_charge:
+                    document.getElementById("regular-charge").value,
+                sunday_service_charge:
+                    document.getElementById("sunday-charge").value
+            })
         })
-        .then(function (data) {
-          if (detailSection) detailSection.hidden = true;
-          showMessage("{% translate 'Booking updated.' %}");
-          loadSlots();
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error("Could not save charges");
+            }
+
+            return response.json();
+        })
+        .then(function () {
+            showMessage("Service charges saved successfully.");
         })
         .catch(function () {
-          showMessage("{% translate 'Could not update booking. Try again.' %}");
+            showMessage("Failed to save service charges.");
         });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!getToken()) {
+      window.location.href = "/login/";
+      return;
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      if (!getToken()) {
-        window.location.href = "/login/";
-        return;
-      }
+    getJSON("/api/v1/auth/me/")
+      .then(function (user) {
+        if (!user) return;
+        currentUser = user;
+        var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
+        document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
+        document.getElementById("profile-toggle").addEventListener("click", loadProfile);
+      })
+      .catch(function () {
+        showMessage("{% translate 'We could not load your account. Please log in again.'}");
+      });
 
-      getJSON("/api/v1/auth/me/")
-        .then(function (user) {
-          if (!user) return;
-          currentUser = user;
-          var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
-          document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
-          document.getElementById("profile-toggle").addEventListener("click", loadProfile);
-        })
-        .catch(function () {
-          showMessage("{% translate 'We could not load your account. Please log in again.'}");
-        });
-
-      document.getElementById("logout").addEventListener("click", logout);
-      loadSlots();
-      //loadBookings();
-      //checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
-      loadDashboard();
-      updateSlotsDate();
-    });
+    document.getElementById("logout").addEventListener("click", logout);
+    loadSlots();
+    //loadBookings();
+    //checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
+    loadDashboard();
+    updateSlotsDate();
+  });
   })();
   </script>
 </body>

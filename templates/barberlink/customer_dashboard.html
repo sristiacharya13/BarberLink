@@ -703,11 +703,13 @@
 
         var timeSpan = document.createElement("span");
         timeSpan.textContent = slot.start_time + " \u2013 " + slot.end_time;
-
+        var priceSpan = document.createElement("span");
+        priceSpan.textContent = slot.service_charge === null ? "Price not set" : "Service charge: ₹" + slot.service_charge;
         var statusSpan = document.createElement("span");
         statusSpan.textContent = gettext(slot.status.toLowerCase());
 
         card.appendChild(timeSpan);
+        card.appendChild(priceSpan);
         card.appendChild(statusSpan);
 
         card.addEventListener("click", function () {
@@ -857,7 +859,7 @@
           return res.json();
         })
         .then(function () {
-          showMessage("{% translate 'Booking cancelled.' %}");
+          alert("{% translate 'Booking cancelled.' %}");
           loadCustomerBookings();
         })
         .catch(function () {
