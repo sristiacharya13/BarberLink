@@ -24,6 +24,8 @@ class Barber(models.Model):
     barber_id=models.AutoField(primary_key=True)
     name=models.CharField(max_length=255)
     name_kn = models.CharField(max_length=255,blank=True,default="")
+    regular_service_charge = models.DecimalField(max_digits=7,decimal_places=2,default=150)
+    sunday_service_charge = models.DecimalField(max_digits=7,decimal_places=2,default=350)
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='barber')
     account_created_at=models.DateTimeField(auto_now_add=True)
     location=models.JSONField(null=True, blank=True)

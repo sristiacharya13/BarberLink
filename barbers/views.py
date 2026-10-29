@@ -47,6 +47,55 @@ def barber_payment_page(request):
         "amount_inr":settings.SUBSCRIPTION_AMOUNT_INR,}
     )
 
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsBarber])
+def update_service_charges(request):
+    barber = getattr(request.user, "barber", None)
+
+    if barber is None:
+        return Response(
+            {"error": "Barber profile not found."},
+            status=404
+        )
+
+    regular_charge = request.data.get("regular_service_charge")
+    sunday_charge = request.data.get("sunday_service_charge")
+
+    if regular_charge is None or sunday_charge is None:
+        return Response(
+            {"error": "Both service charges are required."},
+            status=400
+        )
+
+    try:
+        regular_charge = float(regular_charge)
+        sunday_charge = float(sunday_charge)
+
+        if regular_charge < 0 or sunday_charge < 0:
+            return Response(
+                {"error": "Charges cannot be negative."},
+                status=400
+            )
+
+    except (ValueError, TypeError):
+        return Response(
+            {"error": "Enter valid service charges."},
+            status=400
+        )
+
+    barber.regular_service_charge = regular_charge
+    barber.sunday_service_charge = sunday_charge
+
+    barber.save(update_fields=[
+        "regular_service_charge",
+        "sunday_service_charge"
+    ])
+
+    return Response({
+        "message": "Service charges saved successfully.",
+        "regular_service_charge": str(barber.regular_service_charge),
+        "sunday_service_charge": str(barber.sunday_service_charge)
+    })
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsBarber])
