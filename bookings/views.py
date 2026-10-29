@@ -114,7 +114,7 @@ class CustomerBarberSlotsAPIView(APIView):
         data=[]
         for slot in slots:
             display_status=slot.status
-
+            service_charge = (barber.sunday_service_charge if slot.slot_date.weekday() == 6 else barber.regular_service_charge)
             if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
                 active_booking=slot.bookings.filter(
                     booking_status__in=[Booking.STATUS_WAITING,Booking.STATUS_APPROVED]
@@ -128,7 +128,9 @@ class CustomerBarberSlotsAPIView(APIView):
                 "start_time":slot.start_time.strftime("%H:%M"),
                 "end_time":slot.end_time.strftime("%H:%M"),
                 "status":display_status,
+                "service_charge": (str(service_charge) if service_charge is not None else None),
             })
+            
         #serializer = SlotSerializer(slots, many=True, context={"request": request})
         return Response({
             "slot_date": timezone.localdate().isoformat(),
