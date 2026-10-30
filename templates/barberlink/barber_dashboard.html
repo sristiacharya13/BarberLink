@@ -876,6 +876,13 @@ function loadProfile() {
     }
 
     function transitionBooking(bookingId, targetStatus, detailSection) {
+      if (targetStatus === "approved" && !confirm("Are you sure you want to approve this booking?")) {
+        return;
+      }
+
+      if (targetStatus === "rejected" && !confirm("Are you sure you want to reject this booking?")) {
+          return;
+      }
       fetch("/api/v1/barbers/bookings/" + bookingId + "/transition/", {
         method: "PATCH",
         headers: authHeaders(),
