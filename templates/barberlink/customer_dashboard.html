@@ -68,8 +68,7 @@
   }
 
   /* Location buttons */
-  #use-my-location,
-  #search-nearby {
+  #use-my-location{
     background-color: green;
     color: white;
     margin: 8px 4px;
@@ -363,16 +362,6 @@
     <h3>{% translate "Find Barbers Near Me" %}</h3>
     <p id="location-status">{% translate "Location: not set" %}</p>
     <button type="button" id="use-my-location">{% translate "Use My Location" %}</button>
-    <label>
-      {% translate "Radius (km):" %}
-      <select id="radius-km">
-        <option value="5">5</option>
-        <option value="6" selected>6</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-      </select>
-    </label>
-    <button type="button" id="search-nearby">{% translate "Search" %}</button>
     <p id="nearby-error" style="color:#b00020" hidden></p>
   </section>
 
@@ -563,37 +552,6 @@
       }).then(done, done);
     }
 
-    function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
-      getJSON(profileEndpointUrl)
-        .then(function (profile) {
-          if (!profile) return;
-          if (!profile.location) {
-            captureAndSaveLocation(locationEndpointUrl);
-          }
-        })
-        .catch(function () {});
-    }
-
-    function captureAndSaveLocation(endpointUrl) {
-      if (!navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          fetch(endpointUrl, {
-            method: "PATCH",
-            headers: authHeaders(),
-            body: JSON.stringify({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            }),
-          }).catch(function () {});
-        },
-        function (err) {
-          console.warn("Location not captured:", err.message);
-        },
-        { timeout: 8000 }
-      );
-    }
-
     function getBrowserLocation() {
       return new Promise(function (resolve, reject) {
         if (!navigator.geolocation) return reject(new Error("Geolocation not supported"));
@@ -619,7 +577,7 @@
         showMessage("{% translate 'Please use your location first.' %}");
         return;
       }
-      var radius = document.getElementById("radius-km").value || "6";
+      var radius = 5;
       var url = "/barbers/api/nearby/?lat=" + currentLocation.lat + "&lng=" + currentLocation.lng + "&radius_km=" + encodeURIComponent(radius);
       var listSection = document.getElementById("barbers-list-section");
       var listEl = document.getElementById("barbers-list");
@@ -772,7 +730,6 @@
 
         var header = document.createElement("div");
         header.className = "customer-booking-header";
-
         var timeSpan = document.createElement("span");
         timeSpan.className = "customer-booking-time";
         var slot = booking.slot || {};
@@ -850,6 +807,9 @@
     }
 
     function cancelBooking(bookingId) {
+      if (!confirm("Are you sure you want to cancel this booking?")) {
+        return;
+      }
       fetch("/api/v1/customers/bookings/" + bookingId + "/cancel/", {
         method: "PATCH",
         headers: authHeaders(),
@@ -859,7 +819,7 @@
           return res.json();
         })
         .then(function () {
-          alert("{% translate 'Booking cancelled.' %}");
+          showMessage("{% translate 'Booking cancelled.' %}");
           loadCustomerBookings();
         })
         .catch(function () {
@@ -938,24 +898,26 @@
         loadCustomerBookings();
       }
       document.getElementById("use-my-location").addEventListener("click", function () {
-        getBrowserLocation()
-          .then(function (loc) {
+    var button = this;
+    button.disabled = true;
+
+    getBrowserLocation()
+        .then(function (loc) {
             currentLocation = loc;
             updateLocationStatus(loc.lat + ", " + loc.lng);
-          })
-          .catch(function () {
+            searchNearby();
+            button.disabled = false;
+        })
+        .catch(function () {
+            button.disabled = false;
             showMessage("{% translate 'Could not get location. Please enable location services.' %}");
-          });
+        });
       });
       document.getElementById("search-nearby").addEventListener("click", searchNearby);
       document.getElementById("back-to-barbers").addEventListener("click", function () {
-        document.getElementById("barber-detail-section").hidden = true;
-        document.getElementById("barbers-list-section").hidden = false;
+      document.getElementById("barber-detail-section").hidden = true;
+      document.getElementById("barbers-list-section").hidden = false;
       });
-
-      if (isLoggedIn) {
-        checkAndCaptureLocationOnce("/customers/api/location/", PROFILE_URL);
-      }
     });
   })();
   </script>
