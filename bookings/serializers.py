@@ -9,7 +9,7 @@ class SlotSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Slot
-        fields = ["slot_id", "barber", "slot_date", "start_time", "end_time", "status", "active_booking"]
+        fields = ["slot_id", "barber", "slot_date", "start_time", "end_time", "status", "service_charge", "active_booking"]
         read_only_fields = ["slot_id", "barber", "slot_date", "start_time", "end_time"]
 
     def get_active_booking(self, obj):

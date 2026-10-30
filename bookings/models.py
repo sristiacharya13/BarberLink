@@ -26,6 +26,7 @@ class Slot(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_AVAILABLE)
+    service_charge = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
 
     class Meta:
         ordering = ["start_time"]

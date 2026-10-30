@@ -80,6 +80,14 @@
     cursor: pointer;
   }
 
+  .slot-price-input {
+    width: 70px;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
   .slot-time,
   .booking-time {
     font-weight: bold;
@@ -313,25 +321,24 @@
     .btn-cancel { background: #757575; }
   </style>
 
-  <section id="service-charge-section">
-    <h3>Set Service Charges</h3>
-
-    <form id="service-charge-form">
-      <label for="regular-charge">Regular day charge (₹):</label>
-      <input type="number" id="regular-charge" min="0"
-            step="10" required>
-
-      <label for="sunday-charge">Sunday charge (₹):</label>
-      <input type="number" id="sunday-charge" min="0"
-            step="10" required>
-
-      <button type="submit">Save Charges</button>
-    </form>
-  </section>
-
   <section id="slots-section">
     <h3>{% translate "Today's Slots" %}</h3>
     <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
+
+    <div id="service-charge-controls" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
+      <h4 style="margin: 0 0 12px 0;">Set Service Charges for Today</h4>
+      <div style="margin-bottom: 10px;">
+        <label for="today-charge">{% translate "Today's price" %} (₹):</label>
+        <input type="number" id="today-charge" min="0" step="10" style="padding: 6px; margin-left: 8px;" disabled>
+        <label style="margin-left: 16px;">
+          <input type="checkbox" id="same-for-all" disabled>
+          {% translate "Same for all today's slots" %}
+        </label>
+        <button type="button" id="apply-charges" style="margin-left: 12px;" disabled>{% translate "Apply" %}</button>
+      </div>
+      <p id="charge-message" style="margin: 8px 0 0 0; font-size: 0.9em;"></p>
+    </div>
+
     <div id="slots-grid">{% translate "Loading slots..." %}</div>
   </section>
 
@@ -550,6 +557,12 @@ function loadProfile() {
         .then(function (data) {
           if (!data) return;
           renderSlots(data);
+          var sameForAll = document.getElementById("same-for-all");
+          var todayCharge = document.getElementById("today-charge");
+          var applyBtn = document.getElementById("apply-charges");
+          if (sameForAll) sameForAll.disabled = false;
+          if (todayCharge) todayCharge.disabled = false;
+          if (applyBtn) applyBtn.disabled = false;
         })
         .catch(function () {
           showMessage("{% translate 'We could not load slots. Please try again.' %}");
@@ -564,9 +577,11 @@ function loadProfile() {
         grid.textContent = "{% translate 'No slots found.' %}";
         return;
       }
+      var sameForAll = document.getElementById("same-for-all").checked;
       slots.forEach(function (slot) {
         var card = document.createElement("div");
         card.className = "slot-card " + statusClass(slot.status);
+        card.dataset.slotId = slot.slot_id;
 
         var timeSpan = document.createElement("span");
         timeSpan.className = "slot-time";
@@ -576,13 +591,36 @@ function loadProfile() {
         statusSpan.className = "slot-status";
         statusSpan.textContent = statusLabel(slot.status);
 
+        var priceInput = document.createElement("input");
+        priceInput.type = "number";
+        priceInput.min = "0";
+        priceInput.step = "10";
+        priceInput.value = slot.service_charge !== null && slot.service_charge !== undefined ? slot.service_charge : "";
+        priceInput.placeholder = "₹";
+        priceInput.className = "slot-price-input";
+        priceInput.style = "width: 80px; padding: 6px;";
+        priceInput.disabled = sameForAll;
+
         card.appendChild(timeSpan);
         card.appendChild(statusSpan);
+        card.appendChild(priceInput);
+
+        if (slot.status === "available") {
+          var markNaBtn = document.createElement("button");
+          markNaBtn.type = "button";
+          markNaBtn.textContent = "{% translate 'Mark NA' %}";
+          markNaBtn.className = "btn-mark-na";
+          markNaBtn.style = "margin-left: 10px; padding: 6px 10px; font-size: 0.85em; background: #757575; color: white; border: none; border-radius: 4px; cursor: pointer;";
+          markNaBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (!confirm(gettext("Mark this slot as Not Available?"))) return;
+            markSlotNA(slot.slot_id, card);
+          });
+          card.appendChild(markNaBtn);
+        }
 
         card.addEventListener("click", function () {
-          if (slot.status === "available") {
-            markSlotNA(slot.slot_id, card);
-          } else if (slot.status === "booked" || slot.status === "approved") {
+          if (slot.status === "booked" || slot.status === "approved") {
             if (slot.active_booking) {
               showBookingDetail(slot.active_booking);
             }
@@ -776,6 +814,8 @@ function loadProfile() {
           cardEl.className = "slot-card " + statusClass(data.status);
           var statusSpan = cardEl.querySelector(".slot-status");
           if (statusSpan) statusSpan.textContent = statusLabel(data.status);
+          var markNaBtn = cardEl.querySelector(".btn-mark-na");
+          if (markNaBtn) markNaBtn.remove();
         })
         .catch(function () {
           showMessage("{% translate 'Could not update slot. Try again.' %}");
@@ -894,38 +934,91 @@ function loadProfile() {
         showMessage("{% translate 'Could not update booking. Try again.' %}");
       });
     }
-    var chargeForm = document.getElementById("service-charge-form");
+    var sameForAllCheckbox = document.getElementById("same-for-all");
+    var todayChargeInput = document.getElementById("today-charge");
+    var applyChargesBtn = document.getElementById("apply-charges");
+    var chargeMessage = document.getElementById("charge-message");
 
-if (chargeForm) {
-    chargeForm.addEventListener("submit", function (event) {
-        event.preventDefault();
+    function togglePriceInputs() {
+      var isSame = sameForAllCheckbox.checked;
+      todayChargeInput.disabled = !isSame;
+      applyChargesBtn.disabled = !isSame;
+      var inputs = document.querySelectorAll(".slot-price-input");
+      inputs.forEach(function (input) {
+        input.disabled = isSame;
+      });
+    }
 
-        fetch("/barbers/api/service-charges/", {
+    sameForAllCheckbox.addEventListener("change", togglePriceInputs);
+
+    applyChargesBtn.addEventListener("click", function () {
+      var isSame = sameForAllCheckbox.checked;
+      var masterPrice = todayChargeInput.value;
+      chargeMessage.textContent = "";
+
+      if (isSame) {
+        if (!masterPrice) {
+          chargeMessage.textContent = "{% translate 'Please enter a price.' %}";
+          chargeMessage.style.color = "red";
+          return;
+        }
+        var cards = document.querySelectorAll("#slots-grid .slot-card");
+        var promises = [];
+        cards.forEach(function (card) {
+          var slotId = card.dataset.slotId;
+          promises.push(fetch("/api/v1/barbers/slots/" + slotId + "/", {
             method: "PATCH",
             headers: authHeaders(),
-            body: JSON.stringify({
-                regular_service_charge:
-                    document.getElementById("regular-charge").value,
-                sunday_service_charge:
-                    document.getElementById("sunday-charge").value
+            body: JSON.stringify({ service_charge: masterPrice })
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error("failed");
+              return res.json();
             })
-        })
-        .then(function (response) {
-            if (!response.ok) {
-                throw new Error("Could not save charges");
-            }
-
-            return response.json();
-        })
-        .then(function () {
-            showMessage("Service charges saved successfully.");
-        })
-        .catch(function () {
-            showMessage("Failed to save service charges.");
+            .then(function (data) {
+              var input = card.querySelector(".slot-price-input");
+              if (input) input.value = data.service_charge;
+            }));
         });
+        Promise.all(promises).then(function () {
+          chargeMessage.textContent = "{% translate 'Price applied to all slots.' %}";
+          chargeMessage.style.color = "green";
+        }).catch(function () {
+          chargeMessage.textContent = "{% translate 'Failed to apply price.' %}";
+          chargeMessage.style.color = "red";
+        });
+      } else {
+        var cards = document.querySelectorAll("#slots-grid .slot-card");
+        var promises = [];
+        cards.forEach(function (card) {
+          var slotId = card.dataset.slotId;
+          var input = card.querySelector(".slot-price-input");
+          var price = input.value;
+          if (!price) return;
+          promises.push(fetch("/api/v1/barbers/slots/" + slotId + "/", {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ service_charge: price })
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error("failed");
+              return res.json();
+            })
+            .then(function (data) {
+              input.value = data.service_charge;
+            }));
+        });
+        Promise.all(promises).then(function () {
+          chargeMessage.textContent = "{% translate 'Prices saved.' %}";
+          chargeMessage.style.color = "green";
+        }).catch(function () {
+          chargeMessage.textContent = "{% translate 'Failed to save prices.' %}";
+          chargeMessage.style.color = "red";
+        });
+      }
     });
-  }
-  document.addEventListener("DOMContentLoaded", function () {
+
+    document.addEventListener("DOMContentLoaded", function () {
     if (!getToken()) {
       window.location.href = "/login/";
       return;

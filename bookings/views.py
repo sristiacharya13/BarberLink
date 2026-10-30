@@ -33,20 +33,28 @@ class BarberSlotUpdateAPIView(APIView):
         slot = get_object_or_404(Slot, slot_id=slot_id, barber=barber)
 
         new_status = request.data.get("status")
-        if new_status != Slot.STATUS_NA:
-            return Response(
-                {"error": {"code": "VALIDATION_ERROR", "message": "Only 'na' is settable here."}},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        new_charge = request.data.get("service_charge")
 
-        if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
-            return Response(
-                {"error": {"code": "SLOT_ALREADY_BOOKED", "message": "Slot already has an active booking."}},
-                status=status.HTTP_409_CONFLICT,
-            )
+        if new_status is not None:
+            if new_status != Slot.STATUS_NA:
+                return Response(
+                    {"error": {"code": "VALIDATION_ERROR", "message": "Only 'na' is settable here."}},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-        slot.status = Slot.STATUS_NA
-        slot.save(update_fields=["status"])
+            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                return Response(
+                    {"error": {"code": "SLOT_ALREADY_BOOKED", "message": "Slot already has an active booking."}},
+                    status=status.HTTP_409_CONFLICT,
+                )
+
+            slot.status = Slot.STATUS_NA
+            slot.save(update_fields=["status"])
+
+        if new_charge is not None:
+            slot.service_charge = new_charge
+            slot.save(update_fields=["service_charge"])
+
         return Response(SlotSerializer(slot).data)
 
 
