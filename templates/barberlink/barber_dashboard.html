@@ -288,6 +288,7 @@
     .slot-approved { background: #e3f2fd; border-color: #2196f3; }
     .slot-time { font-weight: bold; font-size: 1.1em; }
     .slot-status { font-size: 0.9em; text-transform: uppercase; }
+    .day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em; }
     #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
     #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
     #booking-detail dt { font-weight: bold; }
@@ -322,17 +323,19 @@
   </style>
 
   <section id="slots-section">
-    <h3>{% translate "Today's Slots" %}</h3>
+    <h3>{% translate "This Week's Slots" %}</h3>
     <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
 
+    <div id="week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #ddd;"></div>
+
     <div id="service-charge-controls" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
-      <h4 style="margin: 0 0 12px 0;">Set Service Charges for Today</h4>
+      <h4 style="margin: 0 0 12px 0;">Set Service Charges for All Days (<span id="charge-day-label"></span>)</h4>
       <div style="margin-bottom: 10px;">
-        <label for="today-charge">{% translate "Today's price" %} (₹):</label>
+        <label for="today-charge">{% translate "Price" %} (₹):</label>
         <input type="number" id="today-charge" min="0" step="10" style="padding: 6px; margin-left: 8px;" disabled>
         <label style="margin-left: 16px;">
           <input type="checkbox" id="same-for-all" disabled>
-          {% translate "Same for all today's slots" %}
+          {% translate "Same for all days" %}
         </label>
         <button type="button" id="apply-charges" style="margin-left: 12px;" disabled>{% translate "Apply" %}</button>
       </div>
@@ -491,8 +494,13 @@ function loadProfile() {
     function updateSlotsDate() {
       var el = document.getElementById("slots-date-display");
       if (!el) return;
-      var now = new Date();
-      el.textContent = now.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      var today = new Date();
+      var monday = new Date(today);
+      monday.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+      var sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      var opts = { year: "numeric", month: "short", day: "numeric" };
+      el.textContent = monday.toLocaleDateString(undefined, opts) + " \u2013 " + sunday.toLocaleDateString(undefined, opts);
     }
  
     // function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
@@ -550,13 +558,24 @@ function loadProfile() {
       return map[status] || "";
     }
 
+    var weekSlotsByDay = {};
+    var selectedDayKey = null;
+
     function loadSlots() {
       var grid = document.getElementById("slots-grid");
       if (grid) grid.innerHTML = "{% translate 'Loading slots...' %}";
       getJSON("/api/v1/barbers/slots/")
         .then(function (data) {
           if (!data) return;
-          renderSlots(data);
+          weekSlotsByDay = {};
+          data.forEach(function (slot) {
+            var key = slot.slot_date;
+            if (!weekSlotsByDay[key]) weekSlotsByDay[key] = [];
+            weekSlotsByDay[key].push(slot);
+          });
+          renderWeekNav();
+          var firstKey = Object.keys(weekSlotsByDay)[0];
+          if (firstKey) selectDay(firstKey);
           var sameForAll = document.getElementById("same-for-all");
           var todayCharge = document.getElementById("today-charge");
           var applyBtn = document.getElementById("apply-charges");
@@ -567,6 +586,42 @@ function loadProfile() {
         .catch(function () {
           showMessage("{% translate 'We could not load slots. Please try again.' %}");
         });
+    }
+
+    function renderWeekNav() {
+      var nav = document.getElementById("week-nav");
+      if (!nav) return;
+      nav.innerHTML = "";
+      var keys = Object.keys(weekSlotsByDay).sort();
+      keys.forEach(function (key) {
+        var d = new Date(key + "T00:00:00");
+        var label = d.toLocaleDateString(undefined, { weekday: "short" });
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = label;
+        btn.className = "day-tab";
+        btn.dataset.dayKey = key;
+        btn.style = "padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em;";
+        if (selectedDayKey === key) {
+          btn.style.background = "#4caf50";
+          btn.style.color = "#fff";
+          btn.style.borderColor = "#4caf50";
+        }
+        btn.addEventListener("click", function () {
+          selectDay(key);
+        });
+        nav.appendChild(btn);
+      });
+    }
+
+    function selectDay(dayKey) {
+      selectedDayKey = dayKey;
+      var d = new Date(dayKey + "T00:00:00");
+      var label = d.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      var chargeLabel = document.getElementById("charge-day-label");
+      if (chargeLabel) chargeLabel.textContent = label;
+      renderSlots(weekSlotsByDay[dayKey] || []);
+      renderWeekNav();
     }
 
     function renderSlots(slots) {
@@ -585,7 +640,7 @@ function loadProfile() {
 
         var timeSpan = document.createElement("span");
         timeSpan.className = "slot-time";
-        timeSpan.textContent = slot.start_time + " – " + slot.end_time;
+        timeSpan.textContent = slot.start_time + "\u2013" + slot.end_time;
 
         var statusSpan = document.createElement("span");
         statusSpan.className = "slot-status";
@@ -596,7 +651,7 @@ function loadProfile() {
         priceInput.min = "0";
         priceInput.step = "10";
         priceInput.value = slot.service_charge !== null && slot.service_charge !== undefined ? slot.service_charge : "";
-        priceInput.placeholder = "₹";
+        priceInput.placeholder = "\u20B9";
         priceInput.className = "slot-price-input";
         priceInput.style = "width: 80px; padding: 6px;";
         priceInput.disabled = sameForAll;
@@ -795,6 +850,16 @@ function loadProfile() {
       });
     }
 
+    function updateSlotInCache(slotId, data) {
+      Object.keys(weekSlotsByDay).forEach(function (dayKey) {
+        weekSlotsByDay[dayKey].forEach(function (slot, index) {
+          if (slot.slot_id === slotId) {
+            weekSlotsByDay[dayKey][index] = Object.assign({}, weekSlotsByDay[dayKey][index], data);
+          }
+        });
+      });
+    }
+
     function markSlotNA(slotId, cardEl) {
       fetch("/api/v1/barbers/slots/" + slotId + "/", {
         method: "PATCH",
@@ -811,6 +876,7 @@ function loadProfile() {
         })
         .then(function (data) {
           if (!data) return;
+          updateSlotInCache(slotId, data);
           cardEl.className = "slot-card " + statusClass(data.status);
           var statusSpan = cardEl.querySelector(".slot-status");
           if (statusSpan) statusSpan.textContent = statusLabel(data.status);
@@ -963,32 +1029,41 @@ function loadProfile() {
       var masterPrice = todayChargeInput.value;
       chargeMessage.textContent = "";
 
+      var buildPromises = function (slotId, cardEl) {
+        var input = cardEl ? cardEl.querySelector(".slot-price-input") : null;
+        var price = isSame ? masterPrice : (input ? input.value : "");
+        if (!price) return null;
+        return fetch("/api/v1/barbers/slots/" + slotId + "/", {
+          method: "PATCH",
+          headers: authHeaders(),
+          body: JSON.stringify({ service_charge: price })
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("failed");
+            return res.json();
+          })
+          .then(function (data) {
+            updateSlotInCache(slotId, data);
+            if (input) input.value = data.service_charge;
+          });
+      };
+
       if (isSame) {
         if (!masterPrice) {
           chargeMessage.textContent = "{% translate 'Please enter a price.' %}";
           chargeMessage.style.color = "red";
           return;
         }
-        var cards = document.querySelectorAll("#slots-grid .slot-card");
         var promises = [];
-        cards.forEach(function (card) {
-          var slotId = card.dataset.slotId;
-          promises.push(fetch("/api/v1/barbers/slots/" + slotId + "/", {
-            method: "PATCH",
-            headers: authHeaders(),
-            body: JSON.stringify({ service_charge: masterPrice })
-          })
-            .then(function (res) {
-              if (!res.ok) throw new Error("failed");
-              return res.json();
-            })
-            .then(function (data) {
-              var input = card.querySelector(".slot-price-input");
-              if (input) input.value = data.service_charge;
-            }));
+        Object.keys(weekSlotsByDay).forEach(function (dayKey) {
+          weekSlotsByDay[dayKey].forEach(function (slot) {
+            var cardEl = document.querySelector('#slots-grid .slot-card[data-slot-id="' + slot.slot_id + '"]');
+            var p = buildPromises(slot.slot_id, cardEl);
+            if (p) promises.push(p);
+          });
         });
         Promise.all(promises).then(function () {
-          chargeMessage.textContent = "{% translate 'Price applied to all slots.' %}";
+          chargeMessage.textContent = "{% translate 'Price applied to all days.' %}";
           chargeMessage.style.color = "green";
         }).catch(function () {
           chargeMessage.textContent = "{% translate 'Failed to apply price.' %}";
@@ -999,21 +1074,8 @@ function loadProfile() {
         var promises = [];
         cards.forEach(function (card) {
           var slotId = card.dataset.slotId;
-          var input = card.querySelector(".slot-price-input");
-          var price = input.value;
-          if (!price) return;
-          promises.push(fetch("/api/v1/barbers/slots/" + slotId + "/", {
-            method: "PATCH",
-            headers: authHeaders(),
-            body: JSON.stringify({ service_charge: price })
-          })
-            .then(function (res) {
-              if (!res.ok) throw new Error("failed");
-              return res.json();
-            })
-            .then(function (data) {
-              input.value = data.service_charge;
-            }));
+          var p = buildPromises(slotId, card);
+          if (p) promises.push(p);
         });
         Promise.all(promises).then(function () {
           chargeMessage.textContent = "{% translate 'Prices saved.' %}";

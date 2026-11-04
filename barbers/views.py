@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes # type: ignor
 from rest_framework.permissions import IsAuthenticated, AllowAny # type: ignore
 from rest_framework.response import Response # type: ignore
 import razorpay
+from datetime import datetime, timedelta
 from accounts.permissions import IsBarber
 
 from .serializers import BarberSerializer, NearbyBarberSerializer
@@ -110,8 +111,17 @@ def barber_dashboard_data(request):
             "todays_bookings":[],
             "booking_transaction_options":{},
         })
+    date_str = request.query_params.get("date")
     today = timezone.localdate()
-    bookings = Booking.objects.filter(barber=profile, slot__slot_date=today).select_related("slot", "customer")
+    if date_str:
+        try:
+            week_start = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            week_start = today - timedelta(days=today.weekday())
+    else:
+        week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+    bookings = Booking.objects.filter(barber=profile, slot__slot_date__range=[week_start, week_end]).select_related("slot", "customer")
     bookings_data = BookingDetailSerializer(bookings, many=True).data
 
     return Response({

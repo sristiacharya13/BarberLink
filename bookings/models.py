@@ -1,11 +1,11 @@
-from datetime import time
+from datetime import time, timedelta
 
 from django.conf import settings
 from django.db import models
 
 
-START_TIME = time(10, 0)# 10:00 AM
-END_TIME = time(17, 0)# 5:00 PM
+START_TIME = time(10, 0)  # 10:00 AM
+END_TIME = time(17, 0)  # 5:00 PM
 
 
 class Slot(models.Model):
@@ -86,24 +86,45 @@ def slot_times():
         current = end
 
 
-def ensure_today_slots(barber):
+def ensure_week_slots(barber, week_start=None):
     from django.utils import timezone
 
     today = timezone.localdate()
-    existing = Slot.objects.filter(barber=barber, slot_date=today)
-    if not existing.exists():
+    if week_start is None:
+        week_start = today - timedelta(days=today.weekday())
+    elif isinstance(week_start, str):
+        from datetime import date as _date
 
-        Slot.objects.filter(slot_date__lt=today).delete() 
-        rows = [
+        week_start = _date.fromisoformat(week_start)
+
+    Slot.objects.filter(barber=barber, slot_date__lt=week_start).delete()
+
+    week_end = week_start + timedelta(days=6)
+    existing_dates = set(
+        Slot.objects.filter(
+            barber=barber, slot_date__range=[week_start, week_end]
+        ).values_list("slot_date", flat=True)
+    )
+
+    rows = []
+    for i in range(7):
+        slot_date = week_start + timedelta(days=i)
+        if slot_date in existing_dates:
+            continue
+        rows.extend(
             Slot(
                 barber=barber,
-                slot_date=today,
+                slot_date=slot_date,
                 start_time=start,
                 end_time=end,
                 status=Slot.STATUS_AVAILABLE,
             )
             for start, end in slot_times()
-        ]
+        )
+
+    if rows:
         Slot.objects.bulk_create(rows)
-        existing = Slot.objects.filter(barber=barber, slot_date=today)
-    return existing
+
+    return Slot.objects.filter(
+        barber=barber, slot_date__range=[week_start, week_end]
+    ).order_by("slot_date", "start_time")
