@@ -59,26 +59,26 @@
   #slots-grid,
   #bookings-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 12px;
     margin-top: 15px;
   }
 
-  .slot-card,
-  .booking-card {
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background-color: white;
-  }
-
   .slot-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: auto;
+  cursor: pointer;
+}
+.slot-card,
+.booking-card {
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-color: white;
+}
+
 
   .slot-price-input {
     width: 70px;
@@ -88,9 +88,11 @@
     font-size: 0.9em;
   }
 
+    
   .slot-time,
   .booking-time {
     font-weight: bold;
+    font-size: 1.1em;
   }
 
   .slot-available {
@@ -114,7 +116,8 @@
   }
 
   .slot-status {
-    font-size: 12px;
+    font-size: 16px;
+    text-transform: uppercase;
   }
 
   .booking-header {
@@ -188,7 +191,12 @@
     border-radius: 5px;
     cursor: pointer;
   }
-
+  a{
+      color: #1565c0;
+  }
+  a:hover{
+    color: white;
+  }
   #logout,
   .btn-approve {
     background-color: green;
@@ -236,6 +244,14 @@
       grid-template-columns: 1fr;
     }
 
+      
+  #booking-detail {
+    margin-top: 24px;
+    border-radius: 8px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+  }
+
     #slots-section,
     #bookings-section,
     #booking-detail,
@@ -251,6 +267,18 @@
     #profile-details {
       grid-template-columns: 1fr;
     }
+  }
+  .day-tab { 
+    padding: 6px 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    background: #fff; 
+    cursor: pointer; 
+    font-size: 0.9em; 
+  }
+  .btn-cancel {
+    background: #757575;
+    color: white;
   }
 </style>
 
@@ -279,48 +307,6 @@
     <h3>{% translate "My Profile" %}</h3>
     <dl id="profile-details"></dl>
   </section>
-  <style>
-    #slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
-    .slot-card { padding: 16px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; display: flex; justify-content: space-between; align-items: center; }
-    .slot-available { background: #e8f5e9; border-color: #4caf50; }
-    .slot-na { background: #f5f5f5; border-color: #9e9e9e; color: #9e9e9e; }
-    .slot-booked { background: #ffebee; border-color: #f44336; }
-    .slot-approved { background: #e3f2fd; border-color: #2196f3; }
-    .slot-time { font-weight: bold; font-size: 1.1em; }
-    .slot-status { font-size: 0.9em; text-transform: uppercase; }
-    .day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em; }
-    #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
-    #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
-    #booking-detail dt { font-weight: bold; }
-    #booking-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
-    #booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; }
-    .btn-approve { background: #4caf50; }
-    .btn-reject { background: #f44336; }
-    .btn-complete { background: #2196f3; }
-    .btn-navigate { background: #ff9800; }
-    .btn-close { background: #757575; }
-
-    /* Today's Bookings section styles */
-    #bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
-    .booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .booking-time { font-weight: bold; font-size: 1.1em; }
-    .booking-status-badge { font-size: 0.85em; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
-    .booking-status-waiting { background: #fff3e0; color: #e65100; }
-    .booking-status-approved { background: #e3f2fd; color: #1565c0; }
-    .booking-status-rejected { background: #fafafa; color: #616161; }
-    .booking-status-cancelled { background: #fafafa; color: #616161; }
-    .booking-status-completed { background: #e8f5e9; color: #2e7d32; }
-    .booking-detail-row { margin: 6px 0; font-size: 0.9em; }
-    .booking-detail-label { font-weight: bold; color: #333; }
-    .booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.9em; }
-    .btn-approve { background: #4caf50; }
-    .btn-reject { background: #f44336; }
-    .btn-complete { background: #2196f3; }
-    .btn-navigate { background: #ff9800; }
-    .btn-cancel { background: #757575; }
-  </style>
 
   <section id="slots-section">
     <h3>{% translate "This Week's Slots" %}</h3>

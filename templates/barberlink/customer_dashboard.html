@@ -15,7 +15,12 @@
     padding: 20px;
     color: #333;
   }
-
+  a{
+    color: #1565c0;
+  }
+  a:hover{
+    color: white;
+  }
   nav {
     text-align: right;
     margin-bottom: 25px;
@@ -365,20 +370,7 @@
     <p id="nearby-error" style="color:#b00020" hidden></p>
   </section>
 
-  <section id="customer-bookings-section">
-    <h3>{% translate "Today's Bookings" %}</h3>
-    <div style="margin-bottom: 12px;">
-      <label for="customer-booking-status-filter">{% translate "Filter by status:" %}</label>
-      <select id="customer-booking-status-filter" style="margin-left: 8px; padding: 4px 8px;">
-        <option value="all">{% translate "All" %}</option>
-      </select>
-    </div>
-    <div id="customer-bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
-      {% translate "Loading bookings..." %}
-    </div>
-  </section>
-
-  <section id="barbers-list-section" hidden>
+   <section id="barbers-list-section" hidden>
     <h3>{% translate "Nearby Barbers" %}</h3>
     <div id="barbers-list">{% translate "No barbers found." %}</div>
   </section>
@@ -392,6 +384,20 @@
     <div id="customer-slot-date" style="margin-bottom:8px; font-size:0.9em; color:#666;"></div>
     <div id="customer-slots-grid">{% translate "Loading slots..." %}</div>
   </section>
+
+  <section id="customer-bookings-section">
+    <h3>{% translate "Today's Bookings" %}</h3>
+    <div style="margin-bottom: 12px;">
+      <label for="customer-booking-status-filter">{% translate "Filter by status:" %}</label>
+      <select id="customer-booking-status-filter" style="margin-left: 8px; padding: 4px 8px;">
+        <option value="all">{% translate "All" %}</option>
+      </select>
+    </div>
+    <div id="customer-bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
+      {% translate "Loading bookings..." %}
+    </div>
+  </section>
+  
 
   <section id="booking-detail" hidden>
     <h3>{% translate "Booking Details" %}</h3>
@@ -892,6 +898,22 @@
       window.open(url, "_blank");
     }
 
+    var moveToTop = document.getElementById("move-to-top");
+
+    window.addEventListener("scroll", function () {
+        if (window.scrollY > 200) {
+            moveToTop.style.display = "block";
+        } else {
+            moveToTop.style.display = "none";
+        }
+    });
+    moveToTop.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+      });
+    });
     function bookSlot(slotId, cardEl) {
       var barberId = document.getElementById("barber-detail-name").getAttribute("data-barber-id");
       fetch("/api/v1/customers/barbers/" + barberId + "/book/", {
@@ -971,4 +993,5 @@
   })();
   </script>
 </body>
+<a href="#" id="move-to-top">↑ Move to Top</a>
 </html>
