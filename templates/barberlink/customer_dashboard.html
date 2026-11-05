@@ -914,6 +914,7 @@
           behavior: "smooth"
       });
     });
+    
     function bookSlot(slotId, cardEl) {
       var barberId = document.getElementById("barber-detail-name").getAttribute("data-barber-id");
       fetch("/api/v1/customers/barbers/" + barberId + "/book/", {

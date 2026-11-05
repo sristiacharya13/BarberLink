@@ -43,7 +43,12 @@
   h3 {
     color: #333;
   }
-
+  a{
+    color: #1565c0;
+  }
+  a:hover{
+    color: white;
+  }
   #slots-section,
   #bookings-section,
   #booking-detail,
@@ -78,7 +83,6 @@
   border: 2px solid transparent;
   background-color: white;
 }
-
 
   .slot-price-input {
     width: 70px;
@@ -873,6 +877,22 @@ function loadProfile() {
           showMessage("{% translate 'Could not update slot. Try again.' %}");
         });
     }
+    var moveToTop = document.getElementById("move-to-top");
+
+    window.addEventListener("scroll", function () {
+        if (window.scrollY > 200) {
+            moveToTop.style.display = "block";
+        } else {
+            moveToTop.style.display = "none";
+        }
+    });
+    moveToTop.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+      });
+    });
 
     function showBookingDetail(booking) {
       var section = document.getElementById("booking-detail");
@@ -1101,4 +1121,5 @@ function loadProfile() {
   })();
   </script>
 </body>
+<a href="#" id="move-to-top">↑ Move to Top</a>
 </html>
