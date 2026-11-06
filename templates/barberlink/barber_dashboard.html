@@ -80,8 +80,8 @@
 .booking-card {
   padding: 16px;
   border-radius: 8px;
-  border: 2px solid transparent;
-  background-color: white;
+  border: 1px solid black;
+  margin-bottom: 12px;
 }
 
   .slot-price-input {
@@ -298,6 +298,7 @@
       </select>
     </form>
     <button type="button" id="profile-toggle">{% translate "My Profile" %}</button>
+    <button type="button" id="enable-notifications">Enable Notifications</button>
     <button type="button" id="logout">{% translate "Logout" %}</button>
   </nav>
 
@@ -353,6 +354,7 @@
     <dl id="booking-detail-content"></dl>
     <div id="booking-actions"></div>
   </section>
+  <a href="#" id="move-to-top">↑ Move to Top</a>
   <script src="{% url 'javascript-catalog' %}"></script>
   <script>
   (function () {
@@ -740,9 +742,6 @@ function loadProfile() {
         var card = document.createElement("div");
         card.className = "booking-card";
         card.dataset.status = booking.booking_status;
-        if (booking.booking_status === "cancelled") {
-          alert("Customer has cancelled the booking");
-        }
         var header = document.createElement("div");
         header.className = "booking-header";
 
@@ -918,17 +917,6 @@ function loadProfile() {
         dl.appendChild(dd);
       });
 
-      if (booking.customer_location) {
-        var navBtn = document.createElement("button");
-        navBtn.type = "button";
-        navBtn.textContent = "{% translate 'Navigate' %}";
-        navBtn.className = "btn-navigate";
-        navBtn.addEventListener("click", function () {
-          navigateTo(booking.customer_location);
-        });
-        actions.appendChild(navBtn);
-      }
-
       if (booking.booking_status === "waiting") {
         var approveBtn = document.createElement("button");
         approveBtn.type = "button";
@@ -986,7 +974,99 @@ function loadProfile() {
       }
       window.open(url, "_blank");
     }
+    // Store previous booking statuses
+    let previousBookingStatuses = {};
+    let notificationInterval = null;
 
+    // Check booking status changes
+    function checkBookingNotifications() {
+        return getJSON(PROFILE_URL)
+            .then(function (data) {
+                if (!data) return;
+
+                var bookings = data.todays_bookings || [];
+                var currentBookingStatuses = {};
+
+                bookings.forEach(function (booking) {
+                    var bookingId = booking.booking_id;
+                    var bookingStatus = booking.booking_status;
+
+                    currentBookingStatuses[bookingId] = bookingStatus;
+
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            previousBookingStatuses,
+                            bookingId
+                        )
+                    ) {
+                        var previousStatus =
+                            previousBookingStatuses[bookingId];
+
+                        if (
+                            previousStatus !== bookingStatus &&
+                            bookingStatus === "cancelled"
+                        ) {
+                            showBookingNotification(
+                                "Booking Cancelled",
+                                "Customer has cancelled your booking."
+                            );
+                        }
+                    }
+                });
+
+                previousBookingStatuses = currentBookingStatuses;
+            })
+            .catch(function (error) {
+                console.error("Error checking booking notifications:", error);
+            });
+    }
+
+    // Display browser notification
+    function showBookingNotification(title, message) {
+        if (
+            "Notification" in window &&
+            Notification.permission === "granted"
+        ) {
+            new Notification(title, {
+                body: message
+            });
+        }
+    }
+    function startBookingNotifications() {
+
+    if (notificationInterval !== null) {
+        return;
+    }
+
+    checkBookingNotifications().then(function () {
+        notificationInterval = setInterval(function () {
+            checkBookingNotifications();
+        }, 5000);
+      });
+    }   
+    // Enable notifications
+    function enableBookingNotifications() {
+        if (!("Notification" in window)) {
+            showMessage("Your browser does not support notifications.");
+            return;
+        }
+        if (Notification.permission === "granted") {
+            startBookingNotifications();
+            return;
+        }
+
+    Notification.requestPermission().then(function (permission) {
+
+        if (permission === "granted") {
+            showMessage("Notifications enabled successfully.");
+            startBookingNotifications();
+        } else {
+            showMessage("Please allow notifications in your browser.");
+        }
+
+    });
+
+    }
     function transitionBooking(bookingId, targetStatus, detailSection) {
       if (targetStatus === "approved" && !confirm("Are you sure you want to approve this booking?")) {
         return;
@@ -1006,6 +1086,20 @@ function loadProfile() {
       })
       .then(function (data) {
         if (detailSection) detailSection.hidden = true;
+        if (targetStatus === "approved") {
+        showBookingNotification(
+            "Booking Approved",
+            "You have approved the booking."
+        );
+    }
+
+    if (targetStatus === "rejected") {
+        showBookingNotification(
+            "Booking Rejected",
+            "You have rejected the booking."
+        );
+    }
+
         showMessage("{% translate 'Booking updated.' %}");
         loadSlots();
       })
@@ -1112,6 +1206,11 @@ function loadProfile() {
       });
 
     document.getElementById("logout").addEventListener("click", logout);
+    document.getElementById("enable-notifications").addEventListener("click", enableBookingNotifications);
+    if ("Notification" in window &&
+    Notification.permission === "granted") {
+        startBookingNotifications();
+    }
     loadSlots();
     //loadBookings();
     //checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
@@ -1121,5 +1220,4 @@ function loadProfile() {
   })();
   </script>
 </body>
-<a href="#" id="move-to-top">↑ Move to Top</a>
 </html>

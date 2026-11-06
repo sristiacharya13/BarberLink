@@ -15,12 +15,22 @@
     padding: 20px;
     color: #333;
   }
+  .customer-day-tab { 
+    padding: 6px 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    background: #fff; 
+    cursor: pointer; 
+    font-size: 0.9em; 
+  }
   a{
     color: green;
   }
+
   a:hover{
     color: darkgreen;
   }
+
   nav {
     text-align: right;
     margin-bottom: 25px;
@@ -93,7 +103,7 @@
   /* Barber cards */
   #barbers-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 12px;
     margin-top: 12px;
   }
@@ -113,7 +123,7 @@
   /* Available slots */
   #customer-slots-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 12px;
     margin-top: 12px;
   }
@@ -324,6 +334,7 @@
       </select>
     </form>
     <button type="button" id="profile-toggle">{% translate "My Profile" %}</button>
+    <button type="button" id="enable-notifications">Enable Notifications</button>
     <button type="button" id="logout">{% translate "Logout" %}</button>
   </nav>
 
@@ -404,43 +415,7 @@
     <dl id="booking-detail-content"></dl>
     <div id="booking-actions"></div>
   </section>
-
-  <style>
-    #barbers-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
-    .barber-card { padding: 14px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; }
-    .barber-card:hover { border-color: #2196f3; }
-    #customer-slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 10px; }
-    .slot-card { padding: 14px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; display: flex; justify-content: space-between; align-items: center; }
-    .slot-available { background: #e8f5e9; border-color: #4caf50; }
-    .slot-na { background: #f5f5f5; border-color: #9e9e9e; color: #9e9e9e; }
-    .slot-booked { background: #ffebee; border-color: #f44336; }
-    .slot-approved { background: #e3f2fd; border-color: #2196f3; }
-    .customer-day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em; }
-    #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
-    #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
-    #booking-detail dt { font-weight: bold; }
-    #booking-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
-    #booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; }
-    .btn-login { background: #1976d2; }
-
-    /* Customer Today's Bookings section styles */
-    #customer-bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
-    .customer-booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .customer-booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .customer-booking-time { font-weight: bold; font-size: 1.1em; }
-    .customer-booking-status-badge { font-size: 0.85em; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
-    .customer-booking-status-waiting { background: #fff3e0; color: #e65100; }
-    .customer-booking-status-approved { background: #e3f2fd; color: #1565c0; }
-    .customer-booking-status-rejected { background: #fafafa; color: #616161; }
-    .customer-booking-status-cancelled { background: #fafafa; color: #616161; }
-    .customer-booking-status-completed { background: #e8f5e9; color: #2e7d32; }
-    .customer-booking-detail-row { margin: 6px 0; font-size: 0.9em; }
-    .customer-booking-detail-label { font-weight: bold; color: #333; }
-    .customer-booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .customer-booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.9em; }
-    .btn-cancel { background: #f44336; }
-    .btn-navigate { background: #ff9800; }
-  </style>
+  <a href="#" id="move-to-top">↑ Move to Top</a>
   <script src="{% url 'javascript-catalog' %}"></script>
   <script>
   (function () {
@@ -874,7 +849,11 @@
           return res.json();
         })
         .then(function () {
-          showMessage("{% translate 'Booking cancelled.' %}");
+          showBookingNotification(
+              "Booking Cancelled",
+              "You have cancelled your booking."
+          );
+          showMessage("{% translate 'Booking Cancelled.' %}");
           loadCustomerBookings();
         })
         .catch(function () {
@@ -897,7 +876,130 @@
       }
       window.open(url, "_blank");
     }
+    // Store the previous booking statuses
+let previousBookingStatuses = {};
+let notificationInterval = null;
+// Check booking status changes
+async function checkBookingNotifications() {
 
+    try {
+
+        // Fetch customer dashboard data
+        const data = await getJSON(PROFILE_URL);
+        if (!data) return;
+        // Get today's bookings
+        const bookings = data.todays_bookings || [];
+
+        // Store current booking statuses
+        let currentBookingStatuses = {};
+
+        bookings.forEach(function (booking) {
+
+            let bookingId = booking.booking_id;
+            let bookingStatus = booking.booking_status;
+
+            currentBookingStatuses[bookingId] = bookingStatus;
+
+            // Check whether booking existed previously
+            if (previousBookingStatuses[bookingId]) {
+
+                let previousStatus =
+                    previousBookingStatuses[bookingId];
+
+                // Barber approved booking
+                if (
+                    previousStatus !== bookingStatus &&
+                    bookingStatus === "approved"
+                ) {
+
+                    showBookingNotification(
+                        "Booking Approved",
+                        "Your barber has approved your booking."
+                    );
+
+                }
+
+                // Barber rejected booking
+                else if (
+                    previousStatus !== bookingStatus &&
+                    bookingStatus === "rejected"
+                ) {
+
+                    showBookingNotification(
+                        "Booking Rejected",
+                        "Your barber has rejected your booking."
+                    );
+
+                }
+
+            }
+
+        });
+
+        // Update previous booking statuses
+        previousBookingStatuses = currentBookingStatuses;
+
+    } catch (error) {
+
+        console.error(
+            "Error checking booking notifications:",
+            error
+        );
+
+    }
+
+  }
+
+    function showBookingNotification(title, message) {
+
+    if ("Notification" in window &&
+        Notification.permission === "granted") {
+
+        new Notification(title, {
+            body: message
+        });
+
+    }
+}
+    function startBookingNotifications() {
+
+    if (notificationInterval !== null) {
+        return;
+    }
+
+    checkBookingNotifications().then(function () {
+
+        notificationInterval = setInterval(function () {
+
+            checkBookingNotifications();
+
+        }, 5000);
+      });
+    }
+    function enableBookingNotifications() {
+
+      if (!("Notification" in window)) {
+
+        showMessage("Your browser does not support notifications.");
+        return;
+
+      }
+      
+
+    Notification.requestPermission().then(function (permission) {
+        if (permission === "granted") {
+            showMessage("Notifications enabled successfully.");
+            new Notification("BarberLink", {
+                body: "Notifications are enabled!"
+            });
+            startBookingNotifications();
+        } else {
+            showMessage("Please allow notifications in your browser.");
+        }
+    });
+
+        
+    }
     var moveToTop = document.getElementById("move-to-top");
 
     window.addEventListener("scroll", function () {
@@ -938,7 +1040,12 @@
           if (!data) return;
           cardEl.className = "slot-card slot-booked";
           var statusSpan = cardEl.querySelector("span:last-child");
-          if (statusSpan) statusSpan.textContent = gettext("booked");          showMessage("{% translate 'Booking requested.' %}");
+          if (statusSpan) statusSpan.textContent = gettext("booked");
+          showBookingNotification(
+            "Booking Requested",
+            "Your booking request has been sent successfully."
+          );          
+          showMessage("{% translate 'Booking requested.' %}");
         })
         .catch(function () {
           showMessage("{% translate 'Could not book slot. Try again.' %}");
@@ -966,6 +1073,10 @@
       }
 
       document.getElementById("logout").addEventListener("click", logout);
+      document.getElementById("enable-notifications").addEventListener("click", enableBookingNotifications);
+      if ("Notification" in window && Notification.permission === "granted") {
+    startBookingNotifications();
+}
       if (isLoggedIn) {
         loadCustomerBookings();
       }
@@ -985,7 +1096,6 @@
             showMessage("{% translate 'Could not get location. Please enable location services.' %}");
         });
       });
-      document.getElementById("search-nearby").addEventListener("click", searchNearby);
       document.getElementById("back-to-barbers").addEventListener("click", function () {
       document.getElementById("barber-detail-section").hidden = true;
       document.getElementById("barbers-list-section").hidden = false;
@@ -994,5 +1104,4 @@
   })();
   </script>
 </body>
-<a href="#" id="move-to-top">↑ Move to Top</a>
 </html>
