@@ -242,6 +242,71 @@
     background-color: #006400;
   }
 
+  #barber-detail-section {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .barber-detail-hero {
+    position: relative;
+    min-height: 220px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-end;
+    background-color: #1f2937;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .barber-detail-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.18));
+  }
+
+  .barber-detail-back {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1f2937;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  .barber-detail-info {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+  }
+
+  #barber-detail-name {
+    margin: 0 0 4px;
+    color: #fff;
+    font-size: 1.4rem;
+  }
+
+  #barber-detail-status {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.95rem;
+  }
+
+  .barber-detail-body {
+    padding: 18px 20px 20px;
+  }
+
   #customer-slots-grid {
     display: flex;
     flex-wrap: wrap;
@@ -509,9 +574,12 @@
     #nearby-section,
     #customer-bookings-section,
     #barbers-list-section,
-    #barber-detail-section,
     #booking-detail,
     body > section {
+      padding: 15px;
+    }
+
+    .barber-detail-body {
       padding: 15px;
     }
 
@@ -605,15 +673,21 @@
   </section>
 
   <section id="barber-detail-section" hidden>
-    <button type="button" id="back-to-barbers">{% translate "← Back to list" %}</button>
-    <h3 id="barber-detail-name"></h3>
-    <p id="barber-detail-status"></p>
-    <h4>{% translate "This Week's Slots" %}</h4>
-    <div id="customer-week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #ddd;"></div>
-    <div id="customer-slot-date" style="margin-bottom:8px; font-size:0.9em; color:#666;"></div>
-    <div id="customer-slots-grid">{% translate "Loading slots..." %}</div>
-    <div class="slot-book-action">
-      <button type="button" id="book-appointment-btn">{% translate "Book Appointment" %}</button>
+    <div class="barber-detail-hero" id="barber-detail-hero">
+      <button type="button" id="back-to-barbers" class="barber-detail-back" aria-label="{% translate 'Back' %}">&#8592;</button>
+      <div class="barber-detail-info">
+        <h3 id="barber-detail-name"></h3>
+        <p id="barber-detail-status"></p>
+      </div>
+    </div>
+    <div class="barber-detail-body">
+      <h4>{% translate "This Week's Slots" %}</h4>
+      <div id="customer-week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #ddd;"></div>
+      <div id="customer-slot-date" style="margin-bottom:8px; font-size:0.9em; color:#666;"></div>
+      <div id="customer-slots-grid">{% translate "Loading slots..." %}</div>
+      <div class="slot-book-action">
+        <button type="button" id="book-appointment-btn">{% translate "Book Appointment" %}</button>
+      </div>
     </div>
   </section>
 
@@ -824,7 +898,8 @@
         var chargeMax = chargeMin + Math.floor(Math.random() * 100) + 50;
         var distanceVal = (Math.random() * 3 + 0.5).toFixed(1);
 
-        card.innerHTML = "<img class='barber-avatar' src='" + portraits[portraitIndex] + "' alt='Barber profile'>" +
+        var barberImage = portraits[portraitIndex];
+        card.innerHTML = "<img class='barber-avatar' src='" + barberImage + "' alt='Barber profile'>" +
           "<div class='barber-info'>" +
           "<div class='barber-header-row'>" +
           "<strong class='barber-name'>" + (displayName || "Barber") + "</strong>" +
@@ -838,22 +913,27 @@
           "</div>";
         card.querySelector(".barber-book-btn").addEventListener("click", function (e) {
           e.stopPropagation();
-          openBarberDetail(barber);
+          openBarberDetail(barber, barberImage);
         });
         card.addEventListener("click", function () {
-          openBarberDetail(barber);
+          openBarberDetail(barber, barberImage);
         });
         listEl.appendChild(card);
       });
     }
 
-    function openBarberDetail(barber) {
+    function openBarberDetail(barber, imageUrl) {
       document.getElementById("barbers-list-section").hidden = true;
       var detailSection = document.getElementById("barber-detail-section");
       detailSection.hidden = false;
-      document.getElementById("barber-detail-name").textContent ="{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name || "Barber"): (barber.name || "Barber");
+      var hero = document.getElementById("barber-detail-hero");
+      if (hero) {
+        hero.style.backgroundImage = imageUrl ? "url('" + imageUrl + "')" : "";
+      }
+      var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name || "Barber"): (barber.name || "Barber");
+      document.getElementById("barber-detail-name").textContent = displayName;
       document.getElementById("barber-detail-name").setAttribute("data-barber-id", barber.barber_id);
-      document.getElementById("barber-detail-status").innerHTML = "{% translate 'Contact' %}: " + orNotSet(barber.contact_number) + " | {% translate 'Distance' %}: " + barber.distance_km + " km";
+      document.getElementById("barber-detail-status").textContent = "{% translate 'Contact' %}: " + orNotSet(barber.contact_number);
       loadCustomerSlots(barber.barber_id);
     }
 
