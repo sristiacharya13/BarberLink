@@ -17,11 +17,14 @@
         <span class="bl-notif-badge" id="blNotifBadge" hidden></span>
       </button>
       <div class="bl-notif-dropdown" id="blNotifDropdown" aria-hidden="true">
-        <div class="bl-notif-head">
-          <span class="bl-notif-title">Notifications</span>
-          <button type="button" class="bl-notif-mark-all" id="blNotifMarkAll">Mark all as read</button>
+        <div class="bl-notif-panel">
+          <div class="bl-notif-head">
+            <button type="button" class="bl-notif-close" id="blNotifClose" aria-label="Close notifications"><i data-lucide="arrow-left"></i></button>
+            <span class="bl-notif-title">Notifications</span>
+            <button type="button" class="bl-notif-mark-all" id="blNotifMarkAll">Mark all as read</button>
+          </div>
+          <div class="bl-notif-list" id="blNotifList"></div>
         </div>
-        <div class="bl-notif-list" id="blNotifList"></div>
       </div>
     </div>
     <button class="bl-header__icon bl-menu-toggle" type="button" aria-label="Menu"><i data-lucide="menu"></i></button>
@@ -52,6 +55,7 @@
     var notifList = document.getElementById('blNotifList');
     var notifBadge = document.getElementById('blNotifBadge');
     var notifMarkAll = document.getElementById('blNotifMarkAll');
+    var notifClose = document.getElementById('blNotifClose');
     if (!notifBtn || !notifDd || !notifList) return;
 
     var notifications = [
@@ -132,19 +136,29 @@
       });
     }
 
+    function setNotifOpen(open) {
+      notifDd.classList.toggle('open', open);
+      notifBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      notifDd.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
     notifBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (dd) dd.classList.remove('open');
-      var open = notifDd.classList.toggle('open');
-      notifBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      notifDd.setAttribute('aria-hidden', open ? 'false' : 'true');
+      setNotifOpen(!notifDd.classList.contains('open'));
     });
-    document.addEventListener('click', function (e) {
-      if (!notifDd.contains(e.target) && !notifBtn.contains(e.target)) {
-        notifDd.classList.remove('open');
-        notifBtn.setAttribute('aria-expanded', 'false');
-        notifDd.setAttribute('aria-hidden', 'true');
-      }
+    if (notifClose) {
+      notifClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setNotifOpen(false);
+      });
+    }
+    notifDd.addEventListener('click', function (e) {
+      if (e.target === notifDd) setNotifOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && notifDd.classList.contains('open')) setNotifOpen(false);
     });
 
     renderNotifications();
