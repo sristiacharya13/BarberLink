@@ -323,8 +323,8 @@
   </style>
 
   <section id="slots-section" style="background: rgba(35,29,29,0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 20px; margin-bottom: 16px;">
-    <h3>{% translate "This Week's Slots" %}</h3>
-    <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
+    <h3 style="color: #fff;">{% translate "This Week's Slots" %}</h3>
+    <p id="slots-date-display" style="margin:4px 0; color:#fff;"></p>
 
     <div id="week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #ddd;"></div>
 
@@ -335,12 +335,12 @@
           <label for="today-charge">{% translate "Price" %} (₹):</label>
           <input type="number" id="today-charge" min="0" step="10" style="padding: 6px;" disabled>
         </div>
-        <label for="same-for-all" style="display: flex; align-items: center; gap: 8px; width: 100%; margin: 0 0 10px 0; cursor: pointer;">
-          <input type="checkbox" id="same-for-all" style="accent-color: #1b8f3a; width: auto; min-width: 16px; height: 16px; margin: 0; padding: 0; flex: 0 0 auto;" disabled>
-          <span>{% translate "Same for all slots" %}</span>
-        </label>
-        <div style="display: flex; justify-content: flex-end;">
-          <button type="button" id="apply-charges" style="background-color: #1b8f3a; color: #fff; border: none; border-radius: 999px; padding: 8px 16px; cursor: pointer;" disabled>{% translate "Apply" %}</button>
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          <label for="same-for-all" style="display: inline-flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; flex: 1; min-width: 0;">
+            <input type="checkbox" id="same-for-all" style="accent-color: #1b8f3a; width: auto; min-width: 16px; height: 16px; margin: 0; padding: 0; flex: 0 0 auto;" disabled>
+            <span>{% translate "Same for all slots" %}</span>
+          </label>
+          <button type="button" id="apply-charges" style="background-color: #1b8f3a; color: #fff; border: none; border-radius: 999px; padding: 8px 16px; cursor: pointer; flex: 0 0 auto;" disabled>{% translate "Apply" %}</button>
         </div>
       </div>
       <p id="charge-message" style="margin: 8px 0 0 0; font-size: 0.9em;"></p>
