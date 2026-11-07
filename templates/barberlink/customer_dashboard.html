@@ -232,7 +232,7 @@
 
   .barber-charge-text {
     font-weight: 600;
-    color: green;
+    color: #fff;
     font-size: 16px;
   }
 
@@ -664,7 +664,7 @@
   </nav>
 
   {% translate "Hey," as greeting_prefix %}
-  <h1 id="greeting">{{ greeting_prefix }}</h1>
+  <h1 id="greeting">Hey, Freddy</h1>
   <h2>Ready for fresh look?</h2>
 
   <div class="search-bar">
@@ -1351,7 +1351,7 @@
             if (!user) return;
             currentUser = user;
             var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
-            document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
+            document.getElementById("greeting").textContent = "Hey, Freddy";
             if (document.getElementById("profile-toggle")) {
               document.getElementById("profile-toggle").addEventListener("click", loadProfile);
             }
@@ -1361,7 +1361,7 @@
           });
       } else {
         isLoggedIn = false;
-        document.getElementById("greeting").textContent = GREETING_PREFIX;
+        document.getElementById("greeting").textContent = "Hey, Freddy";
         document.getElementById("profile-toggle").hidden = true;
       }
 
