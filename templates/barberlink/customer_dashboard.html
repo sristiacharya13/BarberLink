@@ -389,10 +389,19 @@
     background-color: #1b8f3a;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+  }
+
+  .customer-day-tab {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.9em;
   }
 
   #book-appointment-btn:hover {
@@ -579,7 +588,18 @@
       padding: 15px;
     }
 
-    .barber-detail-body {
+  #barber-detail-availability {
+    margin: 6px 0 0;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(27, 143, 58, 0.92);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .barber-detail-body {
       padding: 15px;
     }
 
@@ -678,6 +698,7 @@
       <div class="barber-detail-info">
         <h3 id="barber-detail-name"></h3>
         <p id="barber-detail-status"></p>
+        <p id="barber-detail-availability">{% translate "Available today" %}</p>
       </div>
     </div>
     <div class="barber-detail-body">
@@ -686,7 +707,7 @@
       <div id="customer-slot-date" style="margin-bottom:8px; font-size:0.9em; color:#666;"></div>
       <div id="customer-slots-grid">{% translate "Loading slots..." %}</div>
       <div class="slot-book-action">
-        <button type="button" id="book-appointment-btn">{% translate "Book Appointment" %}</button>
+        <button type="button" id="book-appointment-btn">{% translate "Book now" %}</button>
       </div>
     </div>
   </section>
@@ -703,7 +724,7 @@
     .barber-card:hover { border-color: #2196f3; }
     #customer-slots-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 12px auto 0; width: 100%; max-width: 500px; }
     @media (max-width: 600px) { #customer-slots-grid { max-width: 100%; gap: 8px; } .slot-card { width: calc(50% - 8px); max-width: 150px; height: 76px; } }
-    .customer-day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em; }
+    .customer-day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 999px; background: #fff; cursor: pointer; font-size: 0.9em; }
     #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
     #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
     #booking-detail dt { font-weight: bold; }
@@ -934,6 +955,14 @@
       document.getElementById("barber-detail-name").textContent = displayName;
       document.getElementById("barber-detail-name").setAttribute("data-barber-id", barber.barber_id);
       document.getElementById("barber-detail-status").textContent = "{% translate 'Contact' %}: " + orNotSet(barber.contact_number);
+      var availabilityEl = document.getElementById("barber-detail-availability");
+      if (availabilityEl) {
+        var status = barber.computed_status;
+        var available = !status || status === "active" || status === "trial";
+        availabilityEl.textContent = available ? "{% translate 'Available today' %}" : "{% translate 'Unavailable' %}";
+        availabilityEl.style.background = available ? "rgba(27, 143, 58, 0.92)" : "rgba(107, 114, 128, 0.92)";
+        availabilityEl.hidden = false;
+      }
       loadCustomerSlots(barber.barber_id);
     }
 
@@ -978,7 +1007,6 @@
         btn.textContent = label;
         btn.className = "customer-day-tab";
         btn.dataset.dayKey = key;
-        btn.style = "padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em;";
         if (customerSelectedDayKey === key) {
           btn.style.background = "#4caf50";
           btn.style.color = "#fff";
