@@ -10,10 +10,10 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #f5f7f5;
+    background: #000;
     margin: 0;
     padding: 20px;
-    color: #333;
+    color: #f5f5f5;
   }
 
   nav {
@@ -32,16 +32,31 @@
 
   h1 {
     text-align: center;
-    color: green;
+    color: #4caf50;
   }
 
   h2 {
     text-align: center;
-    color: #555;
+    color: rgba(255, 255, 255, 0.78);
   }
 
-  h3 {
-    color: #333;
+  h3, h4 {
+    color: #fff;
+  }
+
+  #profile-section,
+  #nearby-section,
+  #customer-bookings-section,
+  #barbers-list-section,
+  #barber-detail-section,
+  #booking-detail,
+  body > section,
+  .barber-detail-body,
+  .search-bar,
+  .slot-book-action,
+  #customer-week-nav,
+  #customer-slot-date {
+    box-sizing: border-box;
   }
 
   #profile-section,
@@ -51,12 +66,15 @@
   #barber-detail-section,
   #booking-detail,
   body > section {
-    background-color: white;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     padding: 20px;
     margin: 20px auto;
     max-width: 1000px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
   #pay-button {
@@ -74,12 +92,14 @@
   #nearby-section select,
   #customer-booking-status-filter {
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
   }
 
   #location-status {
-    color: #555;
+    color: rgba(255, 255, 255, 0.78);
   }
 
   .search-bar {
@@ -99,11 +119,14 @@
   .search-bar input {
     width: 100%;
     padding: 10px 14px 10px 44px;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 24px;
     font-size: 14px;
     box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
   }
+  .search-bar input::placeholder { color: rgba(255, 255, 255, 0.6); }
 
   #nearby-section {
     padding: 24px;
@@ -120,7 +143,10 @@
     gap: 10px;
     cursor: pointer;
     padding: 14px 20px;
-    background-color: green;
+    background: rgba(27, 143, 58, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(76, 175, 80, 0.45);
     color: white;
     border-radius: 12px;
     text-align: center;
@@ -160,9 +186,11 @@
 
   .barber-card {
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: white;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     cursor: pointer;
     display: flex;
     align-items: flex-start;
@@ -171,7 +199,7 @@
   }
 
   .barber-card:hover {
-    border-color: green;
+    border-color: rgba(76, 175, 80, 0.6);
   }
 
   .barber-avatar {
@@ -191,7 +219,7 @@
     display: block;
     font-weight: 600;
     font-size: 17px;
-    color: #333;
+    color: #fff;
   }
 
   .barber-header-row {
@@ -210,13 +238,13 @@
 
   .barber-contact {
     font-size: 15px;
-    color: #555;
+    color: rgba(255, 255, 255, 0.78);
     margin-bottom: 8px;
   }
 
   .barber-dist {
     font-size: 14px;
-    color: #666;
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .barber-bottom {
@@ -301,6 +329,17 @@
     margin: 0;
     color: rgba(255, 255, 255, 0.92);
     font-size: 0.95rem;
+  }
+
+  #barber-detail-availability {
+    margin: 6px 0 0;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(27, 143, 58, 0.92);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
   }
 
   .barber-detail-body {
@@ -397,9 +436,10 @@
 
   .customer-day-tab {
     padding: 6px 10px;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
     cursor: pointer;
     font-size: 0.9em;
   }
@@ -442,9 +482,11 @@
 
   .customer-booking-card {
     padding: 16px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: white;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .customer-booking-header {
@@ -541,13 +583,17 @@
   }
 
   #message {
-    background-color: #e8f5e9;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #fff;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
   }
 
   #nearby-error {
-    color: #b00020;
+    color: #ff8a80;
   }
 
   [hidden] {
@@ -588,18 +634,7 @@
       padding: 15px;
     }
 
-  #barber-detail-availability {
-    margin: 6px 0 0;
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: rgba(27, 143, 58, 0.92);
-    color: #fff;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-
-  .barber-detail-body {
+    .barber-detail-body {
       padding: 15px;
     }
 
@@ -720,11 +755,11 @@
 
   <style>
     #barbers-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
-    .barber-card { padding: 14px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; }
-    .barber-card:hover { border-color: #2196f3; }
+    .barber-card { padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; }
+    .barber-card:hover { border-color: rgba(76,175,80,0.6); }
     #customer-slots-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 12px auto 0; width: 100%; max-width: 500px; }
     @media (max-width: 600px) { #customer-slots-grid { max-width: 100%; gap: 8px; } .slot-card { width: calc(50% - 8px); max-width: 150px; height: 76px; } }
-    .customer-day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 999px; background: #fff; cursor: pointer; font-size: 0.9em; }
+    .customer-day-tab { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; font-size: 0.9em; }
     #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
     #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
     #booking-detail dt { font-weight: bold; }
@@ -1008,9 +1043,9 @@
         btn.className = "customer-day-tab";
         btn.dataset.dayKey = key;
         if (customerSelectedDayKey === key) {
-          btn.style.background = "#4caf50";
+          btn.style.background = "rgba(76, 175, 80, 0.65)";
           btn.style.color = "#fff";
-          btn.style.borderColor = "#4caf50";
+          btn.style.borderColor = "rgba(76, 175, 80, 0.8)";
         }
         btn.addEventListener("click", function () {
           customerSelectDay(key);
@@ -1373,5 +1408,23 @@
     });
   })();
   </script>
+
+<style>
+  body { background: #000 !important; color: #f5f5f5; }
+  body > section, #profile-section, #nearby-section, #customer-bookings-section, #barbers-list-section, #barber-detail-section, #booking-detail,
+  .barber-card, .customer-booking-card, #message, .search-bar input, #nearby-section select, #customer-booking-status-filter, .customer-day-tab {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: #f5f5f5;
+  }
+  .barber-detail-body { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+  .barber-detail-hero { border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .barber-name, h1, h3, h4, dt, label, .customer-booking-detail-label { color: #fff !important; }
+  .barber-contact, .barber-dist, #customer-slot-date, dd, p, .secondary { color: rgba(255,255,255,0.78) !important; }
+  #nearby-error { color: #ff8a80 !important; }
+  .search-bar .search-icon { stroke: rgba(255,255,255,0.7); }
+</style>
 </body>
 </html>
