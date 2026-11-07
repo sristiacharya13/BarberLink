@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Customer Dashboard" %}</title>
-  
+
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -243,41 +243,115 @@
   }
 
   #customer-slots-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
-    margin-top: 12px;
+    margin: 12px auto 0;
+    width: 100%;
+    max-width: 500px;
   }
 
   .slot-card {
-    padding: 14px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    width: 112px;
+    height: 84px;
+    padding: 8px;
+    border-radius: 12px;
+    border: 2px solid #d6d6d6;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
+    text-align: center;
+    background-color: #fafafa;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .slot-card.slot-clickable {
     cursor: pointer;
   }
 
+  .slot-card.slot-clickable:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .slot-card:not(.slot-clickable) {
+    cursor: default;
+  }
+
+  .slot-card.slot-selected {
+    border-color: #1b5e20;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.28);
+  }
+
   .slot-available {
-    background-color: #e8f5e9;
-    border-color: green;
+    background-color: #eaf7ee;
+    border-color: #4caf50;
+    color: #1b5e20;
   }
 
   .slot-na {
-    background-color: #f5f5f5;
-    color: #777;
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+    color: #4b5563;
   }
 
   .slot-booked {
-    background-color: #ffebee;
-    border-color: red;
+    background-color: #fdecec;
+    border-color: #e53935;
+    color: #b71c1c;
   }
 
+  .slot-waiting,
   .slot-approved {
-    background-color: #e3f2fd;
-    border-color: blue;
+    background-color: #eaf2ff;
+    border-color: #2196f3;
+    color: #0d47a1;
+  }
+
+  .slot-book-action {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  #book-appointment-btn {
+    padding: 12px 28px;
+    background-color: #1b8f3a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #book-appointment-btn:hover {
+    background-color: #157030;
+  }
+
+  .slot-time,
+  .slot-card .slot-range {
+    font-weight: 700;
+    font-size: 0.82rem;
+    line-height: 1.15;
+  }
+
+  .slot-card .slot-status {
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .slot-card .slot-charge {
+    font-size: 0.64rem;
+    color: inherit;
+    opacity: 0.85;
+    line-height: 1.15;
   }
 
   .slot-time,
@@ -416,9 +490,19 @@
     }
 
     #barbers-list,
-    #customer-slots-grid,
     #customer-bookings-list {
       grid-template-columns: 1fr;
+    }
+
+    #customer-slots-grid {
+      max-width: 100%;
+      gap: 8px;
+    }
+
+    .slot-card {
+      width: calc(50% - 8px);
+      max-width: 150px;
+      height: 76px;
     }
 
     #profile-section,
@@ -447,10 +531,6 @@
     <form action="{% url 'set_language' %}" method="post" style="display:inline">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.path }}">
-      <!-- <select name="language" onchange="this.form.submit()">
-        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
-      </select> -->
     </form>
   </nav>
 
@@ -496,9 +576,6 @@
   {% endif %}
 
   <section id="nearby-section">
-    <!-- <div class="nearby-header">
-      <h3>{% translate "Find Barbers Near Me" %}</h3>
-    </div> -->
     <div class="nearby-row" id="use-my-location" role="button" tabindex="0">
       <div class="nearby-text">
         <div class="nearby-title">{% translate "Use My Location" %}</div>
@@ -506,7 +583,6 @@
       </div>
     </div>
     <iframe id="nearby-map" width="100%" height="300" style="border:0;margin-top:16px;border-radius:8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=12.9716,77.5946&output=embed"></iframe>
-    <!-- <p id="location-status">{% translate "Location: not set" %}</p> -->
     <p id="nearby-error" style="color:#b00020" hidden></p>
   </section>
 
@@ -536,6 +612,9 @@
     <div id="customer-week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #ddd;"></div>
     <div id="customer-slot-date" style="margin-bottom:8px; font-size:0.9em; color:#666;"></div>
     <div id="customer-slots-grid">{% translate "Loading slots..." %}</div>
+    <div class="slot-book-action">
+      <button type="button" id="book-appointment-btn">{% translate "Book Appointment" %}</button>
+    </div>
   </section>
 
   <section id="booking-detail" hidden>
@@ -548,12 +627,8 @@
     #barbers-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
     .barber-card { padding: 14px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; }
     .barber-card:hover { border-color: #2196f3; }
-    #customer-slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 10px; }
-    .slot-card { padding: 14px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; display: flex; justify-content: space-between; align-items: center; }
-    .slot-available { background: #e8f5e9; border-color: #4caf50; }
-    .slot-na { background: #f5f5f5; border-color: #9e9e9e; color: #9e9e9e; }
-    .slot-booked { background: #ffebee; border-color: #f44336; }
-    .slot-approved { background: #e3f2fd; border-color: #2196f3; }
+    #customer-slots-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 12px auto 0; width: 100%; max-width: 500px; }
+    @media (max-width: 600px) { #customer-slots-grid { max-width: 100%; gap: 8px; } .slot-card { width: calc(50% - 8px); max-width: 150px; height: 76px; } }
     .customer-day-tab { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em; }
     #booking-detail { margin-top: 24px; padding: 16px; border-radius: 8px; background: #fafafa; border: 1px solid #e0e0e0; }
     #booking-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
@@ -561,23 +636,6 @@
     #booking-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
     #booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; }
     .btn-login { background: #1976d2; }
-
-    #customer-bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
-    .customer-booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .customer-booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .customer-booking-time { font-weight: bold; font-size: 1.1em; }
-    .customer-booking-status-badge { font-size: 0.85em; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
-    .customer-booking-status-waiting { background: #fff3e0; color: #e65100; }
-    .customer-booking-status-approved { background: #e3f2fd; color: #1565c0; }
-    .customer-booking-status-rejected { background: #fafafa; color: #616161; }
-    .customer-booking-status-cancelled { background: #fafafa; color: #616161; }
-    .customer-booking-status-completed { background: #e8f5e9; color: #2e7d32; }
-    .customer-booking-detail-row { margin: 6px 0; font-size: 0.9em; }
-    .customer-booking-detail-label { font-weight: bold; color: #333; }
-    .customer-booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .customer-booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.9em; }
-    .btn-cancel { background: #f44336; }
-    .btn-navigate { background: #ff9800; }
   </style>
   <script src="{% url 'javascript-catalog' %}"></script>
   <script>
@@ -801,8 +859,10 @@
 
     var customerWeekSlotsByDay = {};
     var customerSelectedDayKey = null;
+    var selectedSlotId = null;
 
     function loadCustomerSlots(barberId) {
+      clearSelectedSlot();
       var grid = document.getElementById("customer-slots-grid");
       if (grid) grid.innerHTML = "{% translate 'Loading slots...' %}";
       fetch("/api/v1/customers/barbers/" + barberId + "/slots/")
@@ -861,39 +921,77 @@
       renderCustomerWeekNav();
     }
 
+    function updateBookAppointmentButton() {
+      var btn = document.getElementById("book-appointment-btn");
+      if (!btn) return;
+      btn.disabled = false;
+    }
+
+    function clearSelectedSlot() {
+      selectedSlotId = null;
+      var grid = document.getElementById("customer-slots-grid");
+      if (grid) {
+        grid.querySelectorAll(".slot-card.slot-selected").forEach(function (el) {
+          el.classList.remove("slot-selected");
+        });
+      }
+      updateBookAppointmentButton();
+    }
+
+    function slotMeta(status) {
+      if (status === "available") return { cls: "slot-available", label: "Available", clickable: true };
+      if (status === "na") return { cls: "slot-na", label: "Barber NA", clickable: false };
+      if (status === "booked") return { cls: "slot-booked", label: "Booked", clickable: false };
+      if (status === "waiting_list" || status === "waiting" || status === "approved") {
+        return { cls: "slot-waiting", label: "Waiting", clickable: false };
+      }
+      return { cls: "slot-na", label: status || "Unavailable", clickable: false };
+    }
+
     function renderCustomerSlots(slots) {
       var grid = document.getElementById("customer-slots-grid");
       if (!grid) return;
+      clearSelectedSlot();
       grid.innerHTML = "";
       if (!slots || !slots.length) {
         grid.textContent = "{% translate 'No slots found.' %}";
         return;
       }
       slots.forEach(function (slot) {
+        var meta = slotMeta(slot.status);
         var card = document.createElement("div");
-        var cls = slot.status === "available" ? "slot-available" : slot.status === "na" ? "slot-na" : slot.status === "booked" ? "slot-booked" : "slot-approved";
-        card.className = "slot-card " + cls;
+        card.className = "slot-card " + meta.cls + (meta.clickable ? " slot-clickable" : "");
+        card.setAttribute("data-slot-id", slot.slot_id);
+        card.setAttribute("aria-disabled", meta.clickable ? "false" : "true");
 
-        var timeSpan = document.createElement("span");
-        timeSpan.textContent = slot.start_time + "\u2013" + slot.end_time;
-        var priceSpan = document.createElement("span");
-        priceSpan.textContent = slot.service_charge === null ? "Price not set" : "Service charge: \u20B9" + slot.service_charge;
-        var statusSpan = document.createElement("span");
-        statusSpan.textContent = gettext(slot.status.toLowerCase());
+        var timeSpan = document.createElement("div");
+        timeSpan.className = "slot-range";
+        timeSpan.textContent = slot.start_time + "–" + slot.end_time;
+
+        var statusSpan = document.createElement("div");
+        statusSpan.className = "slot-status";
+        statusSpan.textContent = gettext(meta.label);
 
         card.appendChild(timeSpan);
-        card.appendChild(priceSpan);
         card.appendChild(statusSpan);
 
-        card.addEventListener("click", function () {
-          if (slot.status === "available") {
-            if (!isLoggedIn) {
-              window.location.href = "/login/";
-              return;
-            }
-            bookSlot(slot.slot_id, card);
-          }
-        });
+        if (slot.service_charge !== null && slot.service_charge !== undefined && slot.service_charge !== "") {
+          var priceSpan = document.createElement("div");
+          priceSpan.className = "slot-charge";
+          priceSpan.textContent = "₹" + slot.service_charge;
+          card.appendChild(priceSpan);
+        }
+
+        if (meta.clickable) {
+          card.addEventListener("click", function () {
+            grid.querySelectorAll(".slot-card.slot-selected").forEach(function (el) {
+              el.classList.remove("slot-selected");
+            });
+            card.classList.add("slot-selected");
+            selectedSlotId = slot.slot_id;
+            updateBookAppointmentButton();
+          });
+        }
 
         grid.appendChild(card);
       });
@@ -1079,9 +1177,14 @@
         })
         .then(function (data) {
           if (!data) return;
-          cardEl.className = "slot-card slot-booked";
-          var statusSpan = cardEl.querySelector("span:last-child");
-          if (statusSpan) statusSpan.textContent = gettext("booked");          showMessage("{% translate 'Booking requested.' %}");
+          if (cardEl) {
+            cardEl.className = "slot-card slot-waiting";
+            cardEl.setAttribute("aria-disabled", "true");
+            var statusEl = cardEl.querySelector(".slot-status");
+            if (statusEl) statusEl.textContent = gettext("Waiting");
+          }
+          clearSelectedSlot();
+          showMessage("{% translate 'Booking requested.' %}");
         })
         .catch(function () {
           showMessage("{% translate 'Could not book slot. Try again.' %}");
@@ -1139,9 +1242,25 @@
       if (document.getElementById("search-nearby")) {
         document.getElementById("search-nearby").addEventListener("click", searchNearby);
       }
+      var bookBtn = document.getElementById("book-appointment-btn");
+      if (bookBtn) {
+        bookBtn.addEventListener("click", function () {
+          if (!selectedSlotId) {
+            showMessage("{% translate 'Please select an available slot first.' %}");
+            return;
+          }
+          if (!isLoggedIn) {
+            window.location.href = "/login/";
+            return;
+          }
+          var selectedCard = document.querySelector("#customer-slots-grid .slot-card.slot-selected");
+          bookSlot(selectedSlotId, selectedCard);
+        });
+      }
       document.getElementById("back-to-barbers").addEventListener("click", function () {
       document.getElementById("barber-detail-section").hidden = true;
       document.getElementById("barbers-list-section").hidden = false;
+      clearSelectedSlot();
       });
     });
   })();
