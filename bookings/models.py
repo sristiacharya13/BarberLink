@@ -12,10 +12,12 @@ class Slot(models.Model):
     STATUS_AVAILABLE = "available"
     STATUS_NA = "na"
     STATUS_BOOKED = "booked"
+    STATUS_WAITING = "waiting"
     STATUS_APPROVED = "approved"
     STATUS_CHOICES = [
         (STATUS_AVAILABLE, "Available"),
         (STATUS_NA, "Not available"),
+        (STATUS_WAITING, "Waiting for Approval"),
         (STATUS_BOOKED, "Booked (customer pending approval)"),
         (STATUS_APPROVED, "Approved"),
     ]

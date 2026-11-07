@@ -56,7 +56,7 @@ class BarberSlotUpdateAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_WAITING, Slot.STATUS_APPROVED):
                 return Response(
                     {"error": {"code": "SLOT_ALREADY_BOOKED", "message": "Slot already has an active booking."}},
                     status=status.HTTP_409_CONFLICT,
@@ -157,14 +157,17 @@ class CustomerBarberSlotsAPIView(APIView):
                     barber.sunday_service_charge if slot.slot_date.weekday() == 6 else barber.regular_service_charge
                 )
 
-            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+            if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_WAITING, Slot.STATUS_APPROVED):
                 active_booking = slot.bookings.filter(
                     booking_status__in=[Booking.STATUS_WAITING, Booking.STATUS_APPROVED]
                 ).first()
                 is_owner = bool(active_booking) and active_booking.customer_id == viewer_id
 
                 if not is_owner:
-                    display_status = Slot.STATUS_BOOKED
+                    if slot.status == Slot.STATUS_WAITING or (active_booking and active_booking.booking_status == Booking.STATUS_WAITING):
+                        display_status = "waiting_list"
+                    else:
+                        display_status = Slot.STATUS_BOOKED
 
             days[date_key]["slots"].append({
                 "slot_id": slot.slot_id,
@@ -205,7 +208,7 @@ class CustomerBookSlotAPIView(APIView):
             with transaction.atomic():
                 updated = Slot.objects.filter(
                     slot_id=slot_id, barber=barber, status=Slot.STATUS_AVAILABLE
-                ).update(status=Slot.STATUS_BOOKED)
+                ).update(status=Slot.STATUS_WAITING)
 
                 if not updated:
                     slot = Slot.objects.filter(slot_id=slot_id, barber=barber).first()
@@ -219,7 +222,7 @@ class CustomerBookSlotAPIView(APIView):
                             {"error": {"code": "SLOT_UNAVAILABLE", "message": "This slot is marked unavailable by the barber."}},
                             status=status.HTTP_409_CONFLICT,
                         )
-                    if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                    if slot.status in (Slot.STATUS_BOOKED, Slot.STATUS_WAITING, Slot.STATUS_APPROVED):
                         return Response(
                             {"error": {"code": "SLOT_ALREADY_BOOKED", "message": "This slot is already booked."}},
                             status=status.HTTP_409_CONFLICT,

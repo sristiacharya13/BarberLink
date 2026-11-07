@@ -254,22 +254,22 @@
   }
 </style>
 
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/design.css">
 </head>
-<body>
+<body style="background-color: #000000;">
+{% include 'barberlink/partials/header.html' %}
   <nav>
     <form action="{% url 'set_language' %}" method="post" style="display:inline">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.path }}">
-      <select name="language" onchange="this.form.submit()">
+      <!-- <select name="language" onchange="this.form.submit()">
         <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
         <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
-      </select>
+      </select> -->
     </form>
-    <button type="button" id="profile-toggle">{% translate "My Profile" %}</button>
-    <button type="button" id="logout">{% translate "Logout" %}</button>
   </nav>
 
-  {% translate "Hi barber," as greeting_prefix %}
+  {% translate "Hey," as greeting_prefix %}
   <h1 id="greeting">{{ greeting_prefix }}</h1>
   <h2>{% translate "Barber Dashboard" %}</h2>
 
@@ -322,7 +322,7 @@
     .btn-cancel { background: #757575; }
   </style>
 
-  <section id="slots-section">
+  <section id="slots-section" style="background: rgba(35,29,29,0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 20px; margin-bottom: 16px;">
     <h3>{% translate "This Week's Slots" %}</h3>
     <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
 
@@ -345,7 +345,7 @@
     <div id="slots-grid">{% translate "Loading slots..." %}</div>
   </section>
 
-  <section id="bookings-section">
+  <section id="bookings-section" style="background: rgba(35,29,29,0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 20px; margin-bottom: 16px;">
     <h3>{% translate "Today's Bookings" %}</h3>
     <div style="margin-bottom: 12px;">
       <label for="booking-status-filter">{% translate "Filter by status:" %}</label>
@@ -601,11 +601,11 @@ function loadProfile() {
         btn.textContent = label;
         btn.className = "day-tab";
         btn.dataset.dayKey = key;
-        btn.style = "padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em;";
+        btn.style = "padding: 6px 14px; border: 1px solid #ccc; border-radius: 999px; background: #fff; cursor: pointer; font-size: 0.9em;";
         if (selectedDayKey === key) {
-          btn.style.background = "#4caf50";
-          btn.style.color = "#fff";
-          btn.style.borderColor = "#4caf50";
+          btn.style.background = "#19F5B5";
+          btn.style.color = "#0B0707";
+          btn.style.borderColor = "#19F5B5";
         }
         btn.addEventListener("click", function () {
           selectDay(key);
@@ -1116,3 +1116,4 @@ function loadProfile() {
   </script>
 </body>
 </html>
+

@@ -1,0 +1,38 @@
+{% load i18n %}
+<header class="bl-header">
+  <div class="bl-header__brand">BarberLink</div>
+  <form action="{% url 'set_language' %}" method="post" class="bl-lang-form">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    <select name="language" onchange="this.form.submit()">
+      {% get_current_language as LANGUAGE_CODE %}
+      <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
+      <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>KN</option>
+    </select>
+  </form>
+  <div class="bl-header__actions">
+    <a class="bl-header__icon" href="#" aria-label="Notifications"><i data-lucide="bell"></i></a>
+    <button class="bl-header__icon bl-menu-toggle" type="button" aria-label="Menu"><i data-lucide="menu"></i></button>
+    <div class="bl-menu-dropdown" id="blMenuDropdown">
+      <button type="button" class="bl-menu-item" id="blProfileItem"><i data-lucide="user"></i> My Profile</button>
+      <button type="button" class="bl-menu-item" id="blLogoutItem"><i data-lucide="log-out"></i> Logout</button>
+    </div>
+    <button type="button" id="profile-toggle" hidden></button>
+    <button type="button" id="logout" hidden></button>
+  </div>
+</header>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  if (window.lucide) window.lucide.createIcons();
+  (function(){
+    var btn = document.querySelector('.bl-menu-toggle');
+    var dd = document.getElementById('blMenuDropdown');
+    if (!btn || !dd) return;
+    btn.addEventListener('click', function(e){ e.stopPropagation(); dd.classList.toggle('open'); });
+    document.addEventListener('click', function(e){ if (!dd.contains(e.target) && !btn.contains(e.target)) dd.classList.remove('open'); });
+    var p = document.getElementById('blProfileItem');
+    var l = document.getElementById('blLogoutItem');
+    if (p) p.addEventListener('click', function(){ dd.classList.remove('open'); var t = document.getElementById('profile-toggle'); if (t) t.click(); });
+    if (l) l.addEventListener('click', function(){ dd.classList.remove('open'); var t = document.getElementById('logout'); if (t) t.click(); });
+  })();
+</script>

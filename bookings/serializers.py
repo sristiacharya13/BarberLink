@@ -32,8 +32,10 @@ class SlotSerializer(serializers.ModelSerializer):
         if request and hasattr(request, "user") and request.user.is_authenticated:
             active_booking = instance.bookings.filter(booking_status__in=["waiting", "approved"]).first()
             if active_booking and active_booking.customer_id != request.user.id:
-                # Slot is booked/approved by another customer - show as unavailable
-                if data["status"] in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
+                # Slot is booked/approved by another customer
+                if active_booking.booking_status == Booking.STATUS_WAITING:
+                    data["status"] = "waiting_list"
+                elif data["status"] in (Slot.STATUS_BOOKED, Slot.STATUS_APPROVED):
                     data["status"] = Slot.STATUS_NA
         return data
 

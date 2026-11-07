@@ -44,7 +44,6 @@
     color: #333;
   }
 
-  /* Dashboard sections */
   #profile-section,
   #nearby-section,
   #customer-bookings-section,
@@ -60,14 +59,12 @@
     border-radius: 10px;
   }
 
-  /* Payment button */
   #pay-button {
     background-color: green;
     color: white;
     padding: 10px 20px;
   }
 
-  /* Location buttons */
   #use-my-location{
     background-color: green;
     color: white;
@@ -85,7 +82,75 @@
     color: #555;
   }
 
-  /* Barber cards */
+  .search-bar {
+    position: relative;
+    max-width: 350px;
+    margin: 20px auto;
+  }
+
+  .search-bar .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 10px 14px 10px 44px;
+    border: 1px solid #ccc;
+    border-radius: 24px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  #nearby-section {
+    padding: 24px;
+  }
+
+  .nearby-header {
+    margin-bottom: 16px;
+  }
+
+  .nearby-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 14px 20px;
+    background-color: green;
+    color: white;
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .nearby-row:hover {
+    background-color: #006400;
+  }
+
+  .nearby-icon {
+    color: white;
+  }
+
+  .nearby-text {
+    flex: 1;
+  }
+
+  .nearby-title {
+    font-weight: 600;
+    font-size: 17px;
+    color: white;
+    margin: 0;
+  }
+
+  .nearby-subtitle {
+    font-size: 14px;
+    color: white;
+    margin: 4px 0 0 0;
+  }
+
   #barbers-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -94,18 +159,89 @@
   }
 
   .barber-card {
-    padding: 16px;
+    padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: white;
     cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
   }
 
   .barber-card:hover {
     border-color: green;
   }
 
-  /* Available slots */
+  .barber-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .barber-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .barber-name {
+    display: block;
+    font-weight: 600;
+    font-size: 17px;
+    color: #333;
+  }
+
+  .barber-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  .barber-charge-text {
+    font-weight: 600;
+    color: green;
+    font-size: 16px;
+  }
+
+  .barber-contact {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .barber-dist {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .barber-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .barber-book-btn {
+    padding: 8px 16px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .barber-book-btn:hover {
+    background-color: #006400;
+  }
+
   #customer-slots-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -149,7 +285,6 @@
     font-weight: bold;
   }
 
-  /* Customer bookings */
   #customer-bookings-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -239,7 +374,6 @@
     color: white;
   }
 
-  /* Booking details and profile */
   #booking-detail dl,
   #profile-details {
     display: grid;
@@ -258,7 +392,6 @@
     overflow-wrap: anywhere;
   }
 
-  /* Messages */
   #message {
     background-color: #e8f5e9;
     padding: 10px;
@@ -273,7 +406,6 @@
     display: none !important;
   }
 
-  /* Mobile layout */
   @media (max-width: 600px) {
     body {
       padding: 10px;
@@ -306,25 +438,30 @@
   }
 </style>
 
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/design.css">
 </head>
 
 <body>
+{% include 'barberlink/partials/header.html' %}
   <nav>
     <form action="{% url 'set_language' %}" method="post" style="display:inline">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.path }}">
-      <select name="language" onchange="this.form.submit()">
+      <!-- <select name="language" onchange="this.form.submit()">
         <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
         <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
-      </select>
+      </select> -->
     </form>
-    <button type="button" id="profile-toggle">{% translate "My Profile" %}</button>
-    <button type="button" id="logout">{% translate "Logout" %}</button>
   </nav>
 
-  {% translate "Hi customer," as greeting_prefix %}
+  {% translate "Hey," as greeting_prefix %}
   <h1 id="greeting">{{ greeting_prefix }}</h1>
-  <h2>{% translate "Customer Dashboard" %}</h2>
+  <h2>Ready for fresh look?</h2>
+
+  <div class="search-bar">
+    <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search-barbers" placeholder="Search barbers">
+  </div>
 
   <p id="message" hidden></p>
 
@@ -359,10 +496,23 @@
   {% endif %}
 
   <section id="nearby-section">
-    <h3>{% translate "Find Barbers Near Me" %}</h3>
-    <p id="location-status">{% translate "Location: not set" %}</p>
-    <button type="button" id="use-my-location">{% translate "Use My Location" %}</button>
+    <!-- <div class="nearby-header">
+      <h3>{% translate "Find Barbers Near Me" %}</h3>
+    </div> -->
+    <div class="nearby-row" id="use-my-location" role="button" tabindex="0">
+      <div class="nearby-text">
+        <div class="nearby-title">{% translate "Use My Location" %}</div>
+        <div class="nearby-subtitle">{% translate "Find barbers near you instantly" %}</div>
+      </div>
+    </div>
+    <iframe id="nearby-map" width="100%" height="300" style="border:0;margin-top:16px;border-radius:8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=12.9716,77.5946&output=embed"></iframe>
+    <!-- <p id="location-status">{% translate "Location: not set" %}</p> -->
     <p id="nearby-error" style="color:#b00020" hidden></p>
+  </section>
+
+  <section id="barbers-list-section" hidden style="margin-top: -20px; position: relative; z-index: 1;">
+    <h3>{% translate "Nearby Barbers" %}</h3>
+    <div id="barbers-list">{% translate "No barbers found." %}</div>
   </section>
 
   <section id="customer-bookings-section">
@@ -376,11 +526,6 @@
     <div id="customer-bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
       {% translate "Loading bookings..." %}
     </div>
-  </section>
-
-  <section id="barbers-list-section" hidden>
-    <h3>{% translate "Nearby Barbers" %}</h3>
-    <div id="barbers-list">{% translate "No barbers found." %}</div>
   </section>
 
   <section id="barber-detail-section" hidden>
@@ -417,7 +562,6 @@
     #booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; }
     .btn-login { background: #1976d2; }
 
-    /* Customer Today's Bookings section styles */
     #customer-bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
     .customer-booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .customer-booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -612,10 +756,32 @@
         var card = document.createElement("div");
         card.className = "barber-card";
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name): barber.name;
+        var portraitIndex = Math.floor(Math.random() * 3);
+        var portraits = [
+          "https://randomuser.me/api/portraits/men/65.jpg",
+          "https://randomuser.me/api/portraits/men/5.jpg",
+          "https://randomuser.me/api/portraits/men/28.jpg"
+        ];
+        var chargeMin = Math.floor(Math.random() * 100) + 50;
+        var chargeMax = chargeMin + Math.floor(Math.random() * 100) + 50;
+        var distanceVal = (Math.random() * 3 + 0.5).toFixed(1);
 
-        card.innerHTML = "<strong>" + (displayName || "Barber") + "</strong><br><small>" +
-          "{% translate 'Contact' %}: " + orNotSet(barber.contact_number) + "<br>" +
-          "{% translate 'Distance' %}: " + barber.distance_km + " km</small>";
+        card.innerHTML = "<img class='barber-avatar' src='" + portraits[portraitIndex] + "' alt='Barber profile'>" +
+          "<div class='barber-info'>" +
+          "<div class='barber-header-row'>" +
+          "<strong class='barber-name'>" + (displayName || "Barber") + "</strong>" +
+          "<span class='barber-charge-text'>₹" + chargeMin + " – ₹" + chargeMax + "</span>" +
+          "</div>" +
+          "<div class='barber-contact'><small>" + "{% translate 'Contact' %}: " + orNotSet(barber.contact_number) + "</small></div>" +
+          "<div class='barber-bottom'>" +
+          "<span class='barber-dist'>" + distanceVal + " km</span>" +
+          "<button class='barber-book-btn'>{% translate 'Book Now' %}</button>" +
+          "</div>" +
+          "</div>";
+        card.querySelector(".barber-book-btn").addEventListener("click", function (e) {
+          e.stopPropagation();
+          openBarberDetail(barber);
+        });
         card.addEventListener("click", function () {
           openBarberDetail(barber);
         });
@@ -931,7 +1097,9 @@
             currentUser = user;
             var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
             document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
-            document.getElementById("profile-toggle").addEventListener("click", loadProfile);
+            if (document.getElementById("profile-toggle")) {
+              document.getElementById("profile-toggle").addEventListener("click", loadProfile);
+            }
           })
           .catch(function () {
             showMessage(gettext('We could not load your account. Please log in again.'));
@@ -942,27 +1110,35 @@
         document.getElementById("profile-toggle").hidden = true;
       }
 
-      document.getElementById("logout").addEventListener("click", logout);
+      if (document.getElementById("logout")) {
+        document.getElementById("logout").addEventListener("click", logout);
+      }
       if (isLoggedIn) {
         loadCustomerBookings();
       }
       document.getElementById("use-my-location").addEventListener("click", function () {
     var button = this;
-    button.disabled = true;
+    button.style.opacity = 0.7;
 
     getBrowserLocation()
         .then(function (loc) {
             currentLocation = loc;
             updateLocationStatus(loc.lat + ", " + loc.lng);
             searchNearby();
-            button.disabled = false;
+            var mapEl = document.getElementById("nearby-map");
+            if (mapEl) {
+              mapEl.src = "https://www.google.com/maps?q=" + loc.lat + "," + loc.lng + "&output=embed";
+            }
+            button.style.opacity = 1;
         })
         .catch(function () {
-            button.disabled = false;
+            button.style.opacity = 1;
             showMessage("{% translate 'Could not get location. Please enable location services.' %}");
         });
       });
-      document.getElementById("search-nearby").addEventListener("click", searchNearby);
+      if (document.getElementById("search-nearby")) {
+        document.getElementById("search-nearby").addEventListener("click", searchNearby);
+      }
       document.getElementById("back-to-barbers").addEventListener("click", function () {
       document.getElementById("barber-detail-section").hidden = true;
       document.getElementById("barbers-list-section").hidden = false;
