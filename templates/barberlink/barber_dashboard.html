@@ -344,6 +344,25 @@
     .btn-navigate:hover { background: #114f96; }
     .btn-complete { background: #1976d2; }
     .btn-cancel { background: #616161; }
+    .bl-confirm-overlay { position: fixed; inset: 0; z-index: 1200; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .bl-confirm-overlay.is-open { display: flex; }
+    .bl-confirm-dialog { width: 100%; max-width: 420px; padding: 20px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.14); background: rgba(35,29,29,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); color: #fff; box-sizing: border-box; }
+    .bl-confirm-icon { width: 48px; height: 48px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .bl-confirm-icon svg { width: 24px; height: 24px; }
+    .bl-confirm-icon.is-approve { background: rgba(76,175,80,0.18); color: #81c784; }
+    .bl-confirm-icon.is-reject { background: rgba(244,67,54,0.18); color: #ef9a9a; }
+    .bl-confirm-title { margin: 0 0 8px; font-size: 1.15rem; font-weight: 700; color: #fff; }
+    .bl-confirm-message { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.45; color: rgba(255,255,255,0.82); }
+    .bl-confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .bl-confirm-actions button { min-height: 44px; padding: 10px 16px; border: none; border-radius: 999px; cursor: pointer; font: inherit; font-size: 0.92rem; font-weight: 600; touch-action: manipulation; }
+    .bl-confirm-cancel { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.16) !important; }
+    .bl-confirm-confirm { color: #fff; }
+    .bl-confirm-confirm.is-approve { background: #2e7d32; }
+    .bl-confirm-confirm.is-reject { background: #c62828; }
+    @media (max-width: 600px) {
+      .bl-confirm-actions { flex-direction: column-reverse; }
+      .bl-confirm-actions button { width: 100%; }
+    }
     @media (max-width: 900px) {
       #bookings-list { grid-template-columns: 1fr; }
     }
@@ -412,6 +431,17 @@
     <dl id="booking-detail-content"></dl>
     <div id="booking-actions"></div>
   </section>
+  <div id="bl-confirm-overlay" class="bl-confirm-overlay" aria-hidden="true">
+    <div class="bl-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="bl-confirm-title">
+      <div id="bl-confirm-icon" class="bl-confirm-icon"></div>
+      <h4 id="bl-confirm-title" class="bl-confirm-title"></h4>
+      <p id="bl-confirm-message" class="bl-confirm-message"></p>
+      <div class="bl-confirm-actions">
+        <button type="button" id="bl-confirm-cancel" class="bl-confirm-cancel">{% translate "Cancel" %}</button>
+        <button type="button" id="bl-confirm-ok" class="bl-confirm-confirm"></button>
+      </div>
+    </div>
+  </div>
   <script>window.BARBERLINK_NOTIF_CONTEXT = 'barber';</script>
   <script src="{% url 'javascript-catalog' %}"></script>
   <script>
@@ -1062,32 +1092,87 @@ function loadProfile() {
       window.open(url, "_blank");
     }
 
+    function showConfirm(options) {
+      return new Promise(function (resolve) {
+        var overlay = document.getElementById("bl-confirm-overlay");
+        var icon = document.getElementById("bl-confirm-icon");
+        var title = document.getElementById("bl-confirm-title");
+        var message = document.getElementById("bl-confirm-message");
+        var cancelBtn = document.getElementById("bl-confirm-cancel");
+        var okBtn = document.getElementById("bl-confirm-ok");
+        if (!overlay || !icon || !title || !message || !cancelBtn || !okBtn) {
+          resolve(window.confirm(options && options.message ? options.message : ""));
+          return;
+        }
+        var tone = options && options.tone ? options.tone : "approve";
+        icon.className = "bl-confirm-icon is-" + tone;
+        icon.innerHTML = tone === "reject" ? '<i data-lucide="x-circle"></i>' : '<i data-lucide="check-circle"></i>';
+        title.textContent = (options && options.title) || "";
+        message.textContent = (options && options.message) || "";
+        okBtn.className = "bl-confirm-confirm is-" + tone;
+        okBtn.textContent = (options && options.confirmText) || "{% translate 'Confirm' %}";
+        overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
+        if (window.lucide) window.lucide.createIcons();
+
+        function cleanup(result) {
+          overlay.classList.remove("is-open");
+          overlay.setAttribute("aria-hidden", "true");
+          cancelBtn.onclick = null;
+          okBtn.onclick = null;
+          overlay.onclick = null;
+          document.onkeydown = null;
+          resolve(result);
+        }
+        cancelBtn.onclick = function () { cleanup(false); };
+        okBtn.onclick = function () { cleanup(true); };
+        overlay.onclick = function (e) { if (e.target === overlay) cleanup(false); };
+        document.onkeydown = function (e) { if (e.key === "Escape") cleanup(false); };
+        okBtn.focus();
+      });
+    }
+
     function transitionBooking(bookingId, targetStatus, detailSection, cardEl) {
-      if (targetStatus === "approved" && !confirm("Are you sure you want to approve this booking?")) {
-        return;
+      var confirmPromise;
+      if (targetStatus === "approved") {
+        confirmPromise = showConfirm({
+          tone: "approve",
+          title: "{% translate 'Approve appointment?' %}",
+          message: "{% translate 'Are you sure you want to approve this booking?' %}",
+          confirmText: "{% translate 'Approve' %}"
+        });
+      } else if (targetStatus === "rejected") {
+        confirmPromise = showConfirm({
+          tone: "reject",
+          title: "{% translate 'Reject appointment?' %}",
+          message: "{% translate 'Are you sure you want to reject this booking?' %}",
+          confirmText: "{% translate 'Reject' %}"
+        });
+      } else {
+        confirmPromise = Promise.resolve(true);
       }
 
-      if (targetStatus === "rejected" && !confirm("Are you sure you want to reject this booking?")) {
-          return;
-      }
-      fetch("/api/v1/barbers/bookings/" + bookingId + "/transition/", {
-        method: "PATCH",
-        headers: authHeaders(),
-        body: JSON.stringify({ booking_status: targetStatus }),
-      })
-      .then(function (res) {
-        if (!res.ok) throw new Error("failed");
-        return res.json();
-      })
-      .then(function (data) {
-        if (detailSection) detailSection.hidden = true;
-        var status = (data && data.booking_status) ? data.booking_status : targetStatus;
-        if (cardEl) setBookingStatusUI(cardEl, status);
-        showMessage("{% translate 'Booking updated.' %}");
-        loadSlots();
-      })
-      .catch(function () {
-        showMessage("{% translate 'Could not update booking. Try again.' %}");
+      confirmPromise.then(function (ok) {
+        if (!ok) return;
+        fetch("/api/v1/barbers/bookings/" + bookingId + "/transition/", {
+          method: "PATCH",
+          headers: authHeaders(),
+          body: JSON.stringify({ booking_status: targetStatus }),
+        })
+        .then(function (res) {
+          if (!res.ok) throw new Error("failed");
+          return res.json();
+        })
+        .then(function (data) {
+          if (detailSection) detailSection.hidden = true;
+          var status = (data && data.booking_status) ? data.booking_status : targetStatus;
+          if (cardEl) setBookingStatusUI(cardEl, status);
+          showMessage("{% translate 'Booking updated.' %}");
+          loadSlots();
+        })
+        .catch(function () {
+          showMessage("{% translate 'Could not update booking. Try again.' %}");
+        });
       });
     }
     var sameForAllCheckbox = document.getElementById("same-for-all");
