@@ -1,0 +1,100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 20:36+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: kn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\templates\barberlink\barber_dashboard.html:221
+#: .\templates\barberlink\customer_dashboard.html:206
+msgid "Not set"
+msgstr "ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
+
+#: .\templates\barberlink\barber_dashboard.html:261
+#: .\templates\barberlink\customer_dashboard.html:243
+msgid "We could not load your profile. Please try again."
+msgstr "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ "
+
+#: .\templates\barberlink\barber_dashboard.html:321
+msgid "Available"
+msgstr "ಲಭ್ಯವಿದೆ"
+
+#: .\templates\barberlink\barber_dashboard.html:321
+msgid "Marked NA"
+msgstr "ಲಭ್ಯವಿಲ್ಲ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ"
+
+#: .\templates\barberlink\barber_dashboard.html:321
+msgid "Booked (Waiting)"
+msgstr "ಬುಕಿಂಗ್‌ಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ"
+
+#: .\templates\barberlink\barber_dashboard.html:321
+msgid "Approved"
+msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
+#: .\templates\barberlink\barber_dashboard.html:673
+msgid "We could not load your account. Please log in again."
+msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಆಗಿ."
+
+#: .\templates\barberlink\customer_dashboard.html:603
+msgid "booked"
+msgstr "ಬುಕ್ ಆಗಿದೆ"
+
+
+#: .\templates\barberlink\customer_dashboard.html:603
+msgid "na"
+msgstr "ಲಭ್ಯವಿಲ್ಲ "
+
+msgid "available"
+msgstr "ಲಭ್ಯವಿದೆ"
+
+msgid "Waiting for Approval"
+msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
+
+msgid "Rejected"
+msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+
+msgid "Cancelled"
+msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "Completed"
+msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ"
+
+msgid "waiting"
+msgstr "ಕಾಯುತ್ತಿದೆ"
+
+msgid "WAITING"
+msgstr "ಕಾಯುತ್ತಿದೆ"
+
+msgid "cancelled"
+msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "CANCELLED"
+msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "rejected"
+msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+
+msgid "REJECTED"
+msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+
+msgid "approved"
+msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
+msgid "APPROVED"
+msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
+msgid "We could not load your dashboard. Please try again later"
+msgstr "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ"

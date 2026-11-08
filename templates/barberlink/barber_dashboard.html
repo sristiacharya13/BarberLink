@@ -1,0 +1,1223 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Barber Dashboard" %}</title>
+  
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+
+  nav {
+    text-align: right;
+    margin-bottom: 25px;
+  }
+
+  nav select,
+  nav button {
+    padding: 8px 12px;
+    margin: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  h1 {
+    color: green;
+    text-align: center;
+  }
+
+  h2 {
+    text-align: center;
+    color: #555;
+  }
+
+  h3 {
+    color: #333;
+  }
+  a{
+    color: green;
+  }
+  a:hover{
+    color: darkgreen;
+  }
+  #slots-section,
+  #bookings-section,
+  #booking-detail,
+  #profile-section {
+    background-color: white;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+  }
+
+  #slots-grid,
+  #bookings-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+  }
+
+  .slot-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: auto;
+  cursor: pointer;
+}
+.slot-card,
+.booking-card {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid black;
+  margin-bottom: 12px;
+}
+
+  .slot-price-input {
+    width: 70px;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+    
+  .slot-time,
+  .booking-time {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+
+  .slot-available {
+    background-color: #e8f5e9;
+    border-color: green;
+  }
+
+  .slot-na {
+    background-color: #f5f5f5;
+    color: #777;
+  }
+
+  .slot-booked {
+    background-color: #ffebee;
+    border-color: red;
+  }
+
+  .slot-approved {
+    background-color: #e3f2fd;
+    border-color: blue;
+  }
+
+  .slot-status {
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+  .booking-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .booking-status-badge {
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+  }
+
+  .booking-status-waiting {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+
+  .booking-status-approved {
+    background-color: #e3f2fd;
+    color: #1565c0;
+  }
+
+  .booking-status-rejected,
+  .booking-status-cancelled {
+    background-color: #eee;
+    color: #555;
+  }
+
+  .booking-status-completed {
+    background-color: #e8f5e9;
+    color: green;
+  }
+
+  .booking-detail-row {
+    margin: 8px 0;
+  }
+
+  .booking-detail-label,
+  #booking-detail dt,
+  #profile-details dt {
+    font-weight: bold;
+  }
+
+  #booking-detail dl,
+  #profile-details {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+  }
+
+  #booking-detail dd,
+  #profile-details dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  #booking-actions,
+  .booking-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+  }
+
+  button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  a{
+      color: #1565c0;
+  }
+  a:hover{
+    color: white;
+  }
+  #logout,
+  .btn-approve {
+    background-color: green;
+    color: white;
+  }
+
+  .btn-reject {
+    background-color: red;
+    color: white;
+  }
+
+  .btn-complete {
+    background-color: blue;
+    color: white;
+  }
+
+  .btn-navigate {
+    background-color: orange;
+    color: white;
+  }
+
+  .btn-close,
+  .btn-cancel {
+    background-color: gray;
+    color: white;
+  }
+
+  #message {
+    background-color: #e8f5e9;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+
+    #slots-grid,
+    #bookings-list {
+      grid-template-columns: 1fr;
+    }
+
+      
+  #booking-detail {
+    margin-top: 24px;
+    border-radius: 8px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+  }
+
+    #slots-section,
+    #bookings-section,
+    #booking-detail,
+    #profile-section {
+      padding: 15px;
+    }
+
+    nav {
+      text-align: center;
+    }
+
+    #booking-detail dl,
+    #profile-details {
+      grid-template-columns: 1fr;
+    }
+  }
+  .day-tab { 
+    padding: 6px 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    background: #fff; 
+    cursor: pointer; 
+    font-size: 0.9em; 
+  }
+  .btn-cancel {
+    background: #757575;
+    color: white;
+  }
+</style>
+
+</head>
+<body>
+  <nav>
+    <form action="{% url 'set_language' %}" method="post" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+      </select>
+    </form>
+    <button type="button" id="profile-toggle">{% translate "My Profile" %}</button>
+    <button type="button" id="enable-notifications">Enable Notifications</button>
+    <button type="button" id="logout">{% translate "Logout" %}</button>
+  </nav>
+
+  {% translate "Hi barber," as greeting_prefix %}
+  <h1 id="greeting">{{ greeting_prefix }}</h1>
+  <h2>{% translate "Barber Dashboard" %}</h2>
+
+  <p id="message" hidden></p>
+
+  <section id="profile-section" hidden>
+    <h3>{% translate "My Profile" %}</h3>
+    <dl id="profile-details"></dl>
+  </section>
+
+  <section id="slots-section">
+    <h3>{% translate "This Week's Slots" %}</h3>
+    <p id="slots-date-display" style="margin:4px 0; color:#666;"></p>
+
+    <div id="week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #ddd;"></div>
+
+    <div id="service-charge-controls" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
+      <h4 style="margin: 0 0 12px 0;">Set Service Charges for All Days (<span id="charge-day-label"></span>)</h4>
+      <div style="margin-bottom: 10px;">
+        <label for="today-charge">{% translate "Price" %} (₹):</label>
+        <input type="number" id="today-charge" min="0" step="10" style="padding: 6px; margin-left: 8px;" disabled>
+        <label style="margin-left: 16px;">
+          <input type="checkbox" id="same-for-all" disabled>
+          {% translate "Same for all days" %}
+        </label>
+        <button type="button" id="apply-charges" style="margin-left: 12px;" disabled>{% translate "Apply" %}</button>
+      </div>
+      <p id="charge-message" style="margin: 8px 0 0 0; font-size: 0.9em;"></p>
+    </div>
+
+    <div id="slots-grid">{% translate "Loading slots..." %}</div>
+  </section>
+
+  <section id="bookings-section">
+    <h3>{% translate "Today's Bookings" %}</h3>
+    <div style="margin-bottom: 12px;">
+      <label for="booking-status-filter">{% translate "Filter by status:" %}</label>
+      <select id="booking-status-filter" style="margin-left: 8px; padding: 4px 8px;">
+        <option value="all">{% translate "All" %}</option>
+      </select>
+    </div>
+    <div id="bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
+      {% translate "Loading bookings..." %}
+    </div>
+  </section>
+
+  <section id="booking-detail" hidden>
+    <h3>{% translate "Booking Details" %}</h3>
+    <dl id="booking-detail-content"></dl>
+    <div id="booking-actions"></div>
+  </section>
+  <a href="#" id="move-to-top">↑ Move to Top</a>
+  <script src="{% url 'javascript-catalog' %}"></script>
+  <script>
+  (function () {
+    var PROFILE_URL = "/barbers/api/dashboard/";
+    var GREETING_PREFIX = "{{ greeting_prefix|escapejs }}";
+    var TOKEN_KEY = "access";
+    var REFRESH_KEY = "refresh";
+
+    function getToken() { return localStorage.getItem(TOKEN_KEY); }
+    function clearTokens() {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(REFRESH_KEY);
+    }
+
+    function authHeaders() {
+      return { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() };
+    }
+
+    function refreshAccessToken() {
+      var refresh = localStorage.getItem(REFRESH_KEY);
+      if (!refresh) return Promise.resolve(false);
+      return fetch("/api/v1/token/refresh/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refresh }),
+      })
+        .then(function (res) {
+          if (!res.ok) return false;
+          return res.json().then(function (data) {
+            if (!data.access) return false;
+            localStorage.setItem(TOKEN_KEY, data.access);
+            return true;
+          });
+        })
+        .catch(function () { return false; });
+    }
+
+    function getJSON(url) {
+      return fetch(url, { headers: authHeaders() }).then(function (res) {
+        if (res.status !== 401) return res;
+        return refreshAccessToken().then(function (ok) {
+          if (!ok) { clearTokens(); window.location.href = "/login/"; return null; }
+          return fetch(url, { headers: authHeaders() });
+        });
+      }).then(function (res) {
+        if (!res) return null;
+        if (!res.ok){
+          if (res.status===403){
+            return res.json().then(function (b){
+              if (b && b.error.code==="SUBSCRIPTION_EXPIRED"){
+                window.location.replace("/barbers/payment/");
+                return null;
+              }
+              throw new Error("erquest_failed");
+            });
+          }
+          throw new Error("request_failed");
+        }
+        return res.json();
+      });
+    }
+
+    function showMessage(text) {
+      var el = document.getElementById("message");
+      if (!el) return;
+      el.textContent = text;
+      el.hidden = false;
+    }
+
+    function orNotSet(value) {
+      return value === undefined || value === null || value === "" ? gettext("Not set") : value;
+    }
+
+    function formatDate(value) {
+      if (value === undefined || value === null || value === "") return null;
+      var s = String(value);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        s = s + "T00:00:00";
+      }
+      var d = new Date(s);
+      if (isNaN(d.getTime())) return null;
+      return d.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    }
+
+    var currentUser = null;
+
+    function renderProfile(profile, contactNumber) {
+      var list = document.getElementById("profile-details");
+      if (!list) return;
+      list.innerHTML = "";
+
+      var rows = [
+        ["Name", orNotSet(profile.name)],
+        ["Contact number", orNotSet(contactNumber)],
+        ["Location", orNotSet(profile.location ? JSON.stringify(profile.location) : null)],
+        ["Subscription status", orNotSet(profile.subscription_status)],
+        ["Subscription expires on", orNotSet(formatDate(profile.subscription_expiry_date))],
+        ["Member since", orNotSet(formatDate(profile.account_created_at))]
+      ];
+
+      rows.forEach(function (row) {
+        var dt = document.createElement("dt");
+        dt.textContent = row[0];
+        var dd = document.createElement("dd");
+        dd.textContent = row[1];
+        list.appendChild(dt);
+        list.appendChild(dd);
+      });
+
+      var section = document.getElementById("profile-section");
+      if (section) section.hidden = false;
+    }
+
+function loadProfile() {
+      var toggle = document.getElementById("profile-toggle");
+      if (toggle) toggle.disabled = true;
+      getJSON(PROFILE_URL)
+        .then(function (data) {
+          if (data && data.barber) renderProfile(data.barber, currentUser && currentUser.contact_number);
+        })
+        .catch(function () {
+          showMessage(gettext("We could not load your profile. Please try again."));
+        })
+        .then(function () {
+          if (toggle) toggle.disabled = false;
+        });
+    }
+ 
+    function updateSlotsDate() {
+      var el = document.getElementById("slots-date-display");
+      if (!el) return;
+      var today = new Date();
+      var monday = new Date(today);
+      monday.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1));
+      var sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      var opts = { year: "numeric", month: "short", day: "numeric" };
+      el.textContent = monday.toLocaleDateString(undefined, opts) + " \u2013 " + sunday.toLocaleDateString(undefined, opts);
+    }
+ 
+    // function checkAndCaptureLocationOnce(locationEndpointUrl, profileEndpointUrl) {
+    //   getJSON(profileEndpointUrl)
+    //     .then(function (profile) {
+    //       if (!profile) return;
+    //       if (!profile.location) {
+    //         captureAndSaveLocation(locationEndpointUrl);
+    //       }
+    //     })
+    //     .catch(function () {});
+    // }
+
+    function captureAndSaveLocation(endpointUrl) {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          fetch(endpointUrl, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            }),
+          }).catch(function () {});
+        },
+        function (err) {
+          console.warn("Location not captured:", err.message);
+        },
+        { timeout: 8000 }
+      );
+    }
+
+    function logout() {
+      var refresh = localStorage.getItem(REFRESH_KEY);
+      var done = function () {
+        clearTokens();
+        window.location.href = "/login/";
+      };
+      if (!refresh) { done(); return; }
+      fetch("/api/v1/auth/logout/", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ refresh: refresh }),
+      }).then(done, done);
+    }
+
+    function statusLabel(status) {
+      var map = { available: gettext("Available"), na: gettext("Marked NA"), booked: gettext("Booked (Waiting)"), approved: gettext("Approved") };
+      return map[status] || status;
+    }
+
+    function statusClass(status) {
+      var map = { available: "slot-available", na: "slot-na", booked: "slot-booked", approved: "slot-approved" };
+      return map[status] || "";
+    }
+
+    var weekSlotsByDay = {};
+    var selectedDayKey = null;
+
+    function loadSlots() {
+      var grid = document.getElementById("slots-grid");
+      if (grid) grid.innerHTML = "{% translate 'Loading slots...' %}";
+      getJSON("/api/v1/barbers/slots/")
+        .then(function (data) {
+          if (!data) return;
+          weekSlotsByDay = {};
+          data.forEach(function (slot) {
+            var key = slot.slot_date;
+            if (!weekSlotsByDay[key]) weekSlotsByDay[key] = [];
+            weekSlotsByDay[key].push(slot);
+          });
+          renderWeekNav();
+          var firstKey = Object.keys(weekSlotsByDay)[0];
+          if (firstKey) selectDay(firstKey);
+          var sameForAll = document.getElementById("same-for-all");
+          var todayCharge = document.getElementById("today-charge");
+          var applyBtn = document.getElementById("apply-charges");
+          if (sameForAll) sameForAll.disabled = false;
+          if (todayCharge) todayCharge.disabled = false;
+          if (applyBtn) applyBtn.disabled = false;
+        })
+        .catch(function () {
+          showMessage("{% translate 'We could not load slots. Please try again.' %}");
+        });
+    }
+
+    function renderWeekNav() {
+      var nav = document.getElementById("week-nav");
+      if (!nav) return;
+      nav.innerHTML = "";
+      var keys = Object.keys(weekSlotsByDay).sort();
+      keys.forEach(function (key) {
+        var d = new Date(key + "T00:00:00");
+        var label = d.toLocaleDateString(undefined, { weekday: "short" });
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = label;
+        btn.className = "day-tab";
+        btn.dataset.dayKey = key;
+        btn.style = "padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9em;";
+        if (selectedDayKey === key) {
+          btn.style.background = "#4caf50";
+          btn.style.color = "#fff";
+          btn.style.borderColor = "#4caf50";
+        }
+        btn.addEventListener("click", function () {
+          selectDay(key);
+        });
+        nav.appendChild(btn);
+      });
+    }
+
+    function selectDay(dayKey) {
+      selectedDayKey = dayKey;
+      var d = new Date(dayKey + "T00:00:00");
+      var label = d.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      var chargeLabel = document.getElementById("charge-day-label");
+      if (chargeLabel) chargeLabel.textContent = label;
+      renderSlots(weekSlotsByDay[dayKey] || []);
+      renderWeekNav();
+    }
+
+    function renderSlots(slots) {
+      var grid = document.getElementById("slots-grid");
+      if (!grid) return;
+      grid.innerHTML = "";
+      if (!slots || !slots.length) {
+        grid.textContent = "{% translate 'No slots found.' %}";
+        return;
+      }
+      var sameForAll = document.getElementById("same-for-all").checked;
+      slots.forEach(function (slot) {
+        var card = document.createElement("div");
+        card.className = "slot-card " + statusClass(slot.status);
+        card.dataset.slotId = slot.slot_id;
+
+        var timeSpan = document.createElement("span");
+        timeSpan.className = "slot-time";
+        timeSpan.textContent = slot.start_time + "\u2013" + slot.end_time;
+
+        var statusSpan = document.createElement("span");
+        statusSpan.className = "slot-status";
+        statusSpan.textContent = statusLabel(slot.status);
+
+        var priceInput = document.createElement("input");
+        priceInput.type = "number";
+        priceInput.min = "0";
+        priceInput.step = "10";
+        priceInput.value = slot.service_charge !== null && slot.service_charge !== undefined ? slot.service_charge : "";
+        priceInput.placeholder = "\u20B9";
+        priceInput.className = "slot-price-input";
+        priceInput.style = "width: 80px; padding: 6px;";
+        priceInput.disabled = sameForAll;
+
+        card.appendChild(timeSpan);
+        card.appendChild(statusSpan);
+        card.appendChild(priceInput);
+
+        if (slot.status === "available") {
+          var markNaBtn = document.createElement("button");
+          markNaBtn.type = "button";
+          markNaBtn.textContent = "{% translate 'Mark NA' %}";
+          markNaBtn.className = "btn-mark-na";
+          markNaBtn.style = "margin-left: 10px; padding: 6px 10px; font-size: 0.85em; background: #757575; color: white; border: none; border-radius: 4px; cursor: pointer;";
+          markNaBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (!confirm(gettext("Mark this slot as Not Available?"))) return;
+            markSlotNA(slot.slot_id, card);
+          });
+          card.appendChild(markNaBtn);
+        }
+
+        card.addEventListener("click", function () {
+          if (slot.status === "booked" || slot.status === "approved") {
+            if (slot.active_booking) {
+              showBookingDetail(slot.active_booking);
+            }
+          }
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    // function loadBookings() {
+    //   var list = document.getElementById("bookings-list");
+    //   if (list) list.innerHTML = "{% translate 'Loading bookings...' %}";
+    //   getJSON(PROFILE_URL)
+    //     .then(function (data) {
+    //       if (!data) return;
+    //       var bookings = data.todays_bookings || [];
+    //       var options = data.booking_status_options || [];
+    //       renderBookings(bookings);
+    //       populateStatusFilter(options);
+    //     })
+    //     .catch(function () {
+    //       showMessage("{% translate 'We could not load bookings. Please try again.' %}");
+    //     });
+    // }
+
+    function loadDashboard(){
+      getJSON(PROFILE_URL)
+        .then(function (data){
+          if (!data) return;
+          if (data.barber && data.barber.computed_status==="expired"){
+            window.location.replace("/barbers/payment");
+            return;
+          }
+          document.documentElement.style.visibility="visible";
+          renderBookings(data.todays_bookings || []);
+          populateStatusFilter(data.booking_status_options || []);
+          loadSlots();
+          if(data.barber && !data.barber.location){
+            captureAndSaveLocation("/barbers/api/location");
+          }
+        })
+        .catch(function(){
+          document.documentElement.style.visibility="visible";
+          showMessage(gettext('We could not load your dashboard. Please try again later'))
+        })
+    }
+
+    function populateStatusFilter(options) {
+      var select = document.getElementById("booking-status-filter");
+      if (!select) return;
+      options.forEach(function (opt) {
+        var option = document.createElement("option");
+        option.value = opt.value;
+        option.textContent = gettext(opt.label);
+        select.appendChild(option);
+      });
+      select.addEventListener("change", function () {
+        filterBookings(this.value);
+      });
+    }
+
+    function renderBookings(bookings) {
+      var list = document.getElementById("bookings-list");
+      if (!list) return;
+      list.innerHTML = "";
+      if (!bookings || !bookings.length) {
+        list.textContent = "{% translate 'No bookings found.' %}";
+        return;
+      }
+      bookings.forEach(function (booking) {
+        var card = document.createElement("div");
+        card.className = "booking-card";
+        card.dataset.status = booking.booking_status;
+        var header = document.createElement("div");
+        header.className = "booking-header";
+
+        var timeSpan = document.createElement("span");
+        timeSpan.className = "booking-time";
+        var slot = booking.slot || {};
+        timeSpan.textContent = slot.start_time + " – " + slot.end_time;
+
+        var statusBadge = document.createElement("span");
+        statusBadge.className = "booking-status-badge booking-status-" + booking.booking_status;
+        statusBadge.textContent = gettext(booking.booking_status).toLowerCase();
+
+        header.appendChild(timeSpan);
+        header.appendChild(statusBadge);
+        card.appendChild(header);
+        var customerName = "{{ LANGUAGE_CODE }}" === "kn" ? (booking.customer_name_kn || booking.customer_name): booking.customer_name;
+        var details = [
+          { label: "{% translate 'Customer' %}: ", value: customerName },
+          { label: "{% translate 'Phone' %}: ", value: booking.customer_phone },
+          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status.toLowerCase()) },
+        ];
+
+        details.forEach(function (d) {
+          var row = document.createElement("div");
+          row.className = "booking-detail-row";
+          var label = document.createElement("span");
+          label.className = "booking-detail-label";
+          label.textContent = d.label;
+          var value = document.createElement("span");
+          value.textContent = d.value || "—";
+          row.appendChild(label);
+          row.appendChild(value);
+          card.appendChild(row);
+        });
+
+        var actions = document.createElement("div");
+        actions.className = "booking-actions";
+
+        if (booking.booking_status === "waiting") {
+          var approveBtn = document.createElement("button");
+          approveBtn.type = "button";
+          approveBtn.textContent = "{% translate 'Approve' %}";
+          approveBtn.className = "btn-approve";
+          approveBtn.addEventListener("click", function () {
+            transitionBooking(booking.booking_id, "approved");
+          });
+          actions.appendChild(approveBtn);
+
+          var rejectBtn = document.createElement("button");
+          rejectBtn.type = "button";
+          rejectBtn.textContent = "{% translate 'Reject' %}";
+          rejectBtn.className = "btn-reject";
+          rejectBtn.addEventListener("click", function () {
+            transitionBooking(booking.booking_id, "rejected");
+          });
+          actions.appendChild(rejectBtn);
+        } else if (booking.booking_status === "approved") {
+          var completeBtn = document.createElement("button");
+          completeBtn.type = "button";
+          completeBtn.textContent = "{% translate 'Mark as Completed' %}";
+          completeBtn.className = "btn-complete";
+          completeBtn.addEventListener("click", function () {
+            transitionBooking(booking.booking_id, "completed");
+          });
+          actions.appendChild(completeBtn);
+        }
+
+        if (booking.customer_location) {
+          var navBtn = document.createElement("button");
+          navBtn.type = "button";
+          navBtn.textContent = "{% translate 'Navigate' %}";
+          navBtn.className = "btn-navigate";
+          navBtn.addEventListener("click", function () {
+            navigateTo(booking.customer_location);
+          });
+          actions.appendChild(navBtn);
+        }
+
+        if (actions.children.length > 0) {
+          card.appendChild(actions);
+        }
+
+        list.appendChild(card);
+      });
+    }
+
+    function filterBookings(status) {
+      var cards = document.querySelectorAll("#bookings-list .booking-card");
+      cards.forEach(function (card) {
+        if (status === "all" || card.dataset.status === status) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    function updateSlotInCache(slotId, data) {
+      Object.keys(weekSlotsByDay).forEach(function (dayKey) {
+        weekSlotsByDay[dayKey].forEach(function (slot, index) {
+          if (slot.slot_id === slotId) {
+            weekSlotsByDay[dayKey][index] = Object.assign({}, weekSlotsByDay[dayKey][index], data);
+          }
+        });
+      });
+    }
+
+    function markSlotNA(slotId, cardEl) {
+      fetch("/api/v1/barbers/slots/" + slotId + "/", {
+        method: "PATCH",
+        headers: authHeaders(),
+        body: JSON.stringify({ status: "na" }),
+      })
+        .then(function (res) {
+          if (res.status === 409) {
+            showMessage("{% translate 'Slot already booked.' %}");
+            return null;
+          }
+          if (!res.ok) throw new Error("failed");
+          return res.json();
+        })
+        .then(function (data) {
+          if (!data) return;
+          updateSlotInCache(slotId, data);
+          cardEl.className = "slot-card " + statusClass(data.status);
+          var statusSpan = cardEl.querySelector(".slot-status");
+          if (statusSpan) statusSpan.textContent = statusLabel(data.status);
+          var markNaBtn = cardEl.querySelector(".btn-mark-na");
+          if (markNaBtn) markNaBtn.remove();
+        })
+        .catch(function () {
+          showMessage("{% translate 'Could not update slot. Try again.' %}");
+        });
+    }
+    var moveToTop = document.getElementById("move-to-top");
+
+    window.addEventListener("scroll", function () {
+        if (window.scrollY > 200) {
+            moveToTop.style.display = "block";
+        } else {
+            moveToTop.style.display = "none";
+        }
+    });
+    moveToTop.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+      });
+    });
+
+    function showBookingDetail(booking) {
+      var section = document.getElementById("booking-detail");
+      var dl = document.getElementById("booking-detail-content");
+      var actions = document.getElementById("booking-actions");
+      if (!section || !dl || !actions) return;
+
+      dl.innerHTML = "";
+      actions.innerHTML = "";
+
+      var fields = [
+        ["Customer", booking.customer_name],
+        ["Phone", booking.customer_phone],
+        ["Status", gettext(booking.booking_status)],
+      ];
+
+      fields.forEach(function (row) {
+        var dt = document.createElement("dt");
+        dt.textContent = row[0];
+        var dd = document.createElement("dd");
+        dd.textContent = row[1] || "—";
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      });
+
+      if (booking.booking_status === "waiting") {
+        var approveBtn = document.createElement("button");
+        approveBtn.type = "button";
+        approveBtn.textContent = "{% translate 'Approve' %}";
+        approveBtn.className = "btn-approve";
+        approveBtn.addEventListener("click", function () {
+          transitionBooking(booking.booking_id, "approved", section);
+        });
+
+        var rejectBtn = document.createElement("button");
+        rejectBtn.type = "button";
+        rejectBtn.textContent = "{% translate 'Reject' %}";
+        rejectBtn.className = "btn-reject";
+        rejectBtn.addEventListener("click", function () {
+          transitionBooking(booking.booking_id, "rejected", section);
+        });
+
+        actions.appendChild(approveBtn);
+        actions.appendChild(rejectBtn);
+      } else if (booking.booking_status === "approved") {
+        var completeBtn = document.createElement("button");
+        completeBtn.type = "button";
+        completeBtn.textContent = "{% translate 'Mark as Completed' %}";
+        completeBtn.className = "btn-complete";
+        completeBtn.addEventListener("click", function () {
+          transitionBooking(booking.booking_id, "completed", section);
+        });
+        actions.appendChild(completeBtn);
+      }
+
+      var closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.textContent = "{% translate 'Close' %}";
+      closeBtn.className = "btn-close";
+      closeBtn.addEventListener("click", function () {
+        section.hidden = true;
+      });
+      actions.appendChild(closeBtn);
+
+      section.hidden = false;
+    }
+
+    function navigateTo(location) {
+      var url = "https://www.google.com/maps/search/?api=1&query=";
+      if (location && typeof location === "object") {
+        if (location.lat && location.lng) {
+          url += location.lat + "," + location.lng;
+        } else if (location.latitude && location.longitude) {
+          url += location.latitude + "," + location.longitude;
+        } else {
+          url += encodeURIComponent(JSON.stringify(location));
+        }
+      } else if (location) {
+        url += encodeURIComponent(location);
+      }
+      window.open(url, "_blank");
+    }
+    // Store previous booking statuses
+    let previousBookingStatuses = {};
+    let notificationInterval = null;
+
+    // Check booking status changes
+    function checkBookingNotifications() {
+        return getJSON(PROFILE_URL)
+            .then(function (data) {
+                if (!data) return;
+
+                var bookings = data.todays_bookings || [];
+                var currentBookingStatuses = {};
+
+                bookings.forEach(function (booking) {
+                    var bookingId = booking.booking_id;
+                    var bookingStatus = booking.booking_status;
+
+                    currentBookingStatuses[bookingId] = bookingStatus;
+
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            previousBookingStatuses,
+                            bookingId
+                        )
+                    ) {
+                        var previousStatus =
+                            previousBookingStatuses[bookingId];
+
+                        if (
+                            previousStatus !== bookingStatus &&
+                            bookingStatus === "cancelled"
+                        ) {
+                            showBookingNotification(
+                                "Booking Cancelled",
+                                "Customer has cancelled your booking."
+                            );
+                        }
+                    }
+                });
+
+                previousBookingStatuses = currentBookingStatuses;
+            })
+            .catch(function (error) {
+                console.error("Error checking booking notifications:", error);
+            });
+    }
+
+    // Display browser notification
+    function showBookingNotification(title, message) {
+        if (
+            "Notification" in window &&
+            Notification.permission === "granted"
+        ) {
+            new Notification(title, {
+                body: message
+            });
+        }
+    }
+    function startBookingNotifications() {
+
+    if (notificationInterval !== null) {
+        return;
+    }
+
+    checkBookingNotifications().then(function () {
+        notificationInterval = setInterval(function () {
+            checkBookingNotifications();
+        }, 5000);
+      });
+    }   
+    // Enable notifications
+    function enableBookingNotifications() {
+        if (!("Notification" in window)) {
+            showMessage("Your browser does not support notifications.");
+            return;
+        }
+        if (Notification.permission === "granted") {
+            startBookingNotifications();
+            return;
+        }
+
+    Notification.requestPermission().then(function (permission) {
+
+        if (permission === "granted") {
+            showMessage("Notifications enabled successfully.");
+            startBookingNotifications();
+        } else {
+            showMessage("Please allow notifications in your browser.");
+        }
+
+    });
+
+    }
+    function transitionBooking(bookingId, targetStatus, detailSection) {
+      if (targetStatus === "approved" && !confirm("Are you sure you want to approve this booking?")) {
+        return;
+      }
+
+      if (targetStatus === "rejected" && !confirm("Are you sure you want to reject this booking?")) {
+          return;
+      }
+      fetch("/api/v1/barbers/bookings/" + bookingId + "/transition/", {
+        method: "PATCH",
+        headers: authHeaders(),
+        body: JSON.stringify({ booking_status: targetStatus }),
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error("failed");
+        return res.json();
+      })
+      .then(function (data) {
+        if (detailSection) detailSection.hidden = true;
+        if (targetStatus === "approved") {
+        showBookingNotification(
+            "Booking Approved",
+            "You have approved the booking."
+        );
+    }
+
+    if (targetStatus === "rejected") {
+        showBookingNotification(
+            "Booking Rejected",
+            "You have rejected the booking."
+        );
+    }
+
+        showMessage("{% translate 'Booking updated.' %}");
+        loadSlots();
+      })
+      .catch(function () {
+        showMessage("{% translate 'Could not update booking. Try again.' %}");
+      });
+    }
+    var sameForAllCheckbox = document.getElementById("same-for-all");
+    var todayChargeInput = document.getElementById("today-charge");
+    var applyChargesBtn = document.getElementById("apply-charges");
+    var chargeMessage = document.getElementById("charge-message");
+
+    function togglePriceInputs() {
+      var isSame = sameForAllCheckbox.checked;
+      todayChargeInput.disabled = !isSame;
+      applyChargesBtn.disabled = !isSame;
+      var inputs = document.querySelectorAll(".slot-price-input");
+      inputs.forEach(function (input) {
+        input.disabled = isSame;
+      });
+    }
+
+    sameForAllCheckbox.addEventListener("change", togglePriceInputs);
+
+    applyChargesBtn.addEventListener("click", function () {
+      var isSame = sameForAllCheckbox.checked;
+      var masterPrice = todayChargeInput.value;
+      chargeMessage.textContent = "";
+
+      var buildPromises = function (slotId, cardEl) {
+        var input = cardEl ? cardEl.querySelector(".slot-price-input") : null;
+        var price = isSame ? masterPrice : (input ? input.value : "");
+        if (!price) return null;
+        return fetch("/api/v1/barbers/slots/" + slotId + "/", {
+          method: "PATCH",
+          headers: authHeaders(),
+          body: JSON.stringify({ service_charge: price })
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("failed");
+            return res.json();
+          })
+          .then(function (data) {
+            updateSlotInCache(slotId, data);
+            if (input) input.value = data.service_charge;
+          });
+      };
+
+      if (isSame) {
+        if (!masterPrice) {
+          chargeMessage.textContent = "{% translate 'Please enter a price.' %}";
+          chargeMessage.style.color = "red";
+          return;
+        }
+        var promises = [];
+        Object.keys(weekSlotsByDay).forEach(function (dayKey) {
+          weekSlotsByDay[dayKey].forEach(function (slot) {
+            var cardEl = document.querySelector('#slots-grid .slot-card[data-slot-id="' + slot.slot_id + '"]');
+            var p = buildPromises(slot.slot_id, cardEl);
+            if (p) promises.push(p);
+          });
+        });
+        Promise.all(promises).then(function () {
+          chargeMessage.textContent = "{% translate 'Price applied to all days.' %}";
+          chargeMessage.style.color = "green";
+        }).catch(function () {
+          chargeMessage.textContent = "{% translate 'Failed to apply price.' %}";
+          chargeMessage.style.color = "red";
+        });
+      } else {
+        var cards = document.querySelectorAll("#slots-grid .slot-card");
+        var promises = [];
+        cards.forEach(function (card) {
+          var slotId = card.dataset.slotId;
+          var p = buildPromises(slotId, card);
+          if (p) promises.push(p);
+        });
+        Promise.all(promises).then(function () {
+          chargeMessage.textContent = "{% translate 'Prices saved.' %}";
+          chargeMessage.style.color = "green";
+        }).catch(function () {
+          chargeMessage.textContent = "{% translate 'Failed to save prices.' %}";
+          chargeMessage.style.color = "red";
+        });
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    if (!getToken()) {
+      window.location.href = "/login/";
+      return;
+    }
+
+    getJSON("/api/v1/auth/me/")
+      .then(function (user) {
+        if (!user) return;
+        currentUser = user;
+        var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
+        document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
+        document.getElementById("profile-toggle").addEventListener("click", loadProfile);
+      })
+      .catch(function () {
+        showMessage("{% translate 'We could not load your account. Please log in again.'}");
+      });
+
+    document.getElementById("logout").addEventListener("click", logout);
+    document.getElementById("enable-notifications").addEventListener("click", enableBookingNotifications);
+    if ("Notification" in window &&
+    Notification.permission === "granted") {
+        startBookingNotifications();
+    }
+    loadSlots();
+    //loadBookings();
+    //checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
+    loadDashboard();
+    updateSlotsDate();
+  });
+  })();
+  </script>
+</body>
+</html>

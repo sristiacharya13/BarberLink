@@ -1,0 +1,306 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Payment" %}</title>
+  <style>
+    
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #f0f7f1, #e8f0ea);
+  margin: 0;
+  padding: 25px;
+  min-height: 100vh;
+  color: #333;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 35px;
+}
+
+nav form {
+  display: inline-flex;
+}
+
+nav select,
+nav button {
+  padding: 10px 14px;
+  border: 1px solid #d0d9d1;
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+nav select:hover,
+nav button:hover {
+  border-color: #218838;
+  background-color: #f4faf5;
+}
+
+nav button {
+  background-color: #fff;
+  color: #c0392b;
+  border-color: #e4c5c2;
+}
+
+nav button:hover {
+  background-color: #fff1ef;
+}
+
+/* Payment card */
+h1,
+p,
+section,
+#message {
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1 {
+  margin-top: 45px;
+  margin-bottom: 15px;
+  padding-top: 30px;
+  color: #218838;
+  text-align: center;
+  font-size: 30px;
+  line-height: 1.3;
+}
+
+h1::before {
+  content: "✓";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background-color: #e0f3e4;
+  color: #218838;
+  font-size: 30px;
+}
+
+p:not(#message) {
+  line-height: 1.7;
+  text-align: center;
+  color: #626b63;
+  font-size: 15px;
+}
+
+/* Payment details */
+section {
+  margin-top: 28px;
+  padding: 30px;
+  background-color: #fff;
+  border: 1px solid #e0e9e1;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(30, 70, 40, 0.08);
+  text-align: center;
+}
+
+section p {
+  margin: 0 0 24px;
+  color: #59645a;
+  font-size: 17px;
+}
+
+section p:first-letter {
+  color: #218838;
+}
+
+#pay-button {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #218838, #176b2b);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+#pay-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Payment status messages */
+#message {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid #d8e4d9;
+  border-radius: 9px;
+  background-color: #fff;
+  color: #465448;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+#message[hidden] {
+  display: none;
+}
+
+
+  nav {
+    margin-bottom: 25px;
+    gap: 6px;
+  }
+
+  nav select,
+  nav button {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+
+  h1 {
+    margin-top: 25px;
+    font-size: 25px;
+  }
+
+  section {
+    padding: 22px 18px;
+  }
+
+  
+
+  </style>
+</head>
+<body>
+  <nav>
+    <form action="{% url 'set_language' %}" method="post" style="display:inline">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <select name="language" onchange="this.form.submit()">
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>ಕನ್ನಡ</option>
+      </select>
+    </form>
+    <button type="button" id="logout">{% translate "Logout" %}</button>
+  </nav>
+
+  <h1>{% translate "Renew your subscription" %}</h1>
+  <p>{% translate "Your subscription has expired. Please renew to access your dashboard, slots and bookings." %}</p>
+
+  <p id="message" hidden></p>
+
+  {% if razorpay_key %}
+  <section>
+    <p>{% translate "Amount" %}: ₹{{ amount_inr }} / {% translate "year" %}</p>
+    <button type="button" id="pay-button">{% translate "Pay" %} ₹{{ amount_inr }}</button>
+  </section>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  {% endif %}
+
+  <script src="{% url 'javascript-catalog' %}"></script>
+  <script>
+  (function () {
+    if (!localStorage.getItem("access")) {
+      window.location.replace("/login/");
+      return;
+    }
+
+    function showMessage(text) {
+      var el = document.getElementById("message");
+      el.textContent = text;
+      el.hidden = false;
+    }
+
+    function saveWithAuth(payload, retried) {
+      return fetch("/payments/save-payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("access")
+        },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (res.status === 401 && !retried) {
+          return fetch("/api/v1/token/refresh/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh: localStorage.getItem("refresh") })
+          })
+            .then(function (r) { if (!r.ok) throw new Error("refresh_failed"); return r.json(); })
+            .then(function (data) {
+              localStorage.setItem("access", data.access);
+              return saveWithAuth(payload, true);
+            });
+        }
+        if (!res.ok) throw new Error("save_failed");
+        return res.json();
+      });
+    }
+
+    var payBtn = document.getElementById("pay-button");
+    if (payBtn) {
+      payBtn.addEventListener("click", function () {
+        var options = {
+          key: "{{ razorpay_key }}",
+          amount: "{{ amount }}",
+          currency: "INR",
+          name: "BarberLink",
+          description: "Barber subscription",
+          order_id: "{{ order_id }}",
+          handler: function (response) {
+            payBtn.disabled = true;
+            showMessage("{% translate 'Payment received. Confirming...' %}");
+            saveWithAuth({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+              .then(function () { window.location.href = "/barbers/dashboard/"; })
+              .catch(function () {
+                payBtn.disabled = false;
+                showMessage("{% translate 'Payment received but could not be recorded. Please contact support.' %}");
+              });
+          }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.on("payment.failed", function (response) {
+    window.location.href = "/payments/failed_dashboard/";
+});
+        rzp.open();
+      });
+    }
+
+    document.getElementById("logout").addEventListener("click", function () {
+      var refresh = localStorage.getItem("refresh");
+      var done = function () {
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.href = "/login/";
+      };
+      if (!refresh) { done(); return; }
+      fetch("/api/v1/auth/logout/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + localStorage.getItem("access") },
+        body: JSON.stringify({ refresh: refresh })
+      }).then(done, done);
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Login" %}</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: green;
+    }
+
+    #login-form {
+      max-width: 320px;
+      margin: 30px auto;
+      padding: 25px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    #login-form input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    #login-form button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #login-form button[type="button"] {
+      cursor: pointer;
+    }
+
+    a {
+      color: green;
+    }
+
+    #error {
+      text-align: center;
+      color: #b00020;
+    }
+
+    body > p {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+ 
+
+  <h1>{% translate "Login" %}</h1>
+
+  <p id="error"></p>
+
+  <form id="login-form">
+    <label for="contact_number">{% translate "Contact Number" %}</label>
+    <input type="tel" id="contact_number"
+           placeholder="{% translate 'Contact number' %}"
+           autocomplete="tel" required>
+
+    <label for="password">{% translate "Password" %}</label>
+    <div style="position:relative;">
+      <input type="password" id="password"
+             placeholder="{% translate 'Password' %}"
+             autocomplete="current-password" required>
+      <button type="button" id="toggle-password"
+              style="position:absolute;right:5px;top:15px;background:none;border:none;color:#666;">
+        {% translate "Show" %}
+      </button>
+    </div>
+
+    <p style="text-align:right;">
+      <a href="{% url 'forgot_password_page' %}">{% translate "Forgot Password?" %}</a>
+    </p>
+
+    <button type="submit">{% translate "Login" %}</button>
+  </form>
+
+  <p>
+    {% translate "No account?" %}
+    <a href="/register/">{% translate "Register" %}</a>
+  </p>
+
+  <script>
+    const DASHBOARDS = {
+      barber: "/barbers/dashboard/",
+      customer: "/customers/dashboard/"
+    };
+
+    const pwd = document.getElementById("password");
+    const toggle = document.getElementById("toggle-password");
+
+    toggle.addEventListener("click", function() {
+      if (pwd.type === "password") {
+        pwd.type = "text";
+        toggle.textContent = "{% translate 'Hide' %}";
+      } else {
+        pwd.type = "password";
+        toggle.textContent = "{% translate 'Show' %}";
+      }
+    });
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const err = document.getElementById("error");
+      err.textContent = "";
+
+      try {
+        const res = await fetch("/api/v1/auth/login/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contact_number: document.getElementById("contact_number").value,
+            password: pwd.value
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          err.textContent = data.detail || "{% translate 'Login failed.' %}";
+          return;
+        }
+
+        localStorage.setItem("access", data.access);
+        localStorage.setItem("refresh", data.refresh);
+        window.location.href = DASHBOARDS[data.user.role];
+      } catch (error) {
+        err.textContent = "{% translate 'Something went wrong. Please try again.' %}";
+      }
+    });
+  </script>
+</body>
+</html>
