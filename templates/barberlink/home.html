@@ -1,99 +1,266 @@
-{% load i18n %}
+{% load i18n %}{% load static %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-        h1{
-            color: #c5df2d;
-        }
-        a{
-            color: #15ac46;
-        }
-        header {
-            background-color: white;
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header form {
-            margin-left: auto;
-        }
-        header a {
-            margin-left: 15px;
-        }
-        section {
-            padding: 15px;
-        }
-        footer {
-            border-top: 1px solid #ddd;
-            background-color: black;
-            color: #ddd;
-        }
-    </style>
-    <title>{% translate "BarberLink-An app for barbers" %}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/design.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% translate "BarberLink" %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bl-green: #1b8f3a;
+      --bl-green-deep: #0f3d1f;
+      --bl-green-soft: #2ea44f;
+      --bl-white: #ffffff;
+      --bl-white-muted: rgba(255,255,255,0.86);
+      --bl-shadow: 0 14px 34px rgba(0,0,0,0.28);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: #08130c;
+      color: var(--bl-white);
+    }
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(7, 36, 20, 0.18) 0%, rgba(7, 36, 20, 0.28) 28%, rgba(8, 45, 24, 0.62) 58%, rgba(6, 28, 15, 0.88) 100%),
+        radial-gradient(ellipse at center bottom, rgba(27, 143, 58, 0.22), rgba(27, 143, 58, 0) 60%),
+        url("{% static 'wp11627995.jpg' %}") center center / cover no-repeat;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(6, 28, 15, 0.18), rgba(6, 28, 15, 0));
+      pointer-events: none;
+    }
+    .hero-top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      gap: 12px;
+    }
+    .brand {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.01em;
+      color: var(--bl-white);
+      text-decoration: none;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+    .lang-form select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--bl-white);
+      font: inherit;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .lang-form option { color: #111; }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      margin-top: auto;
+      width: 100%;
+      max-width: 560px;
+      padding: 24px 22px max(28px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255,255,255,0.92);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 8vw, 2.85rem);
+      line-height: 1.08;
+      font-weight: 700;
+      color: var(--bl-white);
+      text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+      max-width: 11ch;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 38ch;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: var(--bl-white-muted);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.22);
+    }
+    .hero-indicators {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0 22px;
+    }
+    .hero-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.38);
+      border: none;
+      padding: 0;
+    }
+    .hero-indicator.is-active {
+      width: 22px;
+      background: rgba(255,255,255,0.96);
+    }
+    .hero-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      text-align: center;
+      transition: transform 180ms ease, filter 180ms ease, background 180ms ease;
+      touch-action: manipulation;
+    }
+    .hero-btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    .hero-btn:active { transform: translateY(0); }
+    .hero-btn-primary {
+      background: linear-gradient(180deg, var(--bl-green-soft), var(--bl-green));
+      color: var(--bl-white);
+      box-shadow: var(--bl-shadow);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero-btn-secondary {
+      background: rgba(255,255,255,0.12);
+      color: var(--bl-white);
+      border: 1px solid rgba(255,255,255,0.28);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+    }
+    @media (min-width: 768px) {
+      .hero {
+        background-position: center 30%;
+      }
+      .hero-top {
+        padding: 24px 40px;
+      }
+      .brand { font-size: 1.3rem; }
+      .hero-content {
+        margin-top: 0;
+        flex: 1;
+        justify-content: flex-end;
+        align-items: flex-start;
+        text-align: left;
+        max-width: 1180px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 48px 40px 56px;
+      }
+      .hero h1 {
+        max-width: 13ch;
+        font-size: clamp(2.8rem, 5vw, 4.1rem);
+      }
+      .hero p {
+        font-size: 1.06rem;
+        max-width: 46ch;
+      }
+      .hero-indicators {
+        justify-content: flex-start;
+      }
+      .hero-actions {
+        max-width: 360px;
+      }
+    }
+    @media (min-width: 1100px) {
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: min(44vw, 560px);
+        background: linear-gradient(90deg, rgba(6,28,15,0), rgba(6,28,15,0.18));
+        pointer-events: none;
+      }
+      .hero-content {
+        padding-bottom: 72px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-btn { transition: none; }
+    }
+  </style>
 </head>
 <body>
-{% include 'barberlink/partials/header.html' %}
-     <header>
-        <strong>{% translate "BarberLink" %}</strong>
-         <form action="{% url 'set_language' %}" method="post"
-              style="display:inline;">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-
-            <select name="language" onchange="this.form.submit()">
-                <option value="en"
-                    {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>
-                    English
-                </option>
-                <option value="kn"
-                    {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>
-                    ಕನ್ನಡ
-                </option>
-            </select>
-        </form>
-        <a href="{% url 'login_page' %}">
-            {% translate "Login" %}
-        </a>
-
-        <a href="{% url 'register_page' %}">
-            {% translate "Register" %}
-        </a>
-
-       
+  <main class="hero">
+    <header class="hero-top">
+      <a class="brand" href="{% url 'home' %}">{% translate "BarberLink" %}</a>
+      <form action="{% url 'set_language' %}" method="post" class="lang-form">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.path }}">
+        <select name="language" onchange="this.form.submit()" aria-label="{% translate 'Language' %}">
+          <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
+          <option value="kn" {% if LANGUAGE_CODE == 'kn' %}selected{% endif %}>KN</option>
+        </select>
+      </form>
     </header>
-    <div style="padding: 30px 20px;">
-        <h1>{% translate "Welcome to BarberLink" %}</h1>
-        <h2>{% translate "Find Your Barber, Book Your Appointment" %}</h2>
-        <p>{% translate "Find nearby barbers, book appointments, and manage your bookings easily." %}</p>
-        <section>
-        <h2>{% translate "Our Features" %}</h2>
 
-        <h3>{% translate "Find Nearby Barbers" %}</h3>
-        <p>{% translate "Discover barbers near your location." %}</p>
-
-        <h3>{% translate "Manage Bookings" %}</h3>
-        <p>{% translate "View your bookings and their status." %}</p>
-
-        <h3>{% translate "Easy Payments" %}</h3>
-        <p>{% translate "Make payments using the available payment facility." %}</p>
+    <section class="hero-content" aria-labelledby="hero-title">
+      <div class="hero-kicker">{% translate "Grooming at your doorstep" %}</div>
+      <h1 id="hero-title">{% translate "Crafting Your Perfect Look" %}</h1>
+      <p>{% translate "Discover nearby barbers, explore grooming services, check available slots, and book appointments from the comfort of home." %}</p>
+      <div class="hero-indicators" aria-hidden="true">
+        <span class="hero-indicator is-active"></span>
+        <span class="hero-indicator"></span>
+        <span class="hero-indicator"></span>
+      </div>
+      <div class="hero-actions">
+        <a class="hero-btn hero-btn-primary" href="{% url 'login_page' %}">{% translate "LOG IN" %}</a>
+        <a class="hero-btn hero-btn-secondary" href="{% url 'register_page' %}">{% translate "SIGN UP" %}</a>
+      </div>
     </section>
-
-    </div>
-    <footer style="text-align:center; padding:20px;">
-        {% translate "BarberLink - Connecting customers and barbers." %}
-    </footer>
+  </main>
 </body>
 </html>
-
