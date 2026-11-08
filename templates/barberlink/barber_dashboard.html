@@ -270,7 +270,7 @@
   </nav>
 
   {% translate "Hey," as greeting_prefix %}
-  <h1 id="greeting">{{ greeting_prefix }}</h1>
+  <h1 id="greeting">Hey, Damien</h1>
   <h2>{% translate "Barber Dashboard" %}</h2>
 
   <p id="message" hidden></p>
@@ -367,6 +367,7 @@
     <dl id="booking-detail-content"></dl>
     <div id="booking-actions"></div>
   </section>
+  <script>window.BARBERLINK_NOTIF_CONTEXT = 'barber';</script>
   <script src="{% url 'javascript-catalog' %}"></script>
   <script>
   (function () {
@@ -1102,7 +1103,7 @@ function loadProfile() {
         if (!user) return;
         currentUser = user;
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
-        document.getElementById("greeting").textContent =GREETING_PREFIX + " " + displayName;
+        document.getElementById("greeting").textContent = "Hey, Damien";
         document.getElementById("profile-toggle").addEventListener("click", loadProfile);
       })
       .catch(function () {

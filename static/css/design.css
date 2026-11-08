@@ -285,6 +285,7 @@ img { border-radius: var(--radius-sm); object-fit: cover; }
 .bl-notif-icon svg { width: 20px; height: 20px; }
 .bl-notif-icon.is-approved { background: rgba(76,175,80,0.18); color: #4caf50; }
 .bl-notif-icon.is-way { background: rgba(33,150,243,0.18); color: #42a5f5; }
+.bl-notif-icon.is-cancelled { background: rgba(244,67,54,0.18); color: #ef5350; }
 .bl-notif-content { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .bl-notif-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .bl-notif-item-title { font-weight: 600; font-size: 1rem; color: var(--text-primary); }

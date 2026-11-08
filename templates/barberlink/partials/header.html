@@ -58,7 +58,33 @@
     var notifClose = document.getElementById('blNotifClose');
     if (!notifBtn || !notifDd || !notifList) return;
 
-    var notifications = [
+    var context = (window.BARBERLINK_NOTIF_CONTEXT || (window.location.pathname.indexOf('/barbers') === 0 ? 'barber' : 'customer'));
+    var notifications = context === 'barber' ? [
+      {
+        id: 'b1',
+        type: 'booked',
+        icon: 'calendar-check',
+        iconClass: 'is-approved',
+        title: 'New Appointment Booked',
+        message: 'Freddy Lawson booked an appointment for 12:00 PM, Friday, November 06, 2026.',
+        subtext: '',
+        time: '2 minutes ago',
+        ts: Date.now() - 2 * 60 * 1000,
+        unread: true
+      },
+      {
+        id: 'b2',
+        type: 'cancelled',
+        icon: 'calendar-x',
+        iconClass: 'is-cancelled',
+        title: 'Appointment Cancelled',
+        message: 'Michel Roach cancelled her appointment scheduled for 12:00 PM, Friday, November 13, 2026.',
+        subtext: '',
+        time: 'Just now',
+        ts: Date.now(),
+        unread: true
+      }
+    ] : [
       {
         id: 'n1',
         type: 'approved',
