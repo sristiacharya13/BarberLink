@@ -59,17 +59,26 @@
   #slots-grid,
   #bookings-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
     margin-top: 15px;
   }
 
-  .slot-card,
-  .booking-card {
+  .slot-card {
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #ddd;
     background-color: white;
+  }
+
+  .booking-card {
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
   }
 
   .slot-card {
@@ -301,25 +310,61 @@
     .btn-close { background: #757575; }
 
     /* Today's Bookings section styles */
-    #bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px; }
-    .booking-card { padding: 16px; border-radius: 8px; border: 2px solid transparent; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .booking-time { font-weight: bold; font-size: 1.1em; }
-    .booking-status-badge { font-size: 0.85em; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; }
-    .booking-status-waiting { background: #fff3e0; color: #e65100; }
-    .booking-status-approved { background: #e3f2fd; color: #1565c0; }
-    .booking-status-rejected { background: #fafafa; color: #616161; }
-    .booking-status-cancelled { background: #fafafa; color: #616161; }
-    .booking-status-completed { background: #e8f5e9; color: #2e7d32; }
-    .booking-detail-row { margin: 6px 0; font-size: 0.9em; }
-    .booking-detail-label { font-weight: bold; color: #333; }
-    .booking-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .booking-actions button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.9em; }
-    .btn-approve { background: #4caf50; }
-    .btn-reject { background: #f44336; }
-    .btn-complete { background: #2196f3; }
-    .btn-navigate { background: #ff9800; }
-    .btn-cancel { background: #757575; }
+    #bookings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-top: 12px; width: 100%; }
+    .booking-card { padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 8px 24px rgba(0,0,0,0.18); width: 100%; max-width: 100%; box-sizing: border-box; overflow: hidden; }
+    .booking-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; min-width: 0; }
+    .booking-customer { display: flex; align-items: flex-start; gap: 12px; min-width: 0; flex: 1; }
+    .booking-avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(25,245,181,0.14); color: #19F5B5; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 44px; }
+    .booking-avatar svg { width: 22px; height: 22px; }
+    .booking-identity { min-width: 0; flex: 1; }
+    .booking-name { font-weight: 700; font-size: 1.05rem; color: #fff; line-height: 1.25; overflow-wrap: anywhere; }
+    .booking-time { font-weight: 600; font-size: 1rem; color: rgba(255,255,255,0.92); margin-top: 2px; line-height: 1.3; overflow-wrap: anywhere; }
+    .booking-status-badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; white-space: nowrap; flex: 0 0 auto; }
+    .booking-status-waiting { background: rgba(255, 152, 0, 0.18); color: #ffb74d; border: 1px solid rgba(255, 152, 0, 0.28); }
+    .booking-status-approved { background: rgba(76, 175, 80, 0.18); color: #81c784; border: 1px solid rgba(76, 175, 80, 0.28); }
+    .booking-status-rejected { background: rgba(244, 67, 54, 0.18); color: #ef9a9a; border: 1px solid rgba(244, 67, 54, 0.28); }
+    .booking-status-cancelled { background: rgba(158,158,158,0.18); color: #bdbdbd; border: 1px solid rgba(158,158,158,0.22); }
+    .booking-status-completed { background: rgba(33,150,243,0.18); color: #90caf9; border: 1px solid rgba(33,150,243,0.22); }
+    .booking-phone { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.82); font-size: 0.94rem; margin-bottom: 10px; min-width: 0; }
+    .booking-phone svg { width: 16px; height: 16px; color: rgba(255,255,255,0.72); flex: 0 0 auto; }
+    .booking-phone span { overflow-wrap: anywhere; }
+    .booking-waiting-indicator { display: inline-flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; margin-bottom: 14px; padding: 10px 12px; border-radius: 12px; background: rgba(255,152,0,0.1); color: #ffcc80; font-size: 0.9rem; font-weight: 500; line-height: 1.3; }
+    .booking-waiting-indicator svg { width: 16px; height: 16px; color: #ffb74d; flex: 0 0 auto; }
+    .booking-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+    .booking-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 10px 14px; border: none; border-radius: 999px; cursor: pointer; color: #fff; font-size: 0.92rem; font-weight: 600; line-height: 1.1; min-width: 0; box-sizing: border-box; touch-action: manipulation; }
+    .booking-actions button span { overflow-wrap: anywhere; }
+    .booking-actions button svg { width: 17px; height: 17px; flex: 0 0 auto; }
+    .booking-actions .btn-navigate { grid-column: 1 / -1; width: 100%; }
+    .booking-actions .btn-complete { grid-column: 1 / -1; width: 100%; }
+    .btn-approve { background: #2e7d32; }
+    .btn-approve:hover { background: #256628; }
+    .btn-reject { background: #c62828; }
+    .btn-reject:hover { background: #a61f1f; }
+    .btn-navigate { background: #1565c0; }
+    .btn-navigate:hover { background: #114f96; }
+    .btn-complete { background: #1976d2; }
+    .btn-cancel { background: #616161; }
+    @media (max-width: 900px) {
+      #bookings-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      #bookings-section { padding: 14px !important; }
+      #bookings-list { grid-template-columns: 1fr; gap: 12px; }
+      .booking-card { padding: 14px; border-radius: 16px; }
+      .booking-top { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 12px; }
+      .booking-customer { width: 100%; }
+      .booking-status-badge { align-self: flex-start; }
+      .booking-name { font-size: 1rem; }
+      .booking-time, .booking-phone { font-size: 0.95rem; }
+      .booking-waiting-indicator { font-size: 0.9rem; }
+      .booking-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .booking-actions button { width: 100%; min-height: 48px; font-size: 0.95rem; }
+      .booking-actions .btn-navigate, .booking-actions .btn-complete { grid-column: 1 / -1; }
+    }
+    @media (max-width: 380px) {
+      .booking-actions { grid-template-columns: 1fr; }
+      .booking-actions .btn-navigate, .booking-actions .btn-complete { grid-column: auto; }
+    }
   </style>
 
   <section id="slots-section" style="background: rgba(35,29,29,0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 20px; margin-bottom: 16px;">
@@ -350,14 +395,14 @@
   </section>
 
   <section id="bookings-section" style="background: rgba(35,29,29,0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 20px; margin-bottom: 16px;">
-    <h3>{% translate "Today's Bookings" %}</h3>
-    <div style="margin-bottom: 12px;">
+    <h3 style="color:#fff;">{% translate "Today's Bookings" %}</h3>
+    <div style="margin-bottom: 12px; color: rgba(255,255,255,0.86);">
       <label for="booking-status-filter">{% translate "Filter by status:" %}</label>
-      <select id="booking-status-filter" style="margin-left: 8px; padding: 4px 8px;">
-        <option value="all">{% translate "All" %}</option>
+      <select id="booking-status-filter" style="margin-left: 8px; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); color: #fff;">
+        <option value="all" style="color:#111;">{% translate "All" %}</option>
       </select>
     </div>
-    <div id="bookings-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-top: 12px;">
+    <div id="bookings-list">
       {% translate "Loading bookings..." %}
     </div>
   </section>
@@ -743,6 +788,30 @@ function loadProfile() {
       });
     }
 
+    function setBookingStatusUI(card, status) {
+      if (!card) return;
+      card.dataset.status = status;
+      var waitingIndicator = card.querySelector(".booking-waiting-indicator");
+      if (waitingIndicator) waitingIndicator.hidden = status !== "waiting";
+      var approveBtn = card.querySelector(".btn-approve");
+      var rejectBtn = card.querySelector(".btn-reject");
+      if (approveBtn) approveBtn.remove();
+      if (rejectBtn) rejectBtn.remove();
+      var actions = card.querySelector(".booking-actions");
+      if (actions && status === "approved" && !actions.querySelector(".btn-complete")) {
+        var completeBtn = document.createElement("button");
+        completeBtn.type = "button";
+        completeBtn.className = "btn-complete";
+        completeBtn.innerHTML = '<i data-lucide="check-check"></i><span>' + "{% translate 'Mark as Completed' %}" + '</span>';
+        completeBtn.addEventListener("click", function () {
+          transitionBooking(card.dataset.bookingId, "completed", null, card);
+        });
+        var nav = actions.querySelector(".btn-navigate");
+        if (nav) actions.insertBefore(completeBtn, nav); else actions.appendChild(completeBtn);
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
     function renderBookings(bookings) {
       var list = document.getElementById("bookings-list");
       if (!list) return;
@@ -752,96 +821,103 @@ function loadProfile() {
         return;
       }
       bookings.forEach(function (booking) {
-        var card = document.createElement("div");
-        card.className = "booking-card";
-        card.dataset.status = booking.booking_status;
         if (booking.booking_status === "cancelled") {
           alert("Customer has cancelled the booking");
         }
-        var header = document.createElement("div");
-        header.className = "booking-header";
-
-        var timeSpan = document.createElement("span");
-        timeSpan.className = "booking-time";
         var slot = booking.slot || {};
-        timeSpan.textContent = slot.start_time + " – " + slot.end_time;
-
-        var statusBadge = document.createElement("span");
-        statusBadge.className = "booking-status-badge booking-status-" + booking.booking_status;
-        statusBadge.textContent = gettext(booking.booking_status).toLowerCase();
-
-        header.appendChild(timeSpan);
-        header.appendChild(statusBadge);
-        card.appendChild(header);
         var customerName = "{{ LANGUAGE_CODE }}" === "kn" ? (booking.customer_name_kn || booking.customer_name): booking.customer_name;
-        var details = [
-          { label: "{% translate 'Customer' %}: ", value: customerName },
-          { label: "{% translate 'Phone' %}: ", value: booking.customer_phone },
-          { label: "{% translate 'Status' %}: ", value: gettext(booking.booking_status.toLowerCase()) },
-        ];
+        var timeText = (slot.start_time || "") + " – " + (slot.end_time || "");
+        var status = booking.booking_status || "waiting";
+        var statusLabel = status === "waiting" ? "{% translate 'Waiting' %}" : status === "approved" ? "{% translate 'Approved' %}" : status === "rejected" ? "{% translate 'Rejected' %}" : status === "cancelled" ? "{% translate 'Cancelled' %}" : status === "completed" ? "{% translate 'Completed' %}" : status;
 
-        details.forEach(function (d) {
-          var row = document.createElement("div");
-          row.className = "booking-detail-row";
-          var label = document.createElement("span");
-          label.className = "booking-detail-label";
-          label.textContent = d.label;
-          var value = document.createElement("span");
-          value.textContent = d.value || "—";
-          row.appendChild(label);
-          row.appendChild(value);
-          card.appendChild(row);
-        });
+        var card = document.createElement("div");
+        card.className = "booking-card";
+        card.dataset.status = status;
+        card.dataset.bookingId = booking.booking_id;
+
+        var top = document.createElement("div");
+        top.className = "booking-top";
+        var customer = document.createElement("div");
+        customer.className = "booking-customer";
+        var avatar = document.createElement("span");
+        avatar.className = "booking-avatar";
+        avatar.innerHTML = '<i data-lucide="user"></i>';
+        var nameWrap = document.createElement("div");
+        nameWrap.className = "booking-identity";
+        var nameEl = document.createElement("div");
+        nameEl.className = "booking-name";
+        nameEl.textContent = customerName || "—";
+        var timeEl = document.createElement("div");
+        timeEl.className = "booking-time";
+        timeEl.textContent = timeText;
+        nameWrap.appendChild(nameEl);
+        nameWrap.appendChild(timeEl);
+        customer.appendChild(avatar);
+        customer.appendChild(nameWrap);
+        top.appendChild(customer);
+        card.appendChild(top);
+
+        var phone = document.createElement("div");
+        phone.className = "booking-phone";
+        phone.innerHTML = '<i data-lucide="phone"></i><span></span>';
+        phone.querySelector("span").textContent = booking.customer_phone || "—";
+        card.appendChild(phone);
+
+        var waiting = document.createElement("div");
+        waiting.className = "booking-waiting-indicator";
+        waiting.innerHTML = '<i data-lucide="hourglass"></i><span>' + "{% translate 'Waiting for your approval' %}" + '</span>';
+        waiting.hidden = status !== "waiting";
+        card.appendChild(waiting);
 
         var actions = document.createElement("div");
         actions.className = "booking-actions";
 
-        if (booking.booking_status === "waiting") {
+        if (status === "waiting") {
           var approveBtn = document.createElement("button");
           approveBtn.type = "button";
-          approveBtn.textContent = "{% translate 'Approve' %}";
           approveBtn.className = "btn-approve";
+          approveBtn.innerHTML = '<i data-lucide="check"></i><span>' + "{% translate 'Approve' %}" + '</span>';
           approveBtn.addEventListener("click", function () {
-            transitionBooking(booking.booking_id, "approved");
+            transitionBooking(booking.booking_id, "approved", null, card);
           });
           actions.appendChild(approveBtn);
 
           var rejectBtn = document.createElement("button");
           rejectBtn.type = "button";
-          rejectBtn.textContent = "{% translate 'Reject' %}";
           rejectBtn.className = "btn-reject";
+          rejectBtn.innerHTML = '<i data-lucide="x"></i><span>' + "{% translate 'Reject' %}" + '</span>';
           rejectBtn.addEventListener("click", function () {
-            transitionBooking(booking.booking_id, "rejected");
+            transitionBooking(booking.booking_id, "rejected", null, card);
           });
           actions.appendChild(rejectBtn);
-        } else if (booking.booking_status === "approved") {
+        } else if (status === "approved") {
           var completeBtn = document.createElement("button");
           completeBtn.type = "button";
-          completeBtn.textContent = "{% translate 'Mark as Completed' %}";
           completeBtn.className = "btn-complete";
+          completeBtn.innerHTML = '<i data-lucide="check-check"></i><span>' + "{% translate 'Mark as Completed' %}" + '</span>';
           completeBtn.addEventListener("click", function () {
-            transitionBooking(booking.booking_id, "completed");
+            transitionBooking(booking.booking_id, "completed", null, card);
           });
           actions.appendChild(completeBtn);
         }
 
-        if (booking.customer_location) {
-          var navBtn = document.createElement("button");
-          navBtn.type = "button";
-          navBtn.textContent = "{% translate 'Navigate' %}";
-          navBtn.className = "btn-navigate";
-          navBtn.addEventListener("click", function () {
+        var navBtn = document.createElement("button");
+        navBtn.type = "button";
+        navBtn.className = "btn-navigate";
+        navBtn.innerHTML = '<i data-lucide="navigation"></i><span>' + "{% translate 'Navigate' %}" + '</span>';
+        navBtn.addEventListener("click", function () {
+          if (booking.customer_location) {
             navigateTo(booking.customer_location);
-          });
-          actions.appendChild(navBtn);
-        }
+          } else {
+            showMessage("{% translate 'Customer location is not available.' %}");
+          }
+        });
+        actions.appendChild(navBtn);
 
-        if (actions.children.length > 0) {
-          card.appendChild(actions);
-        }
-
+        card.appendChild(actions);
         list.appendChild(card);
       });
+      if (window.lucide) window.lucide.createIcons();
     }
 
     function filterBookings(status) {
@@ -986,7 +1062,7 @@ function loadProfile() {
       window.open(url, "_blank");
     }
 
-    function transitionBooking(bookingId, targetStatus, detailSection) {
+    function transitionBooking(bookingId, targetStatus, detailSection, cardEl) {
       if (targetStatus === "approved" && !confirm("Are you sure you want to approve this booking?")) {
         return;
       }
@@ -1005,6 +1081,8 @@ function loadProfile() {
       })
       .then(function (data) {
         if (detailSection) detailSection.hidden = true;
+        var status = (data && data.booking_status) ? data.booking_status : targetStatus;
+        if (cardEl) setBookingStatusUI(cardEl, status);
         showMessage("{% translate 'Booking updated.' %}");
         loadSlots();
       })
