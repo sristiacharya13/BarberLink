@@ -9,4 +9,5 @@ urlpatterns = [
     path("api/location/", views.barber_location_update, name="barber_location_update"),
     path("api/nearby/", views.nearby_barbers, name="nearby_barbers"),
     path("api/service-charges/",views.update_service_charges,name="update_service_charges"),
+    path("api/availability/", views.barber_availability, name="barber_availability"),
 ]

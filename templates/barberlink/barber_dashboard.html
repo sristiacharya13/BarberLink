@@ -384,6 +384,48 @@
       .booking-actions { grid-template-columns: 1fr; }
       .booking-actions .btn-navigate, .booking-actions .btn-complete { grid-column: auto; }
     }
+
+    /* Toggle switch */
+    .bl-switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 28px;
+      flex: 0 0 auto;
+    }
+    .bl-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .bl-switch__slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #b0b0b0;
+      border-radius: 28px;
+      transition: 0.25s;
+    }
+    .bl-switch__slider::before {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.25s;
+    }
+    .bl-switch input:checked + .bl-switch__slider {
+      background: #1b8f3a;
+    }
+    .bl-switch input:checked + .bl-switch__slider::before {
+      transform: translateX(24px);
+    }
+    .bl-switch input:focus + .bl-switch__slider {
+      box-shadow: 0 0 0 3px rgba(27, 143, 58, 0.25);
+    }
   </style>
 
   <section id="slots-section" style="background: rgba(35,29,29,0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 20px; margin-bottom: 16px;">
@@ -450,6 +492,16 @@
     var GREETING_PREFIX = "{{ greeting_prefix|escapejs }}";
     var TOKEN_KEY = "access";
     var REFRESH_KEY = "refresh";
+
+    window.barberAvail = {
+      available_monday: true,
+      available_tuesday: true,
+      available_wednesday: true,
+      available_thursday: true,
+      available_friday: true,
+      available_saturday: true,
+      available_sunday: true,
+    };
 
     function getToken() { return localStorage.getItem(TOKEN_KEY); }
     function clearTokens() {
@@ -700,11 +752,11 @@ function loadProfile() {
       var label = d.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
       var chargeLabel = document.getElementById("charge-day-label");
       if (chargeLabel) chargeLabel.textContent = label;
-      renderSlots(weekSlotsByDay[dayKey] || []);
+      renderSlots(weekSlotsByDay[dayKey] || [], dayKey);
       renderWeekNav();
     }
 
-    function renderSlots(slots) {
+    function renderSlots(slots, dayKey) {
       var grid = document.getElementById("slots-grid");
       if (!grid) return;
       grid.innerHTML = "";
@@ -713,6 +765,26 @@ function loadProfile() {
         return;
       }
       var sameForAll = document.getElementById("same-for-all").checked;
+
+      var dayNames = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+      var dayLabels = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      var dayIndex = dayKey ? new Date(dayKey + "T00:00:00").getDay() : -1;
+      var dayName = dayIndex >= 0 ? dayNames[dayIndex] : "";
+      var dayLabel = dayIndex >= 0 ? dayLabels[dayIndex] : "";
+
+      var header = document.createElement("div");
+      header.style = "display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 10px 14px; background: #fff; border-radius: 8px; border: 1px solid #e0e0e0;";
+      header.innerHTML = "<span style='font-weight: 600; font-size: 0.9rem;'>" + dayLabel + "</span>" +
+        "<span style='display: inline-flex; align-items: center; gap: 8px;'>" +
+        "<span style='font-weight: 600; font-size: 0.85rem;'>{% translate "Available" %}</span>" +
+        "<label class='bl-switch' for='avail-" + dayName + "' style='margin:0;'>" +
+        "<input type='checkbox' id='avail-" + dayName + "' name='avail-" + dayName + "' data-day='" + dayName + "' " + (window.barberAvail && window.barberAvail["available_" + dayName] !== false ? "checked" : "") + ">" +
+        "<span class='bl-switch__slider'></span>" +
+        "</label>" +
+        "</span>";
+      header.querySelector("input").addEventListener("change", saveAvailabilitySetting);
+      grid.appendChild(header);
+
       slots.forEach(function (slot) {
         var card = document.createElement("div");
         card.className = "slot-card " + statusClass(slot.status);
@@ -1263,6 +1335,59 @@ function loadProfile() {
       }).join(' ');
     }
 
+    function loadAvailabilitySetting() {
+      fetch("/api/v1/barbers/availability/", {
+        headers: authHeaders()
+      })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (data) {
+          if (data) {
+            window.barberAvail = data;
+            var dayFields = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+            dayFields.forEach(function (d) {
+              var toggle = document.getElementById("avail-" + d);
+              if (toggle && ("available_" + d) in data) {
+                toggle.checked = data["available_" + d];
+              }
+            });
+          }
+        })
+        .catch(function () {});
+    }
+
+    function saveAvailabilitySetting(event) {
+      var toggle = event.target;
+      var dayName = toggle.getAttribute("data-day");
+      if (!dayName) return;
+      window.barberAvail["available_" + dayName] = toggle.checked;
+      var body = {};
+      body["available_" + dayName] = toggle.checked;
+      fetch("/api/v1/barbers/availability/", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(body)
+      })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (data) {
+          if (data) {
+            window.barberAvail["available_" + dayName] = data["available_" + dayName];
+            var msg = document.getElementById("availability-message");
+            if (msg) {
+              msg.textContent = "{% translate 'Availability saved.' %}";
+              msg.style.color = "#1b8f3a";
+              setTimeout(function () { msg.textContent = ""; }, 2500);
+            }
+          }
+        })
+        .catch(function () {
+          var msg = document.getElementById("availability-message");
+          if (msg) {
+            msg.textContent = "{% translate 'Could not save. Try again.' %}";
+            msg.style.color = "#c62828";
+          }
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
     if (!getToken()) {
       window.location.href = "/login/";
@@ -1287,6 +1412,16 @@ function loadProfile() {
     //checkAndCaptureLocationOnce("/barbers/api/location/", PROFILE_URL);
     loadDashboard();
     updateSlotsDate();
+    loadAvailabilitySetting();
+
+    var slotsGrid = document.getElementById("slots-grid");
+    if (slotsGrid) {
+      slotsGrid.addEventListener("change", function (e) {
+        if (e.target.matches("input[data-day]")) {
+          saveAvailabilitySetting(e);
+        }
+      });
+    }
   });
   })();
   </script>

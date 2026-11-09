@@ -17,6 +17,13 @@ class BarberSerializer(serializers.ModelSerializer):
             "subscription_status",
             "subscription_expiry_date",
             "computed_status",
+            "available_monday",
+            "available_tuesday",
+            "available_wednesday",
+            "available_thursday",
+            "available_friday",
+            "available_saturday",
+            "available_sunday",
         ]
 
 
