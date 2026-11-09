@@ -1255,6 +1255,14 @@ function loadProfile() {
       }
     });
 
+    function capitalizeFirst(str) {
+      if (!str) return str;
+      return str.split(' ').map(function (word) {
+        if (!word) return word;
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      }).join(' ');
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
     if (!getToken()) {
       window.location.href = "/login/";
@@ -1266,7 +1274,7 @@ function loadProfile() {
         if (!user) return;
         currentUser = user;
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
-        document.getElementById("greeting").textContent = "Hey, Damien";
+        document.getElementById("greeting").textContent = "Hey, " + capitalizeFirst(displayName);
         document.getElementById("profile-toggle").addEventListener("click", loadProfile);
       })
       .catch(function () {

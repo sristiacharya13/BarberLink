@@ -26,7 +26,7 @@
         <p class="muted">{% translate "Login to your BarberLink account." %}</p>
       </div>
 
-      <p id="error" class="auth-error" role="alert"></p>
+      <p id="error" class="auth-error" role="alert" hidden></p>
 
       <form id="login-form" novalidate>
         <label class="auth-field">
@@ -47,7 +47,7 @@
         </label>
 
         <div style="text-align:right;">
-          <a href="{% url 'forgot_password_page' %}" style="font-size:0.85rem;">{% translate "Forgot Password?" %}</a>
+          <a href="{% url 'forgot_password_page' %}" style="font-size:0.85rem; color: #2ea44f; font-weight: 600;">{% translate "Forgot Password?" %}</a>
         </div>
 
         <button class="btn btn-primary auth-submit" type="submit">{% translate "Login" %}</button>
@@ -104,6 +104,7 @@
       const data = await response.json();
 
       if (!response.ok) {
+        err.hidden = false;
         err.textContent = data.detail || "{% translate 'Login failed.' %}";
         return;
       }
@@ -111,9 +112,10 @@
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
       window.location.href = DASHBOARDS[data.user.role];
-    } catch (error) {
-      err.textContent = "{% translate 'Something went wrong. Please try again.' %}";
-    }
+} catch (error) {
+        err.hidden = false;
+        err.textContent = "{% translate 'Something went wrong. Please try again.' %}";
+      }
   });
 </script>
 
