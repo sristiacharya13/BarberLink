@@ -667,10 +667,12 @@
   <h1 id="greeting">Hey, Freddy</h1>
   <h2>Ready for fresh look?</h2>
 
+  {% comment %}
   <div class="search-bar">
     <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" id="search-barbers" placeholder="Search barbers">
   </div>
+  {% endcomment %}
 
   <p id="message" hidden></p>
 
@@ -711,7 +713,7 @@
         <div class="nearby-subtitle">{% translate "Find barbers near you instantly" %}</div>
       </div>
     </div>
-    <iframe id="nearby-map" width="100%" height="300" style="border:0;margin-top:16px;border-radius:8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=12.9716,77.5946&output=embed"></iframe>
+    <iframe id="nearby-map" width="100%" height="300" style="border:0;margin-top:16px;border-radius:8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="about:blank" hidden></iframe>
     <p id="nearby-error" style="color:#b00020" hidden></p>
   </section>
 
@@ -1392,6 +1394,7 @@ function capitalizeFirst(str) {
             var mapEl = document.getElementById("nearby-map");
             if (mapEl) {
               mapEl.src = "https://www.google.com/maps?q=" + loc.lat + "," + loc.lng + "&output=embed";
+              mapEl.hidden = false;
             }
             button.style.opacity = 1;
         })
