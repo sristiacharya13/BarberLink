@@ -1,4 +1,80 @@
 {% load i18n %}
+<style>
+  /* BarberLink green theme for auth + home pages */
+  body.auth-page-body .bl-header,
+  body.hero .bl-header {
+    background: rgba(8, 19, 12, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,0.14);
+  }
+  body.auth-page-body .bl-header__brand,
+  body.hero .bl-header__brand { color: #ffffff; }
+  body.auth-page-body .bl-header__icon,
+  body.hero .bl-header__icon {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #ffffff;
+  }
+  body.auth-page-body .bl-lang-form select,
+  body.hero .bl-lang-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  body.auth-page-body .bl-lang-form option,
+  body.hero .bl-lang-form option { color: #111; }
+  body.auth-page-body .bl-menu-dropdown,
+  body.hero .bl-menu-dropdown,
+  body.auth-page-body .bl-notif-panel,
+  body.hero .bl-notif-panel {
+    background: rgba(8, 19, 12, 0.92);
+    border-color: rgba(255,255,255,0.14);
+  }
+  body.auth-page-body .bl-notif-item,
+  body.hero .bl-notif-item {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.14);
+  }
+  body.auth-page-body .bl-notif-item:hover,
+  body.hero .bl-notif-item:hover { background: rgba(255,255,255,0.09); }
+  body.auth-page-body .bl-notif-item.is-unread,
+  body.hero .bl-notif-item.is-unread {
+    background: rgba(46,164,79,0.1);
+    border-color: rgba(46,164,79,0.3);
+  }
+  body.auth-page-body .bl-notif-icon.is-approved,
+  body.hero .bl-notif-icon.is-approved { background: rgba(76,175,80,0.18); color: #4caf50; }
+  body.auth-page-body .bl-notif-icon.is-way,
+  body.hero .bl-notif-icon.is-way { background: rgba(33,150,243,0.18); color: #42a5f5; }
+  body.auth-page-body .bl-notif-icon.is-cancelled,
+  body.hero .bl-notif-icon.is-cancelled { background: rgba(244,67,54,0.18); color: #ef5350; }
+  body.auth-page-body .bl-notif-mark-all,
+  body.hero .bl-notif-mark-all { color: #2ea44f; }
+  body.auth-page-body .bl-notif-title,
+  body.hero .bl-notif-title { color: #ffffff; }
+  body.auth-page-body .bl-notif-item-title,
+  body.hero .bl-notif-item-title { color: #ffffff; }
+  body.auth-page-body .bl-notif-msg,
+  body.auth-page-body .bl-notif-sub,
+  body.auth-page-body .bl-notif-time,
+  body.hero .bl-notif-msg,
+  body.hero .bl-notif-sub,
+  body.hero .bl-notif-time { color: rgba(255,255,255,0.78); }
+  body.auth-page-body .bl-notif-dot,
+  body.hero .bl-notif-dot { background: #2ea44f; }
+  body.auth-page-body .bl-menu-item,
+  body.hero .bl-menu-item { color: #ffffff; }
+</style>
 <header class="bl-header">
   <div class="bl-header__brand">BarberLink</div>
   <form action="{% url 'set_language' %}" method="post" class="bl-lang-form">

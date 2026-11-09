@@ -3,172 +3,176 @@
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Register" %}</title>
-  
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/design.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: green;
-    }
-
-    form {
-      margin: 15px auto;
-    }
-
-    input, select {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    button[type="submit"] {
-      background-color: green;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    a {
-      color: green;
-    }
+    body { background: #000 !important; color: #f5f5f5; }
   </style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/design.css">
 </head>
-<body>
+<body class="auth-page-body">
 {% include 'barberlink/partials/header.html' %}
-  
-  <div>
-    <h1>{% translate 'Registration Form' %}</h1>
-    <form>
-      {% csrf_token %}
-      <label>{% translate "I am registering as" %}</label>
-      <div class="role-options">
-            <label class="role-option">
-              <input type="radio" name="role-choice" value="customer" checked>
-              {% translate "Customer" %}
-            </label>
 
-            <label class="role-option">
-              <input type="radio" name="role-choice" value="barber">
-              {% translate "Barber" %}
-            </label>
+<main class="auth-page">
+  <div class="container">
+    <div class="auth-card glass">
+      <div class="auth-card__head">
+        <h1>{% translate "Create your account" %}</h1>
+        <p class="muted">{% translate "Join BarberLink and book or offer great haircuts." %}</p>
       </div>
-      
-      <label for="name">{% translate "Name" %}</label>
-      <input type="text" id="name" placeholder="{% translate 'Enter your name' %}" autocomplete="name" required><br><br>
-      <label for="contact_number">{% translate 'Contact Number' %}</label>
-      <input type="tel" id="contact_number" placeholder="{% translate 'Enter contact number' %}" autocomplete="tel" required><br><br>
-      <label for="email">{% translate 'Email' %}</label>
-      <input type="email" id="email" placeholder="{% translate 'Enter your email' %}" autocomplete="email" required><br><br>
-      <label for="password">{% translate 'Password' %}</label>
-      <div style="position: relative; display: inline-block;">
-        <input type="password" id="password" placeholder="{% translate 'Enter password' %}" style="padding-right: 40px;" required autocomplete="new-password">
-        <button type="button" id="toggle-password" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: none;">
-          👁
-        </button>
-      </div><br><br>
-      <label for="confirm-password">{% translate 'Confirm Password' %}</label>
-      <div style="position: relative; display: inline-block;">
-         <input type="password" id="confirm-password" placeholder="{% trans 'Confirm Password' %}" style="padding-right: 40px;" required autocomplete="new-password">
-         <button type="button" id="toggle-confirm-password" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: none;">
-            👁
-         </button>
-      </div><br><br>
-      <button class="register" type="submit">Register</button>
-      <p>
-        {% translate "Have an account?" %}
-        <a href="{% url 'login_page' %}">{% translate "Login" %}</a>
-      </p>
-    </form>
+
+      <form id="register-form" novalidate>
+        {% csrf_token %}
+
+        <div class="auth-role">
+          <span class="auth-role__label">{% translate "I am registering as" %}</span>
+          <div class="auth-role__options">
+            <label class="auth-role-option">
+              <input type="radio" name="role-choice" value="customer" checked>
+              <span class="auth-role-option__card">
+                <i data-lucide="user"></i>
+                {% translate "Customer" %}
+              </span>
+            </label>
+            <label class="auth-role-option">
+              <input type="radio" name="role-choice" value="barber">
+              <span class="auth-role-option__card">
+                <i data-lucide="scissors"></i>
+                {% translate "Barber" %}
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <label class="auth-field">
+          <span class="auth-field__label">{% translate "Name" %}</span>
+          <input type="text" id="name" placeholder="{% translate 'Enter your name' %}" autocomplete="name" required>
+        </label>
+
+        <label class="auth-field">
+          <span class="auth-field__label">{% translate "Contact Number" %}</span>
+          <input type="tel" id="contact_number" placeholder="{% translate 'Enter contact number' %}" autocomplete="tel" required>
+        </label>
+
+        <label class="auth-field">
+          <span class="auth-field__label">{% translate "Email" %}</span>
+          <input type="email" id="email" placeholder="{% translate 'Enter your email' %}" autocomplete="email" required>
+        </label>
+
+        <label class="auth-field">
+          <span class="auth-field__label">{% translate "Password" %}</span>
+          <div class="auth-field__pw">
+            <input type="password" id="password" placeholder="{% translate 'Enter password' %}" style="padding-right: 40px;" required autocomplete="new-password">
+            <button type="button" class="auth-field__pw-toggle" id="toggle-password" aria-label="{% translate 'Show password' %}"><i data-lucide="eye"></i></button>
+          </div>
+        </label>
+
+        <label class="auth-field">
+          <span class="auth-field__label">{% translate "Confirm Password" %}</span>
+          <div class="auth-field__pw">
+            <input type="password" id="confirm-password" placeholder="{% translate 'Confirm Password' %}" style="padding-right: 40px;" required autocomplete="new-password">
+            <button type="button" class="auth-field__pw-toggle" id="toggle-confirm-password" aria-label="{% translate 'Show password' %}"><i data-lucide="eye"></i></button>
+          </div>
+        </label>
+
+        <button class="btn btn-primary auth-submit" type="submit">{% translate "Register" %}</button>
+
+        <p class="auth-footer">
+          {% translate "Have an account?" %}
+          <a href="{% url 'login_page' %}">{% translate "Login" %}</a>
+        </p>
+      </form>
+    </div>
   </div>
-  
+</main>
+
 <script>
-    const form = document.querySelector("form");
+  const form = document.getElementById("register-form");
 
-    const password = document.getElementById("password");
-    const confirmPassword = document.getElementById("confirm-password");
-    const toggle = document.getElementById("toggle-password");
-    const toggle_confirm = document.getElementById("toggle-confirm-password");
+  const password = document.getElementById("password");
+  const confirmPassword = document.getElementById("confirm-password");
+  const toggle = document.getElementById("toggle-password");
+  const toggleConfirm = document.getElementById("toggle-confirm-password");
 
-    form.addEventListener("submit", async function(event) {
-      event.preventDefault(); 
+  function togglePwVisibility(input, button) {
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    const icon = button.querySelector("i");
+    if (icon) {
+      icon.setAttribute("data-lucide", isHidden ? "eye-off" : "eye");
+      if (window.lucide) window.lucide.createIcons();
+    }
+    button.setAttribute("aria-label", isHidden ? "{% translate 'Hide password' %}" : "{% translate 'Show password' %}");
+  }
 
-      if (password.value !== confirmPassword.value) {
-        alert("Passwords do not match!");
-        return; 
+  toggle.addEventListener("click", function () {
+    togglePwVisibility(password, toggle);
+  });
+  toggleConfirm.addEventListener("click", function () {
+    togglePwVisibility(confirmPassword, toggleConfirm);
+  });
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (password.value !== confirmPassword.value) {
+      alert("{% translate 'Passwords do not match!' %}");
+      return;
+    }
+
+    const role = document.querySelector(
+      'input[name="role-choice"]:checked'
+    ).value;
+
+    try {
+      const response = await fetch("/api/v1/auth/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          contact_number: document.getElementById("contact_number").value,
+          email: document.getElementById("email").value,
+          role: role,
+          password: password.value
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "{% translate 'Registration failed.' %}");
+        return;
       }
 
-      const role = document.querySelector(
-        'input[name="role-choice"]:checked'
-      ).value;
-
-      try {
-        const res = await fetch("/api/v1/auth/register/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name: document.getElementById("name").value,
-            contact_number: document.getElementById("contact_number").value,
-            email: document.getElementById("email").value,
-            role: role,
-            password: password.value
-          })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          alert(data.detail || "Registration failed.");
-          return;
-        }
-
-        if (data.access) {
-          localStorage.setItem("access", data.access);
-        }
-        if (data.refresh) {
-          localStorage.setItem("refresh", data.refresh);
-        }
-
-        if (role === "customer") {
-          window.location.href = "/customers/dashboard/";
-        } else if (role === "barber") {
-          window.location.href = "/barbers/dashboard/";
-        }
-
-      }catch (error) {
-        alert("Something went wrong. Please try again.");
+      if (data.access) {
+        localStorage.setItem("access", data.access);
       }
-    });
-    toggle.addEventListener("click", function() {
-      if (password.type === "password") {
-        password.type = "text";
-      } else {
-        password.type = "password";
+      if (data.refresh) {
+        localStorage.setItem("refresh", data.refresh);
       }
-    });
 
-    toggle_confirm.addEventListener("click", function() {
-      if (confirmPassword.type === "password") {
-        confirmPassword.type = "text";
-      } else {
-        confirmPassword.type = "password";
+      if (role === "customer") {
+        window.location.href = "/customers/dashboard/";
+      } else if (role === "barber") {
+        window.location.href = "/barbers/dashboard/";
       }
-    });
-  </script>
+    } catch (error) {
+      alert("{% translate 'Something went wrong. Please try again.' %}");
+    }
+  });
+</script>
 
-  </body>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  if (window.lucide) window.lucide.createIcons();
+</script>
+
+</body>
 </html>
-
