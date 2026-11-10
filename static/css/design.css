@@ -176,7 +176,13 @@ img { border-radius: var(--radius-sm); object-fit: cover; }
   padding: 12px 16px;
   color: var(--text-primary);
   font-size: 0.95rem;
+  background: var(--dark-primary);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
 }
+.bl-menu-item:hover { background: var(--dark-secondary); }
 .bl-notif-wrap { position: relative; }
 .bl-notif-toggle { position: relative; }
 .bl-notif-badge {
