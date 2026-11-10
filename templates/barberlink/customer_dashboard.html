@@ -743,7 +743,6 @@
       <div class="barber-detail-info">
         <h3 id="barber-detail-name"></h3>
         <p id="barber-detail-status"></p>
-        <p id="barber-detail-availability">{% translate "Available today" %}</p>
       </div>
     </div>
     <div class="barber-detail-body">
@@ -955,19 +954,11 @@
         var card = document.createElement("div");
         card.className = "barber-card";
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name): barber.name;
-        var portraitIndex = Math.floor(Math.random() * 3);
-        var portraits = [
-          "https://randomuser.me/api/portraits/men/65.jpg",
-          "https://randomuser.me/api/portraits/men/5.jpg",
-          "https://randomuser.me/api/portraits/men/28.jpg"
-        ];
         var chargeMin = Math.floor(Math.random() * 100) + 50;
         var chargeMax = chargeMin + Math.floor(Math.random() * 100) + 50;
         var distanceVal = (Math.random() * 3 + 0.5).toFixed(1);
 
-        var barberImage = portraits[portraitIndex];
-        card.innerHTML = "<img class='barber-avatar' src='" + barberImage + "' alt='Barber profile'>" +
-          "<div class='barber-info'>" +
+        card.innerHTML = "<div class='barber-info'>" +
           "<div class='barber-header-row'>" +
           "<strong class='barber-name'>" + (displayName || "Barber") + "</strong>" +
           "<span class='barber-charge-text'>₹" + chargeMin + " – ₹" + chargeMax + "</span>" +
@@ -980,7 +971,7 @@
           "</div>";
         card.querySelector(".barber-book-btn").addEventListener("click", function (e) {
           e.stopPropagation();
-          openBarberDetail(barber, barberImage);
+          openBarberDetail(barber, null);
         });
         card.addEventListener("click", function () {
           openBarberDetail(barber, barberImage);
