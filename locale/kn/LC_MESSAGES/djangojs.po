@@ -53,14 +53,10 @@ msgid "booked"
 msgstr "ಬುಕ್ ಆಗಿದೆ"
 
 
-#: .\templates\barberlink\customer_dashboard.html:603
-msgid "na"
-msgstr "ಲಭ್ಯವಿಲ್ಲ "
-
 msgid "available"
 msgstr "ಲಭ್ಯವಿದೆ"
 
-msgid "Waiting for Approval"
+msgid "Waiting for your approval"
 msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
 
 msgid "Rejected"

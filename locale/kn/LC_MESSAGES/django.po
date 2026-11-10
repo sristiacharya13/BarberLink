@@ -87,10 +87,50 @@ msgstr "ಬುಕಿಂಗ್ ವಿವರಗಳು"
 msgid "We could not load slots. Please try again."
 msgstr "ಸಮಯಾವಕಾಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
+
+msgid "This Week's Slots"
+msgstr "ಈ ವಾರದ ಸಮಾಯಾವಕಾಶಗಳು"
+
+msgid "Same for all slots"
+msgstr "ಎಲ್ಲಾ ಸಮಾಯಾವಕಾಶಗಳಿಗೂ ಒಂದೇ"
+
+msgid "Customer location is not available"
+msgstr "ಗ್ರಾಹಕರ ಸ್ಥಳ ಲಭ್ಯವಿಲ್ಲ"
+
+msgid "Apply"
+msgstr "ಅನ್ವಯಿಸಿ"
+
 #: .\templates\barberlink\barber_dashboard.html:537
 #: .\templates\barberlink\customer_dashboard.html:696
 msgid "No slots found."
 msgstr "ಯಾವುದೇ ಸಮಯಾವಕಾಶ ಸಿಗಲಿಲ್ಲ."
+
+msgid "Approve appointment?"
+msgstr "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಅನುಮೋದಿಸಬೇಕೇ?"
+
+msgid "Are you sure you want to approve this booking?"	
+msgstr "ಈ ಬುಕಿಂಗ್ ಅನ್ನು ಅನುಮೋದಿಸಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ?"
+
+msgid "Reject appointment?"	
+msgstr "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ತಿರಸ್ಕರಿಸಬೇಕೇ?"
+
+msgid "Are you sure you want to reject this booking?"	
+msgstr "ಈ ಬುಕಿಂಗ್ ಅನ್ನು ತಿರಸ್ಕರಿಸಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ?"
+
+msgid "Please enter a price."
+msgstr "ದಯವಿಟ್ಟು ಬೆಲೆಯನ್ನು ನಮೂದಿಸಿ."
+
+msgid "Price applied to all days."	
+msgstr "ಎಲ್ಲಾ ದಿನಗಳಿಗೆ ಬೆಲೆ ಅನ್ವಯಿಸಲಾಗಿದೆ."
+
+msgid "Failed to apply price."	
+msgstr "ಬೆಲೆಯನ್ನು ಅನ್ವಯಿಸಲು ವಿಫಲವಾಗಿದೆ."
+
+msgid "Prices saved."	
+msgstr "ಬೆಲೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ."
+
+msgid "Failed to save prices."	
+msgstr "ಬೆಲೆಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ."
 
 #: .\templates\barberlink\barber_dashboard.html:581
 #: .\templates\barberlink\customer_dashboard.html:740
@@ -147,17 +187,23 @@ msgstr "ಸಮಯಾವಕಾಶ ಈಗಾಗಲೇ ಬುಕ್ ಮಾಡಲಾ
 msgid "Could not update slot. Try again."
 msgstr "ಸಮಾಯಾವಕಶ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
+msgid "Set Service Charges for All Days"
+msgstr "ಎಲ್ಲ ದಿನಗಳಿಗೂ ಸೇವಾ ಶುಲ್ಕವನ್ನು ಹೊಂದಿಸಿ"
+
+msgid "Mark NA"
+msgstr "ಲಭ್ಯವಿಲ್ಲ ಎಂದು ಗುರುತಿಸಿ"
+
 #: .\templates\barberlink\barber_dashboard.html:823
 msgid "Close"
-msgstr "ಮುಚ್ಚಿ "
+msgstr "ಮುಚ್ಚಿ"
 
 #: .\templates\barberlink\barber_dashboard.html:861
 msgid "Booking updated."
-msgstr "ಬುಕಿಂಗ್ ನವೀಕರಿಸಲಾಗಿದೆ "
+msgstr "ಬುಕಿಂಗ್ ನವೀಕರಿಸಲಾಗಿದೆ"
 
 #: .\templates\barberlink\barber_dashboard.html:865
 msgid "Could not update booking. Try again."
-msgstr "ಬುಕಿಂಗ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ  "
+msgstr "ಬುಕಿಂಗ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
 #: .\templates\barberlink\barber_payment.html:8
 msgid "Payment"
@@ -224,13 +270,6 @@ msgstr "ಸ್ಥಳ: ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
 msgid "Use My Location"
 msgstr "ನನ್ನ ಸ್ಥಳ ಬಳಸಿ "
 
-#: .\templates\barberlink\customer_dashboard.html:367
-msgid "Radius (km):"
-msgstr "ವ್ಯಾಪ್ತಿ(ಕಿ.ಮೀ.)"
-
-#: .\templates\barberlink\customer_dashboard.html:375
-msgid "Search"
-msgstr "ಹುಡುಕಿ"
 
 #: .\templates\barberlink\customer_dashboard.html:393
 msgid "Nearby Barbers"
@@ -535,8 +574,11 @@ msgstr "ಲಾಗಿನ್ ಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 msgid "We could not load your account. Please try again later"
 msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-msgid "Hello Customer,%(name)s"
-msgstr "ನಮಸ್ಕಾರ ಗ್ರಾಹಕ,%(name)s"
+msgid "Price"
+msgstr "ಬೆಲೆ"
+
+msgid "Hey,"
+msgstr "ನಮಸ್ಕಾರ,"
 
 msgid "Payment failed. Please try again."
 msgstr "ಪಾವತಿ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."

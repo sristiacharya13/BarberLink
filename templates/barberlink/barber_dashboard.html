@@ -263,7 +263,10 @@
   }
 </style>
 
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/design.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/design.css">
 </head>
 <body style="background-color: #000000;">
 {% include 'barberlink/partials/header.html' %}
@@ -393,7 +396,7 @@
     <div id="week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #ddd;"></div>
 
     <div id="service-charge-controls" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
-      <h4 style="margin: 0 0 12px 0;">Set Service Charges for All Days (<span id="charge-day-label"></span>)</h4>
+      <h4 style="margin: 0 0 12px 0;">{% translate "Set Service Charges for All Days" %}(<span id="charge-day-label"></span>)</h4>
       <div style="margin-bottom: 10px;">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px;">
           <label for="today-charge">{% translate "Price" %} (₹):</label>
@@ -535,12 +538,12 @@
       list.innerHTML = "";
 
       var rows = [
-        ["Name", orNotSet(profile.name)],
-        ["Contact number", orNotSet(contactNumber)],
-        ["Location", orNotSet(profile.location ? JSON.stringify(profile.location) : null)],
-        ["Subscription status", orNotSet(profile.subscription_status)],
-        ["Subscription expires on", orNotSet(formatDate(profile.subscription_expiry_date))],
-        ["Member since", orNotSet(formatDate(profile.account_created_at))]
+        [gettext("Name"), orNotSet(profile.name)],
+        [gettext("Contact Number"), orNotSet(contactNumber)],
+        [gettext("Location"), orNotSet(profile.location ? JSON.stringify(profile.location) : null)],
+        [gettext("Subscription status"), orNotSet(profile.subscription_status)],
+        [gettext("Subscription expires on"), orNotSet(formatDate(profile.subscription_expiry_date))],
+        [gettext("Member since"), orNotSet(formatDate(profile.account_created_at))]
       ];
 
       rows.forEach(function (row) {
@@ -1274,7 +1277,7 @@ function loadProfile() {
         if (!user) return;
         currentUser = user;
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
-        document.getElementById("greeting").textContent = "Hey, " + capitalizeFirst(displayName);
+        document.getElementById("greeting").textContent = GREETING_PREFIX + " " + capitalizeFirst(displayName);
         document.getElementById("profile-toggle").addEventListener("click", loadProfile);
       })
       .catch(function () {
