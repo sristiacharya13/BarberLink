@@ -1005,20 +1005,8 @@
       if (availabilityEl) {
         var status = barber.computed_status;
         var available = !status || status === "active" || status === "trial";
-        var dayNames = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
-        var dayLabels = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-        var today = new Date();
-        var todayIdx = today.getDay();
-        var badges = [];
-        dayNames.forEach(function (d, i) {
-          var on = barber["available_" + d] !== false;
-          var label = dayLabels[i];
-          var isToday = i === todayIdx;
-          var color = on ? "rgba(27, 143, 58, 0.92)" : "rgba(230, 81, 0, 0.92)";
-          var text = on ? "Available" : "Not Available";
-          badges.push("<span style='padding: 3px 8px; border-radius: 999px; background: " + color + "; color: #fff; font-size: 0.72rem; font-weight: 600; margin: 2px; display: inline-block; border: " + (isToday ? "2px solid #fff" : "1px solid transparent") + "'>" + label + " " + text + "</span>");
-        });
-        availabilityEl.innerHTML = badges.join("");
+        availabilityEl.textContent = available ? "{% translate 'Available today' %}" : "{% translate 'Unavailable' %}";
+        availabilityEl.style.background = available ? "rgba(27, 143, 58, 0.92)" : "rgba(107, 114, 128, 0.92)";
         availabilityEl.hidden = false;
       }
       loadCustomerSlots(barber.barber_id);

@@ -31,27 +31,6 @@ class Barber(models.Model):
     location=models.JSONField(null=True, blank=True)
     subscription_status=models.CharField(max_length=20, choices=STATUS_CHOICES, default="trial")
     subscription_expiry_date=models.DateField(default=default_expiry)
-    available_monday = models.BooleanField(default=True)
-    available_tuesday = models.BooleanField(default=True)
-    available_wednesday = models.BooleanField(default=True)
-    available_thursday = models.BooleanField(default=True)
-    available_friday = models.BooleanField(default=True)
-    available_saturday = models.BooleanField(default=True)
-    available_sunday = models.BooleanField(default=True)
-
-    AVAILABILITY_DAYS = [
-        ("monday", "Monday"),
-        ("tuesday", "Tuesday"),
-        ("wednesday", "Wednesday"),
-        ("thursday", "Thursday"),
-        ("friday", "Friday"),
-        ("saturday", "Saturday"),
-        ("sunday", "Sunday"),
-    ]
-
-    def is_available_on(self, day_name):
-        attr = "available_" + day_name.lower()
-        return getattr(self, attr, True)
 
     def __str__(self):
         return f"{self.name}"

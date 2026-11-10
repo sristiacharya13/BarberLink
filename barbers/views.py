@@ -162,32 +162,6 @@ def barber_location_update(request):
     return Response(BarberSerializer(profile).data)
 
 
-@api_view(["GET", "PATCH"])
-@permission_classes([IsAuthenticated, IsBarber])
-def barber_availability(request):
-    profile = getattr(request.user, "barber", None)
-    if profile is None:
-        return Response({"detail": "This account has no barber profile."}, status=404)
-
-    day_fields = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-
-    if request.method == "GET":
-        data = {}
-        for d in day_fields:
-            data["available_" + d] = getattr(profile, "available_" + d, True)
-        return Response(data)
-
-    for d in day_fields:
-        key = "available_" + d
-        if key in request.data:
-            setattr(profile, key, bool(request.data[key]))
-    profile.save(update_fields=["available_" + d for d in day_fields])
-    data = {}
-    for d in day_fields:
-        data["available_" + d] = getattr(profile, "available_" + d, True)
-    return Response(data)
-
-
 EARTH_RADIUS_KM = 6371.0
 
 def _haversine_km(lat1, lng1, lat2, lng2):
