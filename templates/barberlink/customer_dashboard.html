@@ -738,7 +738,7 @@
   {% endcomment %}
 
   <section id="barber-detail-section" hidden>
-    <div class="barber-detail-hero" id="barber-detail-hero">
+    <div class="barber-detail-hero" id="barber-detail-hero" style="background-image: url('/static/b1eb9d0c2fd1da816e00ea4fca9992bf.jpg'); background-size: cover; background-position: center;">
       <button type="button" id="back-to-barbers" class="barber-detail-back" aria-label="{% translate 'Back' %}">&#8592;</button>
       <div class="barber-detail-info">
         <h3 id="barber-detail-name"></h3>
@@ -984,10 +984,6 @@
       document.getElementById("barbers-list-section").hidden = true;
       var detailSection = document.getElementById("barber-detail-section");
       detailSection.hidden = false;
-      var hero = document.getElementById("barber-detail-hero");
-      if (hero) {
-        hero.style.backgroundImage = imageUrl ? "url('" + imageUrl + "')" : "";
-      }
       var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name || "Barber"): (barber.name || "Barber");
       document.getElementById("barber-detail-name").textContent = displayName;
       document.getElementById("barber-detail-name").setAttribute("data-barber-id", barber.barber_id);

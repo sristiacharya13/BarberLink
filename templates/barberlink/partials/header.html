@@ -87,22 +87,6 @@
     </select>
   </form>
   <div class="bl-header__actions">
-    <div class="bl-notif-wrap">
-      <button class="bl-header__icon bl-notif-toggle" type="button" aria-label="Notifications" aria-expanded="false">
-        <i data-lucide="bell"></i>
-        <span class="bl-notif-badge" id="blNotifBadge" hidden></span>
-      </button>
-      <div class="bl-notif-dropdown" id="blNotifDropdown" aria-hidden="true">
-        <div class="bl-notif-panel">
-          <div class="bl-notif-head">
-            <button type="button" class="bl-notif-close" id="blNotifClose" aria-label="Close notifications"><i data-lucide="arrow-left"></i></button>
-            <span class="bl-notif-title">Notifications</span>
-            <button type="button" class="bl-notif-mark-all" id="blNotifMarkAll">Mark all as read</button>
-          </div>
-          <div class="bl-notif-list" id="blNotifList"></div>
-        </div>
-      </div>
-    </div>
     <button class="bl-header__icon bl-menu-toggle" type="button" aria-label="Menu"><i data-lucide="menu"></i></button>
     <div class="bl-menu-dropdown" id="blMenuDropdown">
       <button type="button" class="bl-menu-item" id="blProfileItem"><i data-lucide="user"></i> My Profile</button>
@@ -118,152 +102,13 @@
     var btn = document.querySelector('.bl-menu-toggle');
     var dd = document.getElementById('blMenuDropdown');
     if (btn && dd) {
-      btn.addEventListener('click', function(e){ e.stopPropagation(); var nd = document.getElementById('blNotifDropdown'); if (nd) nd.classList.remove('open'); dd.classList.toggle('open'); });
+      btn.addEventListener('click', function(e){ e.stopPropagation(); dd.classList.toggle('open'); });
       document.addEventListener('click', function(e){ if (!dd.contains(e.target) && !btn.contains(e.target)) dd.classList.remove('open'); });
       var p = document.getElementById('blProfileItem');
       var l = document.getElementById('blLogoutItem');
       if (p) p.addEventListener('click', function(){ dd.classList.remove('open'); var t = document.getElementById('profile-toggle'); if (t) t.click(); });
       if (l) l.addEventListener('click', function(){ dd.classList.remove('open'); var t = document.getElementById('logout'); if (t) t.click(); });
     }
-
-    var notifBtn = document.querySelector('.bl-notif-toggle');
-    var notifDd = document.getElementById('blNotifDropdown');
-    var notifList = document.getElementById('blNotifList');
-    var notifBadge = document.getElementById('blNotifBadge');
-    var notifMarkAll = document.getElementById('blNotifMarkAll');
-    var notifClose = document.getElementById('blNotifClose');
-    if (!notifBtn || !notifDd || !notifList) return;
-
-    var context = (window.BARBERLINK_NOTIF_CONTEXT || (window.location.pathname.indexOf('/barbers') === 0 ? 'barber' : 'customer'));
-    var notifications = context === 'barber' ? [
-      {
-        id: 'b1',
-        type: 'booked',
-        icon: 'calendar-check',
-        iconClass: 'is-approved',
-        title: 'New Appointment Booked',
-        message: 'Freddy Lawson booked an appointment for 12:00 PM, Friday, November 06, 2026.',
-        subtext: '',
-        time: '2 minutes ago',
-        ts: Date.now() - 2 * 60 * 1000,
-        unread: true
-      },
-      {
-        id: 'b2',
-        type: 'cancelled',
-        icon: 'calendar-x',
-        iconClass: 'is-cancelled',
-        title: 'Appointment Cancelled',
-        message: 'Michel Roach cancelled her appointment scheduled for 12:00 PM, Friday, November 13, 2026.',
-        subtext: '',
-        time: 'Just now',
-        ts: Date.now(),
-        unread: true
-      }
-    ] : [
-      {
-        id: 'n1',
-        type: 'approved',
-        icon: 'circle-check-big',
-        iconClass: 'is-approved',
-        title: 'Booking Approved',
-        message: 'Damien Ochoa approved your booking for 12:00 PM, Friday, November 06, 2026.',
-        subtext: 'Arriving in 20 minutes.',
-        time: '2 minutes ago',
-        ts: Date.now() - 2 * 60 * 1000,
-        unread: true
-      },
-      {
-        id: 'n2',
-        type: 'on-the-way',
-        icon: 'navigation',
-        iconClass: 'is-way',
-        title: 'Barber On The Way',
-        message: 'Damien Ochoa is on the way to your location and should arrive shortly.',
-        subtext: '',
-        time: 'Just now',
-        ts: Date.now(),
-        unread: true
-      }
-    ];
-
-    function escapeHtml(value) {
-      return String(value || '').replace(/[&<>"']/g, function (c) {
-        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
-      });
-    }
-
-    function sortNotifications() {
-      notifications.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
-    }
-
-    function renderNotifications() {
-      sortNotifications();
-      var unread = notifications.filter(function (n) { return n.unread; }).length;
-      if (notifBadge) {
-        notifBadge.textContent = unread ? String(unread) : '';
-        notifBadge.hidden = unread === 0;
-      }
-      notifList.innerHTML = notifications.map(function (n) {
-        return '' +
-          '<button type="button" class="bl-notif-item ' + (n.unread ? 'is-unread' : '') + '" data-id="' + escapeHtml(n.id) + '">' +
-            '<span class="bl-notif-icon ' + escapeHtml(n.iconClass) + '"><i data-lucide="' + escapeHtml(n.icon) + '"></i></span>' +
-            '<span class="bl-notif-content">' +
-              '<span class="bl-notif-row"><span class="bl-notif-item-title">' + escapeHtml(n.title) + '</span>' + (n.unread ? '<span class="bl-notif-dot" aria-label="Unread"></span>' : '') + '</span>' +
-              '<span class="bl-notif-msg">' + escapeHtml(n.message) + '</span>' +
-              (n.subtext ? '<span class="bl-notif-sub">' + escapeHtml(n.subtext) + '</span>' : '') +
-              '<span class="bl-notif-time">' + escapeHtml(n.time) + '</span>' +
-            '</span>' +
-          '</button>';
-      }).join('');
-      if (window.lucide) window.lucide.createIcons();
-    }
-
-    notifList.addEventListener('click', function (e) {
-      var item = e.target.closest('.bl-notif-item');
-      if (!item) return;
-      var id = item.getAttribute('data-id');
-      notifications = notifications.map(function (n) {
-        if (n.id === id) n.unread = false;
-        return n;
-      });
-      renderNotifications();
-    });
-
-    if (notifMarkAll) {
-      notifMarkAll.addEventListener('click', function (e) {
-        e.stopPropagation();
-        notifications = notifications.map(function (n) { n.unread = false; return n; });
-        renderNotifications();
-      });
-    }
-
-    function setNotifOpen(open) {
-      notifDd.classList.toggle('open', open);
-      notifBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      notifDd.setAttribute('aria-hidden', open ? 'false' : 'true');
-      document.body.style.overflow = open ? 'hidden' : '';
-    }
-
-    notifBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (dd) dd.classList.remove('open');
-      setNotifOpen(!notifDd.classList.contains('open'));
-    });
-    if (notifClose) {
-      notifClose.addEventListener('click', function (e) {
-        e.stopPropagation();
-        setNotifOpen(false);
-      });
-    }
-    notifDd.addEventListener('click', function (e) {
-      if (e.target === notifDd) setNotifOpen(false);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && notifDd.classList.contains('open')) setNotifOpen(false);
-    });
-
-    renderNotifications();
   })();
   if (window.lucide) window.lucide.createIcons();
 </script>
