@@ -338,7 +338,7 @@ msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್-ಕ್ಷೌರಿಕರ ಒಂದ
 
 #: .\templates\barberlink\home.html:47
 msgid "BarberLink"
-msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ "
+msgstr ""
 
 #: .\templates\barberlink\home.html:65 .\templates\barberlink\login.html:9
 #: .\templates\barberlink\login.html:74 .\templates\barberlink\login.html:99
@@ -397,6 +397,30 @@ msgstr "ಲಭ್ಯವಿರುವ ಪಾವತಿ ಸೌಲಭ್ಯದ ಮೂ
 #: .\templates\barberlink\home.html:93
 msgid "BarberLink - Connecting customers and barbers."
 msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ - ಗ್ರಾಹಕರು ಮತ್ತು ಕ್ಷೌರಿಕರನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ."
+
+#: .\templates\barberlink\home.html:242
+msgid "Language"
+msgstr "ಭಾಷೆ"
+
+#: .\templates\barberlink\home.html:250
+msgid "Grooming at your doorstep"
+msgstr "ನಿಮ್ಮ ಮನೆಯ ಮುಂದೆ ಕ್ಷೌರಿಕ ಸೇವೆ"
+
+#: .\templates\barberlink\home.html:251
+msgid "Crafting Your Perfect Look"
+msgstr "ನಿಮ್ಮ ಅದ್ಭುತ ಲುಕ್ ಅಣಿಕರಿಸಿ"
+
+#: .\templates\barberlink\home.html:252
+msgid "Discover nearby barbers, explore grooming services, check available slots, and book appointments from the comfort of home."
+msgstr "ಹತ್ತಿರದ ಕ್ಷೌರಿಕರನ್ನು ಕಂಡುಹಿಡಿಯಿರಿ, ಕ್ಷೌರಿಕ ಸೇವೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ, ಲಭ್ಯವಿರುವ ಸಮಯಾವಕಾಶಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮನೆಯ ಆರ್ತ್ಯದಿಂದ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳನ್ನು ಬುಕ್ ಮಾಡಿ."
+
+#: .\templates\barberlink\home.html:257
+msgid "LOG IN"
+msgstr "ಲಾಗಿನ್"
+
+#: .\templates\barberlink\home.html:258
+msgid "SIGN UP"
+msgstr "ಸೈನ್ ಅಪ್"
 
 #: .\templates\barberlink\login.html:79 .\templates\barberlink\register.html:68
 msgid "Contact Number"
