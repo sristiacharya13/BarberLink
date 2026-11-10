@@ -954,6 +954,7 @@
         var card = document.createElement("div");
         card.className = "barber-card";
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name): barber.name;
+displayName = capitalizeFirst(displayName);
         var distanceVal = (barber.distance_km != null) ? Number(barber.distance_km).toFixed(1) : (Math.random() * 3 + 0.5).toFixed(1);
 
         var priceByDay = barber.slot_price_by_day || {};
