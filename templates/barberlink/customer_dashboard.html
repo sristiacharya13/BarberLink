@@ -954,14 +954,31 @@
         var card = document.createElement("div");
         card.className = "barber-card";
         var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (barber.name_kn || barber.name): barber.name;
-        var chargeMin = Math.floor(Math.random() * 100) + 50;
-        var chargeMax = chargeMin + Math.floor(Math.random() * 100) + 50;
         var distanceVal = (Math.random() * 3 + 0.5).toFixed(1);
+
+        var priceByDay = barber.slot_price_by_day || {};
+        var dayKeys = Object.keys(priceByDay).sort();
+        var priceHtml = "";
+        if (dayKeys.length) {
+          dayKeys.forEach(function (dk) {
+            var prices = priceByDay[dk];
+            if (!prices || !prices.length) return;
+            var d = new Date(dk + "T00:00:00");
+            var dayLabel = d.toLocaleDateString(undefined, { weekday: "short" });
+            var pMin = Math.min.apply(null, prices);
+            var pMax = Math.max.apply(null, prices);
+            priceHtml += "<span style='margin-right:6px; font-size:0.78rem; color:#ccc;'>" + dayLabel + " ₹" + pMin + "–₹" + pMax + "</span>";
+          });
+        } else {
+          var baseMin = barber.regular_service_charge != null ? Number(barber.regular_service_charge) : 150;
+          var baseMax = barber.sunday_service_charge != null ? Number(barber.sunday_service_charge) : 350;
+          priceHtml = "<span style='font-size:0.78rem; color:#ccc;'>₹" + baseMin + " – ₹" + baseMax + "</span>";
+        }
 
         card.innerHTML = "<div class='barber-info'>" +
           "<div class='barber-header-row'>" +
           "<strong class='barber-name'>" + (displayName || "Barber") + "</strong>" +
-          "<span class='barber-charge-text'>₹" + chargeMin + " – ₹" + chargeMax + "</span>" +
+          "<span class='barber-charge-text' style='margin-left:auto;'>" + priceHtml + "</span>" +
           "</div>" +
           "<div class='barber-contact'><small>" + "{% translate 'Contact' %}: " + orNotSet(barber.contact_number) + "</small></div>" +
           "<div class='barber-bottom'>" +
@@ -974,7 +991,7 @@
           openBarberDetail(barber, null);
         });
         card.addEventListener("click", function () {
-          openBarberDetail(barber, barberImage);
+          openBarberDetail(barber, null);
         });
         listEl.appendChild(card);
       });

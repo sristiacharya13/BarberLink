@@ -196,7 +196,9 @@ def nearby_barbers(request):
             status=400,
         )
 
+    from bookings.models import Slot
     today = timezone.localdate()
+    week_ago = today - timedelta(days=7)
     barbers = Barber.objects.filter(
         subscription_expiry_date__gte=today,
         location__isnull=False,
@@ -210,6 +212,21 @@ def nearby_barbers(request):
         distance = _haversine_km(lat, lng, float(loc["lat"]), float(loc["lng"]))
         if distance <= radius_km:
             barber.distance_km = round(distance, 2)
+
+            slots = list(Slot.objects.filter(barber=barber, slot_date__gte=week_ago, slot_date__lte=today))
+            prices = [float(s.service_charge) for s in slots if s.service_charge is not None]
+            barber.slot_price_min = round(min(prices), 2) if prices else None
+            barber.slot_price_max = round(max(prices), 2) if prices else None
+
+            price_by_day = {}
+            for s in slots:
+                day_key = s.slot_date.isoformat()
+                if s.service_charge is not None:
+                    if day_key not in price_by_day:
+                        price_by_day[day_key] = []
+                    price_by_day[day_key].append(float(s.service_charge))
+            barber.slot_price_by_day = price_by_day
+
             results.append(barber)
 
     results.sort(key=lambda b: b.distance_km)
