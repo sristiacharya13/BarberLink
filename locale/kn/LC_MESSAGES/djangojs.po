@@ -116,6 +116,9 @@ msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
 msgid "approved"
 msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
 
+msgid "Barber NA"
+msgstr "ಕ್ಷೌರಿಕ ಲಭ್ಯವಿಲ್ಲ"
+
 msgid "APPROVED"
 msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
 

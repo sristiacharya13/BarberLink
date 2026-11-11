@@ -1103,7 +1103,7 @@ displayName = capitalizeFirst(displayName);
 
     function slotMeta(status) {
       if (status === "available") return { cls: "slot-available", label: "Available", clickable: true };
-      if (status === "na") return { cls: "slot-na", label: "Barber NA", clickable: false };
+      if (status === "na") return { cls: "slot-na", label: gettext("Barber NA"), clickable: false };
       if (status === "booked") return { cls: "slot-booked", label: gettext("Booked"), clickable: false };
       if (status === "waiting_list" || status === "waiting" || status === "approved") {
         return { cls: "slot-waiting", label: gettext("Waiting"), clickable: false };

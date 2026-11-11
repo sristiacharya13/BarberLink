@@ -401,36 +401,17 @@ msgstr ""
 msgid "Our Features"
 msgstr "ನಮ್ಮ ವೈಶಿಷ್ಟ್ಯಗಳು"
 
-#: .\templates\barberlink\home.html:81
-msgid "Find Nearby Barbers"
-msgstr "ಹತ್ತಿರದ ಕ್ಷೌರಿಕರನ್ನು ಹುಡುಕಿ"
+msgid "Welcome back"
+msgstr "ಮತ್ತೆ ಸ್ವಾಗತ "
 
-#: .\templates\barberlink\home.html:82
-msgid "Discover barbers near your location."
-msgstr "ನಿಮ್ಮ ಸ್ಥಳದ ಹತ್ತಿರದ ಕ್ಷೌರಿಕರನ್ನು ಕಂಡುಹಿಡಿಯಿರಿ."
+msgid "Login to your BarberLink account."
+msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ ಖಾತೆಗೆ ಲಾಗಿನ್ ಆಗಿ."
 
-#: .\templates\barberlink\home.html:84
-msgid "Manage Bookings"
-msgstr "ಬುಕಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
-
-#: .\templates\barberlink\home.html:85
-msgid "View your bookings and their status."
-msgstr "ನಿಮ್ಮ ಬುಕಿಂಗ್‌ಗಳು ಮತ್ತು ಅವುಗಳ ಸ್ಥಿತಿಯನ್ನು ವೀಕ್ಷಿಸಿ."
-
-msgid "Hey, "
+msgid "Hey,"
 msgstr "ನಮಸ್ಕಾರ,"
 
-#: .\templates\barberlink\home.html:87
-msgid "Easy Payments"
-msgstr "ಸುಲಭ ಪಾವತಿಗಳು "
-
-#: .\templates\barberlink\home.html:88
-msgid "Make payments using the available payment facility."
-msgstr "ಲಭ್ಯವಿರುವ ಪಾವತಿ ಸೌಲಭ್ಯದ ಮೂಲಕ ಪಾವತಿ ಮಾಡಿ."
-
-#: .\templates\barberlink\home.html:93
-msgid "BarberLink - Connecting customers and barbers."
-msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ - ಗ್ರಾಹಕರು ಮತ್ತು ಕ್ಷೌರಿಕರನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ."
+msgid "Waiting for your approval"
+msgstr "ನಿಮ್ಮ ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತಿದ್ದೇವೆ"
 
 #: .\templates\barberlink\home.html:242
 msgid "Language"
