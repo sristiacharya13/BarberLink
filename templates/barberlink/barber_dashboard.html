@@ -396,10 +396,10 @@
     <div id="week-nav" style="display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #ddd;"></div>
 
     <div id="service-charge-controls" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
-      <h4 style="margin: 0 0 12px 0;">{% translate "Set Service Charges for All Days" %}(<span id="charge-day-label"></span>)</h4>
+      <h4 style="margin: 0 0 12px 0;">{% translate "Set Service Charges for All Days" %}  (<span id="charge-day-label"></span>)</h4>
       <div style="margin-bottom: 10px;">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px;">
-          <label for="today-charge">{% translate "Price" %} (₹):</label>
+          <label for="today-charge">{% translate "Price (₹):" %}</label>
           <input type="number" id="today-charge" min="0" step="10" style="padding: 6px;" disabled>
         </div>
         <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
@@ -538,12 +538,12 @@
       list.innerHTML = "";
 
       var rows = [
-        [gettext("Name"), orNotSet(profile.name)],
-        [gettext("Contact Number"), orNotSet(contactNumber)],
-        [gettext("Location"), orNotSet(profile.location ? JSON.stringify(profile.location) : null)],
-        [gettext("Subscription status"), orNotSet(profile.subscription_status)],
-        [gettext("Subscription expires on"), orNotSet(formatDate(profile.subscription_expiry_date))],
-        [gettext("Member since"), orNotSet(formatDate(profile.account_created_at))]
+        ["Name", orNotSet(profile.name)],
+        ["Contact number", orNotSet(contactNumber)],
+        ["Location", orNotSet(profile.location ? JSON.stringify(profile.location) : null)],
+        ["Subscription status", orNotSet(profile.subscription_status)],
+        ["Subscription expires on", orNotSet(formatDate(profile.subscription_expiry_date))],
+        ["Member since", orNotSet(formatDate(profile.account_created_at))]
       ];
 
       rows.forEach(function (row) {

@@ -97,8 +97,6 @@ msgstr "ಎಲ್ಲಾ ಸಮಾಯಾವಕಾಶಗಳಿಗೂ ಒಂದೇ"
 msgid "Customer location is not available"
 msgstr "ಗ್ರಾಹಕರ ಸ್ಥಳ ಲಭ್ಯವಿಲ್ಲ"
 
-msgid "Apply"
-msgstr "ಅನ್ವಯಿಸಿ"
 
 #: .\templates\barberlink\barber_dashboard.html:537
 #: .\templates\barberlink\customer_dashboard.html:696
@@ -125,9 +123,6 @@ msgstr "ಎಲ್ಲಾ ದಿನಗಳಿಗೆ ಬೆಲೆ ಅನ್ವಯಿ
 
 msgid "Failed to apply price."	
 msgstr "ಬೆಲೆಯನ್ನು ಅನ್ವಯಿಸಲು ವಿಫಲವಾಗಿದೆ."
-
-msgid "Prices saved."	
-msgstr "ಬೆಲೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ."
 
 msgid "Failed to save prices."	
 msgstr "ಬೆಲೆಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ."
@@ -186,9 +181,6 @@ msgstr "ಸಮಯಾವಕಾಶ ಈಗಾಗಲೇ ಬುಕ್ ಮಾಡಲಾ
 #: .\templates\barberlink\barber_dashboard.html:752
 msgid "Could not update slot. Try again."
 msgstr "ಸಮಾಯಾವಕಶ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
-
-msgid "Set Service Charges for All Days"
-msgstr "ಎಲ್ಲ ದಿನಗಳಿಗೂ ಸೇವಾ ಶುಲ್ಕವನ್ನು ಹೊಂದಿಸಿ"
 
 msgid "Mark NA"
 msgstr "ಲಭ್ಯವಿಲ್ಲ ಎಂದು ಗುರುತಿಸಿ"
@@ -377,7 +369,7 @@ msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್-ಕ್ಷೌರಿಕರ ಒಂದ
 
 #: .\templates\barberlink\home.html:47
 msgid "BarberLink"
-msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ "
+msgstr ""
 
 #: .\templates\barberlink\home.html:65 .\templates\barberlink\login.html:9
 #: .\templates\barberlink\login.html:74 .\templates\barberlink\login.html:99
@@ -425,6 +417,9 @@ msgstr "ಬುಕಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
 msgid "View your bookings and their status."
 msgstr "ನಿಮ್ಮ ಬುಕಿಂಗ್‌ಗಳು ಮತ್ತು ಅವುಗಳ ಸ್ಥಿತಿಯನ್ನು ವೀಕ್ಷಿಸಿ."
 
+msgid "Hey, "
+msgstr "ನಮಸ್ಕಾರ,"
+
 #: .\templates\barberlink\home.html:87
 msgid "Easy Payments"
 msgstr "ಸುಲಭ ಪಾವತಿಗಳು "
@@ -437,13 +432,35 @@ msgstr "ಲಭ್ಯವಿರುವ ಪಾವತಿ ಸೌಲಭ್ಯದ ಮೂ
 msgid "BarberLink - Connecting customers and barbers."
 msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ - ಗ್ರಾಹಕರು ಮತ್ತು ಕ್ಷೌರಿಕರನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ."
 
+#: .\templates\barberlink\home.html:242
+msgid "Language"
+msgstr "ಭಾಷೆ"
+
+#: .\templates\barberlink\home.html:250
+msgid "Grooming at your doorstep"
+msgstr "ನಿಮ್ಮ ಮನೆಯ ಮುಂದೆ ಕ್ಷೌರಿಕ ಸೇವೆ"
+
+#: .\templates\barberlink\home.html:251
+msgid "Crafting Your Perfect Look"
+msgstr "ನಿಮ್ಮ ಅದ್ಭುತ ಲುಕ್ ಅಣಿಕರಿಸಿ"
+
+#: .\templates\barberlink\home.html:252
+msgid "Discover nearby barbers, explore grooming services, check available slots, and book appointments from the comfort of home."
+msgstr "ಹತ್ತಿರದ ಕ್ಷೌರಿಕರನ್ನು ಕಂಡುಹಿಡಿಯಿರಿ, ಕ್ಷೌರಿಕ ಸೇವೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ, ಲಭ್ಯವಿರುವ ಸಮಯಾವಕಾಶಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮನೆಯ ಆರ್ತ್ಯದಿಂದ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳನ್ನು ಬುಕ್ ಮಾಡಿ."
+
+#: .\templates\barberlink\home.html:257
+msgid "LOG IN"
+msgstr "ಲಾಗಿನ್"
+
+#: .\templates\barberlink\home.html:258
+msgid "SIGN UP"
+msgstr "ಸೈನ್ ಅಪ್"
+
 #: .\templates\barberlink\login.html:79 .\templates\barberlink\register.html:68
 msgid "Contact Number"
 msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
 
-#: .\templates\barberlink\login.html:81
-#, fuzzy
-#| msgid "Contact Number"
+
 msgid "Contact number"
 msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
 
@@ -455,6 +472,12 @@ msgstr "ಪಾಸ್‌ವರ್ಡ್"
 #: .\templates\barberlink\login.html:91 .\templates\barberlink\login.html:122
 msgid "Show"
 msgstr "ತೋರಿಸು "
+
+msgid "Create your account"
+msgstr "ನಿಮ್ಮ ಖಾತೆ ತೆರೆಯಿರಿ"
+
+msgid "Join BarberLink and book or offer great haircuts."
+msgstr "ಬಾರ್ಬರ್ ಲಿಂಕ್ ಸೇರಿ, ಉತ್ತಮ ಹೇರ್‌ಕಟ್‌ಗಳನ್ನು ಬುಕ್ ಮಾಡಿ ಅಥವಾ ಹೇರ್‌ಕಟ್ ಸೇವೆಗಳನ್ನು ಒದಗಿಸಿ."
 
 #: .\templates\barberlink\login.html:96
 msgid "Forgot Password?"
@@ -518,6 +541,28 @@ msgstr "ನಿಮ್ಮ ಇಮೇಲ್ ಪರಿಶೀಲಿಸಿ"
 msgid "If an account matches that email address, password reset instructions have been sent. Please check your email."
 msgstr "ಈ ಇಮೇಲ್ ವಿಳಾಸಕ್ಕೆ ಹೊಂದುವ ಖಾತೆ ಇದ್ದರೆ, ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸುವ ಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಮೇಲ್ ಪರಿಶೀಲಿಸಿ."
 
+msgid "Set Service Charges for All Days"
+msgstr "ಎಲ್ಲ ದಿನಗಳಿಗೂ ಸೇವಾ ಶುಲ್ಕವನ್ನು ಹೊಂದಿಸಿ"
+
+msgid "Price (₹):"
+msgstr "ಬೆಲೆ (₹):"
+
+msgid "Apply"
+msgstr "ಅನ್ವಯಿಸಿ"
+
+msgid "Prices saved."
+msgstr "ಬೆಲೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ."
+
+
+msgid "Book Now"
+msgstr "ಈಗಲೇ ಬುಕ್ ಮಾಡಿ"
+
+msgid "Ready for fresh look?"
+msgstr "ಹೊಸ ಲುಕ್‌ಗಾಗಿ ತಯಾರಾಗಿದ್ದೀರಾ?"
+
+msgid "Find barbers near you instantly"
+msgstr "ನಿಮ್ಮ ಸಮೀಪದ ಕ್ಷೌರಿಕರನ್ನು ತಕ್ಷಣವೇ ಹುಡುಕಿ"
+
 #: .\templates\barberlink\payment_fail.html:8
 #: .\templates\barberlink\payment_fail.html:86
 msgid "Payment failed"
@@ -574,11 +619,6 @@ msgstr "ಲಾಗಿನ್ ಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 msgid "We could not load your account. Please try again later"
 msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-msgid "Price"
-msgstr "ಬೆಲೆ"
-
-msgid "Hey,"
-msgstr "ನಮಸ್ಕಾರ,"
 
 msgid "Payment failed. Please try again."
 msgstr "ಪಾವತಿ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
