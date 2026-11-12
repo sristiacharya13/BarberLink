@@ -52,16 +52,30 @@ msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು
 msgid "booked"
 msgstr "ಬುಕ್ ಆಗಿದೆ"
 
+msgid "Name"
+msgstr "ಹೆಸರು"
 
-#: .\templates\barberlink\customer_dashboard.html:603
-msgid "na"
-msgstr "ಲಭ್ಯವಿಲ್ಲ "
+msgid "Contact number"
+msgstr "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
+
+msgid "Location"
+msgstr "ಸ್ಥಳ"
+
+msgid "Subscription status"
+msgstr "ಚಂದಾದಾರಿಕೆಯ ಸ್ಥಿತಿ"
+
+msgid "Subscription expires on"
+msgstr "ಚಂದಾದಾರಿಕೆಯ ಅವಧಿ ಮುಗಿಯುವ ದಿನಾಂಕ"
+
+msgid "Member since"
+msgstr "ಸದಸ್ಯರಾದ ದಿನಾಂಕ"
 
 msgid "available"
 msgstr "ಲಭ್ಯವಿದೆ"
 
-msgid "Waiting for Approval"
+msgid "Waiting for your approval"
 msgstr "ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ"
+
 
 msgid "Rejected"
 msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
@@ -75,11 +89,20 @@ msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ"
 msgid "waiting"
 msgstr "ಕಾಯುತ್ತಿದೆ"
 
+msgid "Waiting"
+msgstr "ಕಾಯುತ್ತಿದೆ"
+
 msgid "WAITING"
 msgstr "ಕಾಯುತ್ತಿದೆ"
 
+msgid "Booked"
+msgstr "ಬುಕ್ ಆಗಿದೆ"
+
 msgid "cancelled"
 msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+
+msgid "completed"
+msgstr "ಪೂರ್ಣಗೊಂಡಿದೆ" 
 
 msgid "CANCELLED"
 msgstr "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
@@ -92,6 +115,9 @@ msgstr "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
 
 msgid "approved"
 msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"
+
+msgid "Barber NA"
+msgstr "ಕ್ಷೌರಿಕ ಲಭ್ಯವಿಲ್ಲ"
 
 msgid "APPROVED"
 msgstr "ಅನುಮೋದಿಸಲಾಗಿದೆ"

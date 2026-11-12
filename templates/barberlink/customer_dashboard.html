@@ -494,7 +494,10 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
-
+  #customer-booking-status-filter option {
+    background-color: #000;
+    color: #fff;
+}
   .customer-booking-header {
     display: flex;
     justify-content: space-between;
@@ -665,7 +668,7 @@
 
   {% translate "Hey," as greeting_prefix %}
   <h1 id="greeting">Hey, Freddy</h1>
-  <h2>Ready for fresh look?</h2>
+  <h2>{% translate "Ready for fresh look?" %}</h2>
 
   {% comment %}
   <div class="search-bar">
@@ -722,7 +725,7 @@
     <div id="barbers-list">{% translate "No barbers found." %}</div>
   </section>
 
-  {% comment %}
+  
   <section id="customer-bookings-section">
     <h3>{% translate "Today's Bookings" %}</h3>
     <div style="margin-bottom: 12px;">
@@ -735,7 +738,7 @@
       {% translate "Loading bookings..." %}
     </div>
   </section>
-  {% endcomment %}
+  
 
   <section id="barber-detail-section" hidden>
     <div class="barber-detail-hero" id="barber-detail-hero" style="background-image: url('/static/b1eb9d0c2fd1da816e00ea4fca9992bf.jpg'); background-size: cover; background-position: center;">
@@ -751,7 +754,7 @@
       <div id="customer-slot-date" style="margin-bottom:8px; font-size:0.9em; color:#666;"></div>
       <div id="customer-slots-grid">{% translate "Loading slots..." %}</div>
       <div class="slot-book-action">
-        <button type="button" id="book-appointment-btn">{% translate "Book now" %}</button>
+        <button type="button" id="book-appointment-btn">{% translate "Book Now" %}</button>
       </div>
     </div>
   </section>
@@ -1100,10 +1103,10 @@ displayName = capitalizeFirst(displayName);
 
     function slotMeta(status) {
       if (status === "available") return { cls: "slot-available", label: "Available", clickable: true };
-      if (status === "na") return { cls: "slot-na", label: "Barber NA", clickable: false };
-      if (status === "booked") return { cls: "slot-booked", label: "Booked", clickable: false };
+      if (status === "na") return { cls: "slot-na", label: gettext("Barber NA"), clickable: false };
+      if (status === "booked") return { cls: "slot-booked", label: gettext("Booked"), clickable: false };
       if (status === "waiting_list" || status === "waiting" || status === "approved") {
-        return { cls: "slot-waiting", label: "Waiting", clickable: false };
+        return { cls: "slot-waiting", label: gettext("Waiting"), clickable: false };
       }
       return { cls: "slot-na", label: status || "Unavailable", clickable: false };
     }
@@ -1367,17 +1370,17 @@ function capitalizeFirst(str) {
               if (!user) return;
               currentUser = user;
               var displayName = "{{ LANGUAGE_CODE }}" === "kn"? (user.name_kn || user.name || user.contact_number): (user.name || user.contact_number);
-              document.getElementById("greeting").textContent = "Hey, " + capitalizeFirst(displayName);
-            if (document.getElementById("profile-toggle")) {
-              document.getElementById("profile-toggle").addEventListener("click", loadProfile);
-            }
-          })
+              document.getElementById("greeting").textContent = GREETING_PREFIX + " " + capitalizeFirst(displayName);
+              if (document.getElementById("profile-toggle")) {
+                document.getElementById("profile-toggle").addEventListener("click", loadProfile);
+              }
+            })
           .catch(function () {
             showMessage(gettext('We could not load your account. Please log in again.'));
           });
       } else {
         isLoggedIn = false;
-        document.getElementById("greeting").textContent = "Hey, Guest";
+        document.getElementById("greeting").textContent = GREETING_PREFIX + " Guest";
         document.getElementById("profile-toggle").hidden = true;
       }
 

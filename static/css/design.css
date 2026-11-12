@@ -308,7 +308,7 @@ img { border-radius: var(--radius-sm); object-fit: cover; }
 
   .container { padding: 14px; }
   h1 { font-size: 1.35rem; }
-}
+
 
 /* ---------- Auth pages ---------- */
 .auth-page-body {

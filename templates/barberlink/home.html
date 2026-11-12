@@ -47,11 +47,20 @@
     .hero-top {
       position: relative;
       z-index: 2;
+      flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 18px 20px;
       gap: 12px;
+    }
+    main {
+      position: relative;
+      z-index: 2;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .brand {
       font-weight: 700;
@@ -79,45 +88,47 @@
     .hero-content {
       position: relative;
       z-index: 2;
-      margin-top: auto;
+      flex: 1 1 auto;
       width: 100%;
       max-width: 560px;
-      padding: 24px 22px max(28px, env(safe-area-inset-bottom));
+      margin: 0 auto;
+      padding: clamp(20px, 6vh, 56px) 24px max(28px, env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       text-align: center;
     }
     .hero-kicker {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 12px;
-      margin-bottom: 14px;
+      padding: 7px 14px;
+      margin: 0 0 20px;
       border-radius: 999px;
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.16);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       color: rgba(255,255,255,0.92);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
       letter-spacing: 0.02em;
     }
     .hero h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 8vw, 2.85rem);
-      line-height: 1.08;
+      margin: 0 0 18px;
+      font-size: clamp(2rem, 7.5vw, 2.75rem);
+      line-height: 1.18;
       font-weight: 700;
       color: var(--bl-white);
       text-shadow: 0 4px 18px rgba(0,0,0,0.28);
-      max-width: 11ch;
+      max-width: 12ch;
     }
     .hero p {
-      margin: 0;
-      max-width: 38ch;
+      margin: 0 0 28px;
+      max-width: 32ch;
       font-size: 0.98rem;
-      line-height: 1.55;
+      line-height: 1.7;
       color: var(--bl-white-muted);
       text-shadow: 0 2px 10px rgba(0,0,0,0.22);
     }
@@ -126,7 +137,11 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin: 20px 0 22px;
+      margin: 0 0 24px;
+    }
+    .hero-indicators:empty {
+      display: none;
+      margin: 0;
     }
     .hero-indicator {
       width: 8px;
@@ -143,15 +158,17 @@
     .hero-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 14px;
       width: 100%;
       max-width: 420px;
+      margin-top: 4px;
     }
     .hero-btn {
+      width: 100%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 52px;
+      min-height: 54px;
       padding: 14px 18px;
       border-radius: 999px;
       font: inherit;
@@ -188,29 +205,33 @@
       }
       .brand { font-size: 1.3rem; }
       .hero-content {
-        margin-top: 0;
+        margin: 0 auto;
         flex: 1;
-        justify-content: flex-end;
-        align-items: flex-start;
-        text-align: left;
-        max-width: 1180px;
-        margin-left: auto;
-        margin-right: auto;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        max-width: 760px;
         padding: 48px 40px 56px;
       }
+      .hero-kicker { margin-bottom: 22px; }
       .hero h1 {
-        max-width: 13ch;
+        max-width: 14ch;
         font-size: clamp(2.8rem, 5vw, 4.1rem);
+        margin-bottom: 20px;
       }
       .hero p {
         font-size: 1.06rem;
-        max-width: 46ch;
+        max-width: 42ch;
+        line-height: 1.7;
+        margin-bottom: 32px;
       }
       .hero-indicators {
-        justify-content: flex-start;
+        justify-content: center;
+        margin-bottom: 28px;
       }
       .hero-actions {
-        max-width: 360px;
+        max-width: 400px;
+        gap: 16px;
       }
     }
     @media (min-width: 1100px) {
@@ -234,6 +255,7 @@
   </style>
 </head>
 <body class="hero">
+  <main>
     <header class="hero-top">
       <a class="brand" href="{% url 'home' %}">{% translate "BarberLink" %}</a>
       <form action="{% url 'set_language' %}" method="post" class="lang-form">
